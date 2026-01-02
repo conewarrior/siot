@@ -3,6 +3,7 @@
 import type React from "react"
 import { useState, useRef, useEffect } from "react"
 import { ArrowUpRight } from "lucide-react"
+import Image from "next/image"
 
 export interface Project {
   slug: string
@@ -22,7 +23,7 @@ const defaultProjects: Project[] = [
     slug: "lumina",
     title: "루미나",
     description: "AI 기반 디자인 시스템 생성기.",
-    year: "2024",
+    year: "2025",
     link: "#",
     image: "https://plus.unsplash.com/premium_photo-1723489242223-865b4a8cf7b8?q=80&w=2670&auto=format&fit=crop",
   },
@@ -30,7 +31,7 @@ const defaultProjects: Project[] = [
     slug: "flux",
     title: "플럭스",
     description: "크리에이티브 팀을 위한 실시간 협업 도구.",
-    year: "2024",
+    year: "2025",
     link: "#",
     image: "https://images.unsplash.com/photo-1530435460869-d13625c69bbf?q=80&w=2670&auto=format&fit=crop",
   },
@@ -119,11 +120,13 @@ export function ProjectShowcase({ projects = defaultProjects }: ProjectShowcaseP
       >
         <div className="relative w-[280px] h-[180px] bg-secondary rounded-xl overflow-hidden">
           {projects.map((project, index) => (
-            <img
+            <Image
               key={project.title}
               src={project.image}
               alt={project.title}
-              className="absolute inset-0 w-full h-full object-cover transition-all duration-500 ease-out"
+              fill
+              sizes="280px"
+              className="object-cover transition-all duration-500 ease-out"
               style={{
                 opacity: hoveredIndex === index ? 1 : 0,
                 scale: hoveredIndex === index ? 1 : 1.1,

@@ -1,8 +1,16 @@
-"use client"
-
+import type { Metadata } from "next"
 import { Header } from "@/components/header"
 import { ProjectShowcase } from "@/components/project-showcase"
 import { AnimatedText } from "@/components/animated-text"
+
+export const metadata: Metadata = {
+  title: "프로젝트",
+  description: "디자인 시스템, 웹 애플리케이션, 창작 도구를 아우르는 작업들.",
+  openGraph: {
+    title: "프로젝트",
+    description: "디자인 시스템, 웹 애플리케이션, 창작 도구를 아우르는 작업들.",
+  },
+}
 
 export default function ProjectsPage() {
   return (

@@ -1,7 +1,17 @@
+import type { Metadata } from "next"
 import { Header } from "@/components/header"
 import { AnimatedText } from "@/components/animated-text"
 import { getBlogPosts } from "@/lib/mdx"
 import Link from "next/link"
+
+export const metadata: Metadata = {
+  title: "블로그",
+  description: "디자인, 개발, 디지털 제품 구축에 대한 생각들.",
+  openGraph: {
+    title: "블로그",
+    description: "디자인, 개발, 디지털 제품 구축에 대한 생각들.",
+  },
+}
 
 export default function BlogPage() {
   const posts = getBlogPosts()

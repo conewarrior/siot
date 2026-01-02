@@ -14,13 +14,13 @@
 - [ ] 블로그 글 작성 (최소 3개)
 - [ ] 이미지 에셋 정리 (프로젝트 이미지를 실제 스크린샷으로)
 
-## Phase 3: 디테일 & 최적화
+## Phase 3: 디테일 & 최적화 ✅
 
-- [ ] SEO 메타데이터 설정 (generateMetadata)
-- [ ] OG 이미지 생성
-- [ ] 404 페이지
-- [ ] 로딩 상태 처리 (Suspense)
-- [ ] 성능 최적화 (이미지 next/image, 폰트 최적화)
+- [x] SEO 메타데이터 설정 (generateMetadata)
+- [x] OG 이미지 생성
+- [x] 404 페이지
+- [x] 로딩 상태 처리 (Suspense)
+- [x] 성능 최적화 (이미지 next/image, 폰트 최적화)
 
 ## Phase 4: 배포
 
@@ -60,7 +60,7 @@ docs/
 ---
 title: "글 제목"
 description: "글 설명"
-date: "2024-12-28"
+date: "2025-12-28"
 category: "디자인" | "개발"
 published: true
 ---
@@ -74,7 +74,7 @@ published: true
 ---
 title: "프로젝트명"
 description: "한 줄 설명"
-year: "2024"
+year: "2025"
 link: "https://..."
 image: "/images/projects/..."
 tech: ["React", "TypeScript"]

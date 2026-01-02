@@ -1,7 +1,8 @@
+import type { Metadata } from "next"
+import { Suspense } from "react"
 import { Header } from "@/components/header"
 import { MDXContent } from "@/components/mdx-content"
 import { getBlogPost, getBlogPosts } from "@/lib/mdx"
-import { serialize } from "next-mdx-remote/serialize"
 import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import { notFound } from "next/navigation"
@@ -9,6 +10,35 @@ import { notFound } from "next/navigation"
 export function generateStaticParams() {
   const posts = getBlogPosts()
   return posts.map((post) => ({ slug: post.slug }))
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}): Promise<Metadata> {
+  const { slug } = await params
+  const post = getBlogPost(slug)
+
+  if (!post) {
+    return { title: "글을 찾을 수 없습니다" }
+  }
+
+  return {
+    title: post.title,
+    description: post.description,
+    openGraph: {
+      title: post.title,
+      description: post.description,
+      type: "article",
+      publishedTime: post.date,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.description,
+    },
+  }
 }
 
 export default async function BlogPostPage({
@@ -22,8 +52,6 @@ export default async function BlogPostPage({
   if (!post) {
     notFound()
   }
-
-  const mdxSource = await serialize(post.content)
 
   return (
     <main className="min-h-screen">
@@ -50,7 +78,9 @@ export default async function BlogPostPage({
         </header>
 
         <div className="prose prose-neutral dark:prose-invert max-w-none">
-          <MDXContent source={mdxSource} />
+          <Suspense fallback={<div className="animate-pulse h-96 bg-secondary rounded" />}>
+            <MDXContent source={post.content} />
+          </Suspense>
         </div>
       </article>
     </main>

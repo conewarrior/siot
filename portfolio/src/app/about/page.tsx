@@ -1,8 +1,16 @@
-"use client"
-
+import type { Metadata } from "next"
 import { Header } from "@/components/header"
 import { AnimatedText } from "@/components/animated-text"
 import { ArrowUpRight } from "lucide-react"
+
+export const metadata: Metadata = {
+  title: "소개",
+  description: "서울에 거주하는 개발자이자 디자이너. 심미성과 기능성의 균형을 갖춘 디지털 제품을 만듭니다.",
+  openGraph: {
+    title: "소개",
+    description: "서울에 거주하는 개발자이자 디자이너. 심미성과 기능성의 균형을 갖춘 디지털 제품을 만듭니다.",
+  },
+}
 
 export default function AboutPage() {
   return (

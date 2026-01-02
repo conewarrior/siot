@@ -1,9 +1,7 @@
-"use client"
-
-import { MDXRemote, MDXRemoteSerializeResult } from "next-mdx-remote"
+import { MDXRemote } from "next-mdx-remote/rsc"
 
 interface MDXContentProps {
-  source: MDXRemoteSerializeResult
+  source: string
 }
 
 const components = {
@@ -66,5 +64,5 @@ const components = {
 }
 
 export function MDXContent({ source }: MDXContentProps) {
-  return <MDXRemote {...source} components={components} />
+  return <MDXRemote source={source} components={components} />
 }

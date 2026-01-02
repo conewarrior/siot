@@ -57,7 +57,7 @@ export default function Home() {
       {/* Footer */}
       <footer className="w-full max-w-2xl mx-auto px-6 py-16">
         <div className="border-t border-border pt-8 flex items-center justify-between text-sm text-muted">
-          <span>&copy; 2024</span>
+          <span>&copy; 2026</span>
           <div className="flex items-center gap-4">
             <a
               href="https://github.com"

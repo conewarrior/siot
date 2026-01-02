@@ -71,7 +71,7 @@ Frontmatter format for blog posts:
 ---
 title: "제목"
 description: "설명"
-date: "2024-12-28"
+date: "2025-12-28"
 category: "디자인" | "개발"
 published: true
 ---
