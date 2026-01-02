@@ -1,61 +1,18 @@
-"use client"
-
 import { Header } from "@/components/header"
+import { HeroSection } from "@/components/hero-section"
 import { ProjectShowcase } from "@/components/project-showcase"
-import { TextRotate } from "@/components/text-rotate"
-import { AnimatedText } from "@/components/animated-text"
-import { motion, LayoutGroup } from "framer-motion"
+import { getBlogPosts } from "@/lib/mdx"
 import { ArrowUpRight } from "lucide-react"
 import Link from "next/link"
 
-const recentPosts = [
-  {
-    title: "처음부터 디자인 시스템 구축하기",
-    date: "2024.12.28",
-    slug: "building-design-system",
-  },
-  {
-    title: "미니멀 인터페이스의 예술",
-    date: "2024.12.15",
-    slug: "minimal-interfaces",
-  },
-  {
-    title: "React 서버 컴포넌트 심층 분석",
-    date: "2024.12.01",
-    slug: "react-server-components",
-  },
-]
-
 export default function Home() {
+  const recentPosts = getBlogPosts().slice(0, 3)
+
   return (
     <main className="min-h-screen">
       <Header />
 
-      {/* Hero Section */}
-      <section className="w-full max-w-2xl mx-auto px-6 py-16">
-        <h1 className="font-serif text-4xl md:text-5xl tracking-tight leading-tight mb-6 flex flex-wrap items-center gap-2">
-          <span>make it</span>
-          <LayoutGroup>
-            <motion.span
-              layout
-              transition={{ type: "spring", damping: 20, stiffness: 400 }}
-              className="inline-flex bg-accent text-white px-3 py-1 rounded-lg"
-            >
-              <TextRotate
-                texts={["pop", "snappy", "flow", "simple", "click", "yesterday", "right"]}
-                mainClassName="overflow-hidden"
-                staggerFrom="last"
-                staggerDuration={0.02}
-                rotationInterval={2500}
-                transition={{ type: "spring", damping: 20, stiffness: 400 }}
-              />
-            </motion.span>
-          </LayoutGroup>
-        </h1>
-        <p className="text-muted text-lg leading-relaxed max-w-xl">
-          바이브코딩으로 원하는 걸 빠르게 실현하는 디자이너
-        </p>
-      </section>
+      <HeroSection />
 
       {/* Recent Posts */}
       <section className="w-full max-w-2xl mx-auto px-6 py-8">
@@ -85,7 +42,7 @@ export default function Home() {
                   <span className="absolute left-0 -bottom-0.5 h-0.5 bg-accent w-0 group-hover:w-full transition-all duration-300 ease-out" />
                 </span>
                 <span className="text-xs font-mono text-muted tabular-nums shrink-0">
-                  {post.date}
+                  {post.date.replace(/-/g, ".")}
                 </span>
               </div>
             </Link>

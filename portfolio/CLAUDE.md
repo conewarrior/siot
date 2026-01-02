@@ -19,6 +19,7 @@ This is a Next.js 16 portfolio site using App Router with TypeScript and Tailwin
 - **Next.js 16** with App Router (React 19)
 - **Tailwind CSS v4** (uses `@tailwindcss/postcss`, no config file)
 - **Framer Motion** for animations
+- **next-mdx-remote** for MDX content
 - **TypeScript** with strict mode
 - **Font**: Pretendard (via CDN in layout.tsx)
 
@@ -31,19 +32,49 @@ src/
 │   ├── layout.tsx         # Root layout with BackgroundBeamsWithCollision
 │   ├── globals.css        # Theme variables (accent = orange #F97316)
 │   ├── blog/
-│   │   ├── page.tsx       # Blog list
-│   │   └── [slug]/page.tsx # Individual post
+│   │   ├── page.tsx       # Blog list (reads from docs/content/blog/)
+│   │   └── [slug]/page.tsx # Blog post (MDX rendered)
 │   ├── projects/page.tsx  # Projects gallery
 │   └── about/page.tsx     # About page
 ├── components/
 │   ├── animated-text.tsx  # Letter-by-letter animation + underline
 │   ├── background-beams.tsx # Rain/beam collision effect (wraps entire site)
+│   ├── hero-section.tsx   # Hero with TextRotate (client component)
+│   ├── mdx-content.tsx    # MDX renderer with styled components
 │   ├── text-rotate.tsx    # Rotating text with staggered character animation
 │   ├── project-showcase.tsx # Project list with mouse-following image preview
 │   ├── header.tsx         # Navigation
 │   └── nav-link.tsx       # Menu link with scale hover
 └── lib/
-    └── utils.ts           # cn() helper (clsx + tailwind-merge)
+    ├── utils.ts           # cn() helper (clsx + tailwind-merge)
+    └── mdx.ts             # MDX utilities (getBlogPosts, getProjects, etc.)
+
+docs/
+├── content/               # All site content (MDX files)
+│   ├── blog/             # Blog posts
+│   ├── projects/         # Project descriptions
+│   └── about.mdx         # About page content
+└── planning/
+    └── roadmap.md        # Development roadmap
+```
+
+### Content Management
+
+Content is managed via MDX files in `docs/content/`. To add/edit content:
+
+1. **Blog posts**: Create/edit `docs/content/blog/[slug].mdx`
+2. **Projects**: Create/edit `docs/content/projects/[slug].mdx`
+3. **About**: Edit `docs/content/about.mdx`
+
+Frontmatter format for blog posts:
+```mdx
+---
+title: "제목"
+description: "설명"
+date: "2024-12-28"
+category: "디자인" | "개발"
+published: true
+---
 ```
 
 ### Animation Patterns
@@ -60,7 +91,6 @@ src/
 
 **Hover underline** (List items):
 - Standard pattern: `<span className="absolute left-0 -bottom-0.5 h-0.5 bg-accent w-0 group-hover:w-full transition-all duration-300 ease-out" />`
-- Used on blog posts, project lists, contact links
 
 ### Styling
 
@@ -71,4 +101,4 @@ src/
 
 ### Korean Content
 
-Site content is in Korean. Blog posts are static data in page files.
+Site content is in Korean. See `docs/planning/roadmap.md` for development status.

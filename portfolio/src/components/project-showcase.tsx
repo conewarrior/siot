@@ -4,7 +4,8 @@ import type React from "react"
 import { useState, useRef, useEffect } from "react"
 import { ArrowUpRight } from "lucide-react"
 
-interface Project {
+export interface Project {
+  slug: string
   title: string
   description: string
   year: string
@@ -12,22 +13,29 @@ interface Project {
   image: string
 }
 
-const projects: Project[] = [
+interface ProjectShowcaseProps {
+  projects?: Project[]
+}
+
+const defaultProjects: Project[] = [
   {
+    slug: "lumina",
     title: "루미나",
     description: "AI 기반 디자인 시스템 생성기.",
     year: "2024",
     link: "#",
-    image: "https://plus.unsplash.com/premium_photo-1723489242223-865b4a8cf7b8?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    image: "https://plus.unsplash.com/premium_photo-1723489242223-865b4a8cf7b8?q=80&w=2670&auto=format&fit=crop",
   },
   {
+    slug: "flux",
     title: "플럭스",
     description: "크리에이티브 팀을 위한 실시간 협업 도구.",
     year: "2024",
     link: "#",
-    image: "https://images.unsplash.com/photo-1530435460869-d13625c69bbf?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    image: "https://images.unsplash.com/photo-1530435460869-d13625c69bbf?q=80&w=2670&auto=format&fit=crop",
   },
   {
+    slug: "prism",
     title: "프리즘",
     description: "이미지에서 컬러 팔레트 추출.",
     year: "2023",
@@ -35,6 +43,7 @@ const projects: Project[] = [
     image: "https://i.pinimg.com/1200x/99/ca/5c/99ca5cf82cf12df8801f7b2bef38d325.jpg",
   },
   {
+    slug: "vertex",
     title: "버텍스",
     description: "웹을 위한 3D 모델링 툴킷.",
     year: "2023",
@@ -43,7 +52,7 @@ const projects: Project[] = [
   },
 ]
 
-export function ProjectShowcase() {
+export function ProjectShowcase({ projects = defaultProjects }: ProjectShowcaseProps) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const [smoothPosition, setSmoothPosition] = useState({ x: 0, y: 0 })
