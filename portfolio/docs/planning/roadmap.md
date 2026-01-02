@@ -22,12 +22,12 @@
 - [x] 로딩 상태 처리 (Suspense)
 - [x] 성능 최적화 (이미지 next/image, 폰트 최적화)
 
-## Phase 4: 배포
+## Phase 4: 배포 ✅
 
-- [ ] 도메인 설정
-- [ ] Vercel 배포 설정
-- [ ] Analytics 연동 (선택)
-- [ ] 최종 테스트
+- [x] 도메인 설정 (siot.vercel.app)
+- [x] Vercel 배포 설정
+- [x] Analytics 연동 (@vercel/analytics, @vercel/speed-insights)
+- [x] 최종 테스트
 
 ---
 

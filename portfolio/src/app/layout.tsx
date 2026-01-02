@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { BackgroundBeamsWithCollision } from "@/components/background-beams";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const siteConfig = {
-  name: "포트폴리오",
+  name: "siot",
   description: "개발자 & 디자이너 포트폴리오. 심미성과 기능성의 균형을 갖춘 디지털 제품을 만듭니다.",
-  url: "https://example.com",
-  author: "Your Name",
+  url: "https://siot.vercel.app",
+  author: "siot",
 };
 
 export const metadata: Metadata = {
@@ -62,6 +64,8 @@ export default function RootLayout({
       </head>
       <body className="antialiased">
         <BackgroundBeamsWithCollision>{children}</BackgroundBeamsWithCollision>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
