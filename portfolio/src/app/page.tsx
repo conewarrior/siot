@@ -60,23 +60,23 @@ export default function Home() {
           <span>&copy; 2026</span>
           <div className="flex items-center gap-4">
             <a
-              href="https://github.com"
+              href="https://sixth-recap-55049847.figma.site"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-foreground transition-colors"
             >
-              깃허브
+              포트폴리오
             </a>
             <a
-              href="https://twitter.com"
+              href="https://brunch.co.kr/@kimhansol30"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-foreground transition-colors"
             >
-              트위터
+              블로그
             </a>
             <a
-              href="mailto:hello@example.com"
+              href="mailto:kimhansol307@gmail.com"
               className="hover:text-foreground transition-colors"
             >
               이메일
