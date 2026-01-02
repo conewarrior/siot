@@ -62,9 +62,8 @@ export default function ProjectsPage() {
               key={project.title}
               className="group p-5 border border-border rounded-lg hover:border-foreground/20 transition-all cursor-pointer"
             >
-              <h3 className="text-foreground font-medium relative inline-block">
+              <h3 className="text-foreground font-medium relative inline-block after:absolute after:bg-accent after:bottom-0 after:left-0 after:h-0.5 after:w-full after:origin-bottom-right after:scale-x-0 group-hover:after:origin-bottom-left group-hover:after:scale-x-100 after:transition-transform after:ease-in-out after:duration-300">
                 {project.title}
-                <span className="absolute left-0 -bottom-0.5 h-0.5 bg-accent w-0 group-hover:w-full transition-all duration-300 ease-out" />
               </h3>
               <p className="text-muted text-sm leading-relaxed mb-3 mt-2">
                 {project.description}

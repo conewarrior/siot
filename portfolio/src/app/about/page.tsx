@@ -126,10 +126,9 @@ export default function AboutPage() {
                   className="flex items-center justify-between group"
                 >
                   <span className="text-muted text-sm">{link.label}</span>
-                  <span className="text-foreground text-sm flex items-center gap-1 relative">
+                  <span className="text-foreground text-sm flex items-center gap-1 relative after:absolute after:bg-accent after:bottom-0 after:left-0 after:h-0.5 after:w-full after:origin-bottom-right after:scale-x-0 group-hover:after:origin-bottom-left group-hover:after:scale-x-100 after:transition-transform after:ease-in-out after:duration-300">
                     {link.value}
                     <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                    <span className="absolute left-0 -bottom-0.5 h-0.5 bg-accent w-0 group-hover:w-full transition-all duration-300 ease-out" />
                   </span>
                 </a>
               ))}

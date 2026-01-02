@@ -16,22 +16,20 @@
   --accent-glow: rgba(249, 115, 22, 0.15);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #fafafa;
-    --muted: #a3a3a3;
-    --muted-foreground: #737373;
-    --border: #262626;
-    --secondary: #171717;
-    --accent: #FB923C;
-    --accent-light: #FDBA74;
-    --accent-lighter: #FED7AA;
-    --accent-dark: #F97316;
-    --accent-ripple: rgba(251, 146, 60, 0.3);
-    --accent-hover: rgba(251, 146, 60, 0.4);
-    --accent-glow: rgba(251, 146, 60, 0.15);
-  }
+.dark {
+  --background: #0a0a0a;
+  --foreground: #fafafa;
+  --muted: #a3a3a3;
+  --muted-foreground: #737373;
+  --border: #262626;
+  --secondary: #171717;
+  --accent: #FB923C;
+  --accent-light: #FDBA74;
+  --accent-lighter: #FED7AA;
+  --accent-dark: #F97316;
+  --accent-ripple: rgba(251, 146, 60, 0.3);
+  --accent-hover: rgba(251, 146, 60, 0.4);
+  --accent-glow: rgba(251, 146, 60, 0.15);
 }
 
 @theme inline {

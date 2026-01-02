@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { BackgroundBeamsWithCollision } from "@/components/background-beams";
+import { ThemeProvider } from "@/components/theme-provider";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
@@ -53,7 +54,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko">
+    <html lang="ko" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://cdn.jsdelivr.net" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
@@ -63,7 +64,14 @@ export default function RootLayout({
         />
       </head>
       <body className="antialiased">
-        <BackgroundBeamsWithCollision>{children}</BackgroundBeamsWithCollision>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <BackgroundBeamsWithCollision>{children}</BackgroundBeamsWithCollision>
+        </ThemeProvider>
         <Analytics />
         <SpeedInsights />
       </body>

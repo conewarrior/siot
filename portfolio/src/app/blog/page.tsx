@@ -39,9 +39,8 @@ export default function BlogPage() {
             >
               <article className="py-6 border-t border-border -mx-4 px-4 rounded">
                 <div className="flex items-start justify-between gap-4 mb-2">
-                  <h2 className="text-foreground font-medium text-lg relative">
+                  <h2 className="text-foreground font-medium text-lg relative after:absolute after:bg-accent after:bottom-0 after:left-0 after:h-0.5 after:w-full after:origin-bottom-right after:scale-x-0 group-hover:after:origin-bottom-left group-hover:after:scale-x-100 after:transition-transform after:ease-in-out after:duration-300">
                     {post.title}
-                    <span className="absolute left-0 -bottom-0.5 h-0.5 bg-accent w-0 group-hover:w-full transition-all duration-300 ease-out" />
                   </h2>
                   <span className="text-xs font-mono text-muted tabular-nums shrink-0 mt-1">
                     {post.date.replace(/-/g, ".")}

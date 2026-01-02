@@ -19,6 +19,7 @@ This is a Next.js 16 portfolio site using App Router with TypeScript and Tailwin
 - **Next.js 16** with App Router (React 19)
 - **Tailwind CSS v4** (uses `@tailwindcss/postcss`, no config file)
 - **Framer Motion** for animations
+- **next-themes** for dark mode (class-based switching)
 - **next-mdx-remote** for MDX content
 - **TypeScript** with strict mode
 - **Font**: Pretendard (via CDN in layout.tsx)
@@ -39,12 +40,13 @@ src/
 ├── components/
 │   ├── animated-text.tsx  # Letter-by-letter animation + underline
 │   ├── background-beams.tsx # Rain/beam collision effect (wraps entire site)
-│   ├── hero-section.tsx   # Hero with TextRotate (client component)
+│   ├── hero-section.tsx   # Hero with Typewriter animation
 │   ├── mdx-content.tsx    # MDX renderer with styled components
 │   ├── text-rotate.tsx    # Rotating text with staggered character animation
 │   ├── project-showcase.tsx # Project list with mouse-following image preview
-│   ├── header.tsx         # Navigation
-│   └── nav-link.tsx       # Menu link with scale hover
+│   ├── header.tsx         # Navigation with TextRotate logo
+│   ├── typewriter.tsx     # Typing/deleting text animation
+│   └── theme-toggle.tsx   # Dark/light mode toggle
 └── lib/
     ├── utils.ts           # cn() helper (clsx + tailwind-merge)
     └── mdx.ts             # MDX utilities (getBlogPosts, getProjects, etc.)
@@ -66,23 +68,38 @@ Content is managed via MDX files in `docs/content/`. To add/edit content:
 2. **Projects**: Create/edit `docs/content/projects/[slug].mdx`
 3. **About**: Edit `docs/content/about.mdx`
 
-Frontmatter format for blog posts:
-```mdx
----
+Frontmatter for blog posts:
+```yaml
 title: "제목"
 description: "설명"
 date: "2025-12-28"
 category: "디자인" | "개발"
 published: true
----
 ```
+
+Frontmatter for projects:
+```yaml
+title: "프로젝트명"
+description: "설명"
+year: "2025"
+link: "https://..."
+image: "/images/..."
+tech: ["React", "TypeScript"]
+featured: true
+```
+
+Blog posts are pre-rendered at build time via `generateStaticParams()` in `[slug]/page.tsx`.
 
 ### Animation Patterns
 
-**TextRotate** (Hero section):
-- Used in hero for rotating words: "make it [pop/snappy/flow/...]"
+**TextRotate** (Header logo):
+- Used in header for "hansol makes it [pop/snappy/flow/...]"
 - Wrapped in `LayoutGroup` + `motion.span` for smooth width transitions
 - Spring animation: `damping: 20, stiffness: 400`
+
+**Typewriter** (Hero section):
+- Typing/deleting animation for Korean phrases
+- Props: `speed`, `deleteSpeed`, `waitTime`, `loop`, `cursorChar`
 
 **AnimatedText** (Page titles):
 - Letter-by-letter staggered entrance animation
@@ -90,14 +107,27 @@ published: true
 - Props: `duration`, `delay`, `underlineHeight`, `underlineOffset`
 
 **Hover underline** (List items):
-- Standard pattern: `<span className="absolute left-0 -bottom-0.5 h-0.5 bg-accent w-0 group-hover:w-full transition-all duration-300 ease-out" />`
+- Scale-x transform pattern on parent element:
+  ```
+  relative after:absolute after:bg-accent after:bottom-0 after:left-0 after:h-0.5 after:w-full after:origin-bottom-right after:scale-x-0 group-hover:after:origin-bottom-left group-hover:after:scale-x-100 after:transition-transform after:ease-in-out after:duration-300
+  ```
 
-### Styling
+### Theming & Styling
 
-- Theme uses CSS variables in `globals.css`
-- Accent color: orange (#F97316 light, #FB923C dark)
-- Colors exposed via `@theme inline`: `text-muted`, `bg-secondary`, `border-border`, `bg-accent`
+**Dark Mode**:
+- Uses `next-themes` with class-based switching (`.dark` class on html)
+- `ThemeProvider` wraps the app in `layout.tsx`
+- `ThemeToggle` component toggles between light/dark
+- CSS variables defined in `globals.css` for `:root` (light) and `.dark`
+
+**Colors**:
+- Accent: orange (#F97316 light, #FB923C dark)
+- Colors via `@theme inline`: `text-foreground`, `text-muted`, `bg-secondary`, `bg-accent`
 - Path alias: `@/*` maps to `./src/*`
+
+**Navigation Animation**:
+- Uses Framer Motion `layoutId="nav-bubble"` for smooth active indicator
+- `mix-blend-difference` creates the visual effect
 
 ### Korean Content
 
