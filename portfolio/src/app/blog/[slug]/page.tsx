@@ -10,212 +10,212 @@ const posts: Record<string, {
   content: string
 }> = {
   "building-design-system": {
-    title: "Building a Design System from Scratch",
+    title: "처음부터 디자인 시스템 구축하기",
     date: "2024.12.28",
-    category: "Design",
+    category: "디자인",
     content: `
-A design system is more than just a component library. It's a living document that captures the visual language, interaction patterns, and design principles of your product.
+디자인 시스템은 단순한 컴포넌트 라이브러리 그 이상입니다. 제품의 시각적 언어, 인터랙션 패턴, 디자인 원칙을 담은 살아있는 문서입니다.
 
-## Why Build a Design System?
+## 왜 디자인 시스템을 구축해야 할까요?
 
-When your team grows beyond a handful of people, consistency becomes a challenge. Without a shared foundation, every designer and developer makes slightly different decisions, leading to a fragmented user experience.
+팀이 몇 명을 넘어서면 일관성 유지가 어려워집니다. 공유된 기반 없이는 디자이너와 개발자마다 조금씩 다른 결정을 내리게 되고, 이는 파편화된 사용자 경험으로 이어집니다.
 
-A well-crafted design system provides:
+잘 만들어진 디자인 시스템이 제공하는 것:
 
-- **Consistency** across all touchpoints
-- **Efficiency** through reusable components
-- **Scalability** as your product grows
-- **Shared vocabulary** between design and development
+- **일관성** - 모든 터치포인트에서 통일된 경험
+- **효율성** - 재사용 가능한 컴포넌트로 개발 속도 향상
+- **확장성** - 제품이 성장해도 유지 가능한 구조
+- **공유 어휘** - 디자인과 개발 간의 원활한 소통
 
-## Starting Small
+## 작게 시작하기
 
-The biggest mistake teams make is trying to build everything at once. Start with the basics:
+팀이 범하는 가장 큰 실수는 한 번에 모든 것을 만들려고 하는 것입니다. 기본부터 시작하세요:
 
-1. **Color palette** - Define your primary, secondary, and semantic colors
-2. **Typography** - Choose your type scale and font families
-3. **Spacing** - Create a consistent spacing system
-4. **Components** - Build the most commonly used UI elements
+1. **컬러 팔레트** - 주요 색상, 보조 색상, 의미론적 색상 정의
+2. **타이포그래피** - 타입 스케일과 폰트 패밀리 선택
+3. **여백** - 일관된 스페이싱 시스템 구축
+4. **컴포넌트** - 가장 많이 사용되는 UI 요소부터 제작
 
-## Documentation is Key
+## 문서화가 핵심입니다
 
-A design system without documentation is just a folder of components. Document not just *what* each element is, but *when* and *how* to use it.
+문서화 없는 디자인 시스템은 그냥 컴포넌트 폴더에 불과합니다. 각 요소가 *무엇*인지뿐만 아니라 *언제* 그리고 *어떻게* 사용해야 하는지 문서화하세요.
 
-Good documentation includes:
-- Usage guidelines
-- Do's and don'ts
-- Code examples
-- Accessibility considerations
+좋은 문서에는 다음이 포함됩니다:
+- 사용 가이드라인
+- 해야 할 것과 하지 말아야 할 것
+- 코드 예시
+- 접근성 고려사항
 
-## Evolving Over Time
+## 시간이 지나며 발전하기
 
-Your design system will never be "done." It should evolve with your product, incorporating feedback from the team and learnings from user research.
+디자인 시스템은 결코 "완성"되지 않습니다. 제품과 함께 진화하며, 팀의 피드백과 사용자 리서치에서 배운 것들을 반영해야 합니다.
 
-The goal isn't perfection—it's progress.
+목표는 완벽함이 아니라 발전입니다.
     `.trim(),
   },
   "minimal-interfaces": {
-    title: "The Art of Minimal Interfaces",
+    title: "미니멀 인터페이스의 예술",
     date: "2024.12.15",
-    category: "Design",
+    category: "디자인",
     content: `
-Minimalism in design isn't about removing things until there's nothing left. It's about intentionally choosing what deserves attention and stripping away everything that doesn't serve the user.
+디자인에서의 미니멀리즘은 아무것도 남지 않을 때까지 제거하는 것이 아닙니다. 무엇이 주목받을 가치가 있는지 의도적으로 선택하고, 사용자에게 도움이 되지 않는 모든 것을 제거하는 것입니다.
 
-## The Paradox of Choice
+## 선택의 역설
 
-Studies show that more options often lead to worse decisions and lower satisfaction. By reducing visual noise and limiting choices, we help users focus on what matters.
+연구에 따르면 더 많은 옵션이 종종 더 나쁜 결정과 낮은 만족도로 이어집니다. 시각적 노이즈를 줄이고 선택지를 제한함으로써 사용자가 중요한 것에 집중하도록 도와줍니다.
 
-## Visual Hierarchy
+## 시각적 계층구조
 
-In a minimal interface, every element must earn its place. This forces us to think carefully about hierarchy:
+미니멀한 인터페이스에서 모든 요소는 자신의 자리를 증명해야 합니다. 이는 계층구조에 대해 신중하게 생각하도록 강제합니다:
 
-- What's the primary action?
-- What information is essential vs. supplementary?
-- How do we guide the user's eye?
+- 주요 액션은 무엇인가?
+- 필수 정보와 부가 정보는 무엇인가?
+- 사용자의 시선을 어떻게 유도할 것인가?
 
-## Breathing Room
+## 여백의 힘
 
-White space isn't empty space—it's active. It creates rhythm, establishes relationships between elements, and gives the eye a place to rest.
+화이트 스페이스는 빈 공간이 아닙니다. 능동적입니다. 리듬을 만들고, 요소 간의 관계를 설정하며, 눈이 쉴 곳을 제공합니다.
 
-Generous margins and padding signal quality and confidence. Cramped layouts feel anxious and overwhelming.
+넉넉한 마진과 패딩은 품질과 자신감을 전달합니다. 빽빽한 레이아웃은 불안하고 압도적으로 느껴집니다.
 
-## The Details
+## 디테일
 
-When there's less to look at, what remains must be perfect. Typography, alignment, color—every detail is magnified under the lens of minimalism.
+볼 것이 적을수록, 남아있는 것은 완벽해야 합니다. 타이포그래피, 정렬, 색상—미니멀리즘의 렌즈 아래에서 모든 디테일이 확대됩니다.
 
-This is what separates good minimal design from lazy design. Minimal doesn't mean easy.
+이것이 좋은 미니멀 디자인과 게으른 디자인을 구분 짓습니다. 미니멀은 쉽다는 것을 의미하지 않습니다.
     `.trim(),
   },
   "react-server-components": {
-    title: "React Server Components Deep Dive",
+    title: "React 서버 컴포넌트 심층 분석",
     date: "2024.12.01",
-    category: "Development",
+    category: "개발",
     content: `
-React Server Components represent a fundamental shift in how we think about React applications. Instead of sending JavaScript to the client to render everything, we can now keep components on the server.
+React 서버 컴포넌트는 React 애플리케이션에 대한 사고 방식의 근본적인 변화를 나타냅니다. 모든 것을 렌더링하기 위해 JavaScript를 클라이언트로 보내는 대신, 이제 컴포넌트를 서버에 유지할 수 있습니다.
 
-## The Problem
+## 문제점
 
-Traditional React apps ship a lot of JavaScript. Even with code splitting, users download and parse significant amounts of code before seeing anything useful.
+전통적인 React 앱은 많은 JavaScript를 전송합니다. 코드 스플리팅을 사용하더라도, 사용자는 무엇인가 유용한 것을 보기 전에 상당한 양의 코드를 다운로드하고 파싱합니다.
 
-## The Solution
+## 해결책
 
-Server Components run on the server and send HTML to the client. The client only receives the minimal JavaScript needed for interactivity.
+서버 컴포넌트는 서버에서 실행되고 HTML을 클라이언트로 전송합니다. 클라이언트는 상호작용에 필요한 최소한의 JavaScript만 받습니다.
 
-## Key Benefits
+## 주요 이점
 
-- **Smaller bundles** - Server Components add zero bytes to your bundle
-- **Direct data access** - Query databases directly without API routes
-- **Streaming** - Send UI as it's ready, not all at once
+- **더 작은 번들** - 서버 컴포넌트는 번들에 0바이트를 추가
+- **직접 데이터 접근** - API 라우트 없이 직접 데이터베이스 쿼리
+- **스트리밍** - UI가 준비되는 대로 전송, 한 번에 모두가 아닌
 
-## When to Use Client Components
+## 클라이언트 컴포넌트를 사용해야 할 때
 
-Not everything should be a Server Component. Use Client Components for:
+모든 것이 서버 컴포넌트일 필요는 없습니다. 다음을 위해서는 클라이언트 컴포넌트를 사용하세요:
 
-- Interactive elements (buttons, forms)
-- Browser APIs (localStorage, geolocation)
-- State and effects
+- 인터랙티브 요소 (버튼, 폼)
+- 브라우저 API (localStorage, geolocation)
+- 상태와 이펙트
 
-## The Mental Model
+## 멘탈 모델
 
-Think of Server Components as the default. Only "opt in" to Client Components when you need interactivity.
+서버 컴포넌트를 기본값으로 생각하세요. 상호작용이 필요할 때만 클라이언트 컴포넌트로 "옵트인"하세요.
 
-This inversion takes some getting used to, but it leads to faster, simpler applications.
+이 반전은 익숙해지는 데 시간이 걸리지만, 더 빠르고 간단한 애플리케이션으로 이어집니다.
     `.trim(),
   },
   "digital-typography": {
-    title: "Typography in Digital Products",
+    title: "디지털 제품의 타이포그래피",
     date: "2024.11.20",
-    category: "Design",
+    category: "디자인",
     content: `
-Typography is the foundation of digital interfaces. It's how we communicate with users, establish hierarchy, and express brand personality.
+타이포그래피는 디지털 인터페이스의 기반입니다. 사용자와 소통하고, 계층구조를 설정하며, 브랜드 개성을 표현하는 방법입니다.
 
-## Choosing Typefaces
+## 서체 선택하기
 
-When selecting fonts for a digital product, consider:
+디지털 제품을 위한 폰트를 선택할 때 고려할 사항:
 
-- **Readability** at small sizes and on screens
-- **Character set** for internationalization
-- **Variable weights** for flexibility
-- **Performance** and loading times
+- **가독성** - 작은 크기와 화면에서의 가독성
+- **문자 세트** - 다국어 지원을 위한 확장성
+- **가변 굵기** - 유연성을 위한 다양한 웨이트
+- **성능** - 로딩 시간과 파일 크기
 
-## The Type Scale
+## 타입 스케일
 
-A consistent type scale brings order to your typography. Start with a base size and use a mathematical ratio to derive other sizes.
+일관된 타입 스케일은 타이포그래피에 질서를 가져옵니다. 기본 크기에서 시작하여 수학적 비율을 사용해 다른 크기를 도출하세요.
 
-Common ratios include 1.25 (major third), 1.333 (perfect fourth), and 1.5 (perfect fifth).
+일반적인 비율로는 1.25 (장3도), 1.333 (완전4도), 1.5 (완전5도)가 있습니다.
 
-## Line Height and Measure
+## 행간과 글줄 길이
 
-Line height affects readability dramatically. For body text, 1.5-1.7 times the font size works well. For headings, tighter leading (1.1-1.3) often looks better.
+행간은 가독성에 극적인 영향을 미칩니다. 본문 텍스트의 경우 폰트 크기의 1.5-1.7배가 적당합니다. 제목의 경우 더 좁은 행간 (1.1-1.3)이 종종 더 좋아 보입니다.
 
-Measure (line length) should be 45-75 characters for comfortable reading.
+글줄 길이는 편안한 독서를 위해 45-75자 정도가 적당합니다.
 
-## Pairing Typefaces
+## 서체 조합하기
 
-When using multiple typefaces:
+여러 서체를 사용할 때:
 
-- Contrast is key—pair a serif with a sans-serif
-- Limit to 2-3 fonts maximum
-- Consider the x-height and proportions
+- 대비가 핵심입니다—세리프와 산세리프를 조합
+- 최대 2-3개의 폰트로 제한
+- x높이와 비율을 고려
 
-## Performance Considerations
+## 성능 고려사항
 
-Fonts are render-blocking resources. Optimize by:
+폰트는 렌더링 차단 리소스입니다. 다음을 통해 최적화하세요:
 
-- Subsetting to only needed characters
-- Using font-display: swap
-- Preloading critical fonts
+- 필요한 문자만 서브세팅
+- font-display: swap 사용
+- 중요한 폰트 프리로딩
     `.trim(),
   },
   "ai-apis": {
-    title: "Building with AI APIs",
+    title: "AI API로 개발하기",
     date: "2024.11.10",
-    category: "Development",
+    category: "개발",
     content: `
-Integrating AI into your applications has never been more accessible. With APIs from OpenAI, Anthropic, and others, you can add powerful language capabilities with just a few lines of code.
+AI를 애플리케이션에 통합하는 것이 그 어느 때보다 접근하기 쉬워졌습니다. OpenAI, Anthropic 등의 API를 통해 단 몇 줄의 코드로 강력한 언어 기능을 추가할 수 있습니다.
 
-## Getting Started
+## 시작하기
 
-Most AI APIs follow a similar pattern:
+대부분의 AI API는 비슷한 패턴을 따릅니다:
 
-1. Authenticate with an API key
-2. Send a prompt or messages array
-3. Receive a generated response
+1. API 키로 인증
+2. 프롬프트 또는 메시지 배열 전송
+3. 생성된 응답 수신
 
-## Prompt Engineering
+## 프롬프트 엔지니어링
 
-The quality of your output depends heavily on your input. Good prompts are:
+출력의 품질은 입력에 크게 의존합니다. 좋은 프롬프트는:
 
-- **Specific** about the desired format and content
-- **Contextualized** with relevant background
-- **Constrained** to prevent unwanted outputs
+- 원하는 형식과 내용에 대해 **구체적**
+- 관련 배경으로 **맥락화**됨
+- 원치 않는 출력을 방지하도록 **제약**됨
 
-## Streaming Responses
+## 스트리밍 응답
 
-For better UX, stream responses token by token instead of waiting for the full response. This makes the AI feel more responsive and natural.
+더 나은 UX를 위해, 전체 응답을 기다리는 대신 토큰 단위로 스트리밍하세요. 이는 AI를 더 반응적이고 자연스럽게 느끼게 만듭니다.
 
-## Error Handling
+## 에러 처리
 
-AI APIs can fail in unique ways:
+AI API는 독특한 방식으로 실패할 수 있습니다:
 
-- Rate limiting
-- Token limits exceeded
-- Safety filters triggered
-- Model overloaded
+- 속도 제한
+- 토큰 한도 초과
+- 안전 필터 트리거
+- 모델 과부하
 
-Build robust error handling and fallbacks.
+견고한 에러 처리와 폴백을 구축하세요.
 
-## Cost Optimization
+## 비용 최적화
 
-API calls add up quickly. Optimize by:
+API 호출은 빠르게 누적됩니다. 다음을 통해 최적화하세요:
 
-- Caching common responses
-- Using smaller models when appropriate
-- Limiting max tokens in responses
-- Batching requests when possible
+- 공통 응답 캐싱
+- 적절한 경우 더 작은 모델 사용
+- 응답의 최대 토큰 제한
+- 가능할 때 요청 배칭
 
-## Responsible Use
+## 책임감 있는 사용
 
-Always consider the implications of AI-generated content. Include human review for critical outputs and be transparent with users about AI involvement.
+항상 AI 생성 콘텐츠의 영향을 고려하세요. 중요한 출력에 대해서는 사람의 검토를 포함하고, AI 관련 사항에 대해 사용자에게 투명하게 공개하세요.
     `.trim(),
   },
 }
@@ -246,7 +246,7 @@ export default async function BlogPost({
           className="inline-flex items-center gap-2 text-sm text-muted hover:text-foreground transition-colors mb-8"
         >
           <ArrowLeft className="w-4 h-4" />
-          Back to blog
+          블로그로 돌아가기
         </Link>
 
         <header className="mb-12">

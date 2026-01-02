@@ -1,21 +1,26 @@
+"use client"
+
 import { Header } from "@/components/header"
 import { ProjectShowcase } from "@/components/project-showcase"
+import { TextRotate } from "@/components/text-rotate"
+import { AnimatedText } from "@/components/animated-text"
+import { motion, LayoutGroup } from "framer-motion"
 import { ArrowUpRight } from "lucide-react"
 import Link from "next/link"
 
 const recentPosts = [
   {
-    title: "Building a Design System from Scratch",
+    title: "처음부터 디자인 시스템 구축하기",
     date: "2024.12.28",
     slug: "building-design-system",
   },
   {
-    title: "The Art of Minimal Interfaces",
+    title: "미니멀 인터페이스의 예술",
     date: "2024.12.15",
     slug: "minimal-interfaces",
   },
   {
-    title: "React Server Components Deep Dive",
+    title: "React 서버 컴포넌트 심층 분석",
     date: "2024.12.01",
     slug: "react-server-components",
   },
@@ -28,13 +33,27 @@ export default function Home() {
 
       {/* Hero Section */}
       <section className="w-full max-w-2xl mx-auto px-6 py-16">
-        <h1 className="font-serif text-4xl md:text-5xl tracking-tight leading-tight mb-6">
-          Developer &{" "}
-          <span className="italic">Designer</span>
+        <h1 className="font-serif text-4xl md:text-5xl tracking-tight leading-tight mb-6 flex flex-wrap items-center gap-2">
+          <span>make it</span>
+          <LayoutGroup>
+            <motion.span
+              layout
+              transition={{ type: "spring", damping: 20, stiffness: 400 }}
+              className="inline-flex bg-accent text-white px-3 py-1 rounded-lg"
+            >
+              <TextRotate
+                texts={["pop", "snappy", "flow", "simple", "click", "yesterday", "right"]}
+                mainClassName="overflow-hidden"
+                staggerFrom="last"
+                staggerDuration={0.02}
+                rotationInterval={2500}
+                transition={{ type: "spring", damping: 20, stiffness: 400 }}
+              />
+            </motion.span>
+          </LayoutGroup>
         </h1>
         <p className="text-muted text-lg leading-relaxed max-w-xl">
-          Building thoughtful digital experiences with code and design.
-          Currently exploring the intersection of AI and creative tools.
+          바이브코딩으로 원하는 걸 빠르게 실현하는 디자이너
         </p>
       </section>
 
@@ -42,13 +61,13 @@ export default function Home() {
       <section className="w-full max-w-2xl mx-auto px-6 py-8">
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-muted text-sm font-medium tracking-wide uppercase">
-            Recent Writing
+            최근 글
           </h2>
           <Link
             href="/blog"
             className="text-sm text-muted hover:text-foreground transition-colors flex items-center gap-1"
           >
-            View all
+            전체 보기
             <ArrowUpRight className="w-3 h-3" />
           </Link>
         </div>
@@ -60,9 +79,10 @@ export default function Home() {
               href={`/blog/${post.slug}`}
               className="group block"
             >
-              <div className="py-4 border-t border-border flex items-center justify-between gap-4 transition-colors hover:bg-secondary/30 -mx-4 px-4 rounded">
-                <span className="text-foreground group-hover:underline underline-offset-4">
+              <div className="py-4 border-t border-border flex items-center justify-between gap-4 -mx-4 px-4 rounded">
+                <span className="text-foreground relative">
                   {post.title}
+                  <span className="absolute left-0 -bottom-0.5 h-0.5 bg-accent w-0 group-hover:w-full transition-all duration-300 ease-out" />
                 </span>
                 <span className="text-xs font-mono text-muted tabular-nums shrink-0">
                   {post.date}
@@ -88,7 +108,7 @@ export default function Home() {
               rel="noopener noreferrer"
               className="hover:text-foreground transition-colors"
             >
-              GitHub
+              깃허브
             </a>
             <a
               href="https://twitter.com"
@@ -96,13 +116,13 @@ export default function Home() {
               rel="noopener noreferrer"
               className="hover:text-foreground transition-colors"
             >
-              Twitter
+              트위터
             </a>
             <a
               href="mailto:hello@example.com"
               className="hover:text-foreground transition-colors"
             >
-              Email
+              이메일
             </a>
           </div>
         </div>

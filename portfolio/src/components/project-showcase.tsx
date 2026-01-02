@@ -14,29 +14,29 @@ interface Project {
 
 const projects: Project[] = [
   {
-    title: "Lumina",
-    description: "AI-powered design system generator.",
+    title: "루미나",
+    description: "AI 기반 디자인 시스템 생성기.",
     year: "2024",
     link: "#",
     image: "https://plus.unsplash.com/premium_photo-1723489242223-865b4a8cf7b8?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   },
   {
-    title: "Flux",
-    description: "Real-time collaboration for creative teams.",
+    title: "플럭스",
+    description: "크리에이티브 팀을 위한 실시간 협업 도구.",
     year: "2024",
     link: "#",
     image: "https://images.unsplash.com/photo-1530435460869-d13625c69bbf?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   },
   {
-    title: "Prism",
-    description: "Color palette extraction from any image.",
+    title: "프리즘",
+    description: "이미지에서 컬러 팔레트 추출.",
     year: "2023",
     link: "#",
     image: "https://i.pinimg.com/1200x/99/ca/5c/99ca5cf82cf12df8801f7b2bef38d325.jpg",
   },
   {
-    title: "Vertex",
-    description: "3D modeling toolkit for the web.",
+    title: "버텍스",
+    description: "웹을 위한 3D 모델링 툴킷.",
     year: "2023",
     link: "#",
     image: "https://i.pinimg.com/736x/7c/15/39/7c1539cf7ff0207cb49ce0d338de1e5f.jpg",
@@ -95,7 +95,7 @@ export function ProjectShowcase() {
 
   return (
     <section ref={containerRef} onMouseMove={handleMouseMove} className="relative w-full max-w-2xl mx-auto px-6 py-16">
-      <h2 className="text-muted text-sm font-medium tracking-wide uppercase mb-8">Selected Work</h2>
+      <h2 className="text-muted text-sm font-medium tracking-wide uppercase mb-8">주요 작업</h2>
 
       <div
         className="pointer-events-none fixed z-50 overflow-hidden rounded-xl shadow-2xl"
@@ -147,17 +147,13 @@ export function ProjectShowcase() {
               <div className="relative flex items-start justify-between gap-4">
                 <div className="flex-1 min-w-0">
                   <div className="inline-flex items-center gap-2">
-                    <h3 className="text-foreground font-medium text-lg tracking-tight">
-                      <span className="relative">
-                        {project.title}
-                        <span
-                          className={`
-                            absolute left-0 -bottom-0.5 h-px bg-foreground
-                            transition-all duration-300 ease-out
-                            ${hoveredIndex === index ? "w-full" : "w-0"}
-                          `}
-                        />
-                      </span>
+                    <h3 className="text-foreground font-medium text-lg tracking-tight relative">
+                      {project.title}
+                      <span
+                        className={`absolute left-0 -bottom-0.5 h-0.5 bg-accent transition-all duration-300 ease-out ${
+                          hoveredIndex === index ? "w-full" : "w-0"
+                        }`}
+                      />
                     </h3>
 
                     <ArrowUpRight

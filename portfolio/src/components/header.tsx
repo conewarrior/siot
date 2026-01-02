@@ -2,12 +2,13 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { NavLink } from "@/components/nav-link"
 
 const navItems = [
-  { href: "/", label: "Home" },
-  { href: "/blog", label: "Blog" },
-  { href: "/projects", label: "Projects" },
-  { href: "/about", label: "About" },
+  { href: "/", label: "홈" },
+  { href: "/blog", label: "블로그" },
+  { href: "/projects", label: "프로젝트" },
+  { href: "/about", label: "소개" },
 ]
 
 export function Header() {
@@ -23,28 +24,16 @@ export function Header() {
           siot
         </Link>
 
-        <ul className="flex items-center gap-6">
+        <ul className="flex items-center gap-2">
           {navItems.map((item) => {
             const isActive = pathname === item.href ||
               (item.href !== "/" && pathname.startsWith(item.href))
 
             return (
               <li key={item.href}>
-                <Link
-                  href={item.href}
-                  className={`
-                    text-sm tracking-wide transition-colors relative
-                    ${isActive
-                      ? "text-foreground"
-                      : "text-muted hover:text-foreground"
-                    }
-                  `}
-                >
+                <NavLink href={item.href} isActive={isActive}>
                   {item.label}
-                  {isActive && (
-                    <span className="absolute -bottom-1 left-0 w-full h-px bg-foreground" />
-                  )}
-                </Link>
+                </NavLink>
               </li>
             )
           })}

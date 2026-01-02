@@ -1,27 +1,10 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-const instrumentSerif = Instrument_Serif({
-  variable: "--font-instrument-serif",
-  subsets: ["latin"],
-  weight: "400",
-  style: ["normal", "italic"],
-});
+import { BackgroundBeamsWithCollision } from "@/components/background-beams";
 
 export const metadata: Metadata = {
-  title: "Portfolio",
-  description: "Developer & Designer Portfolio",
+  title: "포트폴리오",
+  description: "개발자 & 디자이너 포트폴리오",
 };
 
 export default function RootLayout({
@@ -31,10 +14,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} ${instrumentSerif.variable} antialiased noise-overlay`}
-      >
-        {children}
+      <head>
+        <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"
+        />
+      </head>
+      <body className="antialiased">
+        <BackgroundBeamsWithCollision>{children}</BackgroundBeamsWithCollision>
       </body>
     </html>
   );
