@@ -19,6 +19,7 @@ export interface Project {
   title: string
   description: string
   year: string
+  date?: string
   link: string
   image: string
   tech: string[]
@@ -38,32 +39,54 @@ export function getBlogPosts(): BlogPost[] {
     return []
   }
 
-  const files = fs.readdirSync(blogDir).filter((file) => file.endsWith(".mdx"))
+  const entries = fs.readdirSync(blogDir, { withFileTypes: true })
+  const posts: BlogPost[] = []
 
-  const posts = files
-    .map((filename) => {
-      const filePath = path.join(blogDir, filename)
-      const fileContents = fs.readFileSync(filePath, "utf8")
-      const { data, content } = matter(fileContents)
+  for (const entry of entries) {
+    let filePath: string
+    let slug: string
 
-      return {
-        slug: filename.replace(/\.mdx$/, ""),
-        title: data.title || "",
-        description: data.description || "",
-        date: data.date || "",
-        category: data.category || "",
-        published: data.published !== false,
-        content,
-      }
+    if (entry.isDirectory()) {
+      // 폴더 구조: blog/slug/index.mdx
+      filePath = path.join(blogDir, entry.name, "index.mdx")
+      slug = entry.name
+    } else if (entry.name.endsWith(".mdx")) {
+      // 기존 구조: blog/slug.mdx
+      filePath = path.join(blogDir, entry.name)
+      slug = entry.name.replace(/\.mdx$/, "")
+    } else {
+      continue
+    }
+
+    if (!fs.existsSync(filePath)) continue
+
+    const fileContents = fs.readFileSync(filePath, "utf8")
+    const { data, content } = matter(fileContents)
+
+    if (data.published === false) continue
+
+    posts.push({
+      slug,
+      title: data.title || "",
+      description: data.description || "",
+      date: data.date || "",
+      category: data.category || "",
+      published: data.published !== false,
+      content,
     })
-    .filter((post) => post.published)
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+  }
 
-  return posts
+  return posts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 }
 
 export function getBlogPost(slug: string): BlogPost | null {
-  const filePath = path.join(contentDirectory, "blog", `${slug}.mdx`)
+  // 폴더 구조 먼저 확인: blog/slug/index.mdx
+  let filePath = path.join(contentDirectory, "blog", slug, "index.mdx")
+
+  // 폴더 구조가 없으면 기존 구조 확인: blog/slug.mdx
+  if (!fs.existsSync(filePath)) {
+    filePath = path.join(contentDirectory, "blog", `${slug}.mdx`)
+  }
 
   if (!fs.existsSync(filePath)) {
     return null
@@ -103,6 +126,7 @@ export function getProjects(): Project[] {
         title: data.title || "",
         description: data.description || "",
         year: data.year || "",
+        date: data.date || "",
         link: data.link || "#",
         image: data.image || "",
         tech: data.tech || [],
@@ -110,7 +134,13 @@ export function getProjects(): Project[] {
         content,
       }
     })
-    .sort((a, b) => parseInt(b.year) - parseInt(a.year))
+    .sort((a, b) => {
+      // date가 있으면 date로 정렬, 없으면 year로 정렬
+      if (a.date && b.date) {
+        return new Date(b.date).getTime() - new Date(a.date).getTime()
+      }
+      return parseInt(b.year) - parseInt(a.year)
+    })
 
   return projects
 }
@@ -130,6 +160,7 @@ export function getProject(slug: string): Project | null {
     title: data.title || "",
     description: data.description || "",
     year: data.year || "",
+    date: data.date || "",
     link: data.link || "#",
     image: data.image || "",
     tech: data.tech || [],
