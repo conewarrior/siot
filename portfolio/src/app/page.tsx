@@ -36,7 +36,7 @@ export default function Home() {
               href={`/blog/${post.slug}`}
               className="group block"
             >
-              <div className="py-4 border-t border-border flex items-center justify-between gap-4 -mx-4 px-4 rounded">
+              <div className="py-4 border-t border-border flex items-center justify-between gap-4 -mx-4 px-4">
                 <span className="text-foreground relative after:absolute after:bg-accent after:bottom-0 after:left-0 after:h-0.5 after:w-full after:origin-bottom-right after:scale-x-0 group-hover:after:origin-bottom-left group-hover:after:scale-x-100 after:transition-transform after:ease-in-out after:duration-300">
                   {post.title}
                 </span>

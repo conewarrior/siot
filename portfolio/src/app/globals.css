@@ -1,53 +1,78 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #0a0a0a;
-  --muted: #737373;
-  --muted-foreground: #a3a3a3;
-  --border: #e5e5e5;
-  --secondary: #f5f5f5;
-  --accent: #F97316;
-  --accent-light: #FB923C;
-  --accent-lighter: #FDBA74;
-  --accent-dark: #EA580C;
-  --accent-ripple: rgba(249, 115, 22, 0.3);
-  --accent-hover: rgba(249, 115, 22, 0.4);
-  --accent-glow: rgba(249, 115, 22, 0.15);
-}
+@custom-variant dark (&:is(.dark *));
 
-.dark {
-  --background: #0a0a0a;
-  --foreground: #fafafa;
-  --muted: #a3a3a3;
-  --muted-foreground: #737373;
-  --border: #262626;
-  --secondary: #171717;
-  --accent: #FB923C;
-  --accent-light: #FDBA74;
-  --accent-lighter: #FED7AA;
-  --accent-dark: #F97316;
-  --accent-ripple: rgba(251, 146, 60, 0.3);
-  --accent-hover: rgba(251, 146, 60, 0.4);
-  --accent-glow: rgba(251, 146, 60, 0.15);
-}
-
+/*
+ * Tailwind Theme Configuration
+ * --color-* 변수는 @theme에서 등록만 하고, 실제 값은 :root와 html.dark에서 정의
+ */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-border: var(--border);
-  --color-secondary: var(--secondary);
-  --color-accent: var(--accent);
-  --color-accent-light: var(--accent-light);
-  --color-accent-lighter: var(--accent-lighter);
-  --color-accent-dark: var(--accent-dark);
+  --color-background: initial;
+  --color-foreground: initial;
+  --color-muted: initial;
+  --color-muted-foreground: initial;
+  --color-border: initial;
+  --color-secondary: initial;
+  --color-accent: initial;
+  --color-accent-light: initial;
+  --color-accent-lighter: initial;
+  --color-accent-dark: initial;
   --font-sans: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
   --font-serif: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
 }
 
+/* ========================
+   Light Mode (Default)
+   ======================== */
+:root {
+  /* Core Colors */
+  --color-background: #ffffff;
+  --color-foreground: #0a0a0a;
+  --color-muted: #737373;
+  --color-muted-foreground: #a3a3a3;
+  --color-border: #e5e5e5;
+  --color-secondary: #f5f5f5;
+
+  /* Accent Colors (Orange) */
+  --color-accent: #F97316;
+  --color-accent-light: #FB923C;
+  --color-accent-lighter: #FDBA74;
+  --color-accent-dark: #EA580C;
+
+  /* Special Effects */
+  --accent-ripple: rgba(249, 115, 22, 0.3);
+  --accent-hover: rgba(249, 115, 22, 0.4);
+  --accent-glow: rgba(249, 115, 22, 0.15);
+}
+
+/* ========================
+   Dark Mode
+   ======================== */
+html.dark {
+  /* Core Colors */
+  --color-background: #0a0a0a;
+  --color-foreground: #fafafa;
+  --color-muted: #a3a3a3;
+  --color-muted-foreground: #737373;
+  --color-border: #262626;
+  --color-secondary: #171717;
+
+  /* Accent Colors (Lighter Orange for dark bg) */
+  --color-accent: #FB923C;
+  --color-accent-light: #FDBA74;
+  --color-accent-lighter: #FED7AA;
+  --color-accent-dark: #F97316;
+
+  /* Special Effects */
+  --accent-ripple: rgba(251, 146, 60, 0.3);
+  --accent-hover: rgba(251, 146, 60, 0.4);
+  --accent-glow: rgba(251, 146, 60, 0.15);
+}
+
+/* ========================
+   Base Styles
+   ======================== */
 * {
   box-sizing: border-box;
 }
@@ -57,16 +82,117 @@ html {
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background-color: var(--color-background);
+  color: var(--color-foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 ::selection {
-  background: var(--foreground);
-  color: var(--background);
+  background: var(--color-foreground);
+  color: var(--color-background);
+}
+
+/* ========================
+   Theme Transition
+   ======================== */
+html.dark body,
+html:not(.dark) body {
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* ========================
+   Custom Utility Overrides
+   - Ensure CSS variables are used for theme-aware colors
+   ======================== */
+@layer utilities {
+  /* Background Colors */
+  .bg-background {
+    background-color: var(--color-background) !important;
+  }
+  .bg-secondary {
+    background-color: var(--color-secondary) !important;
+  }
+  .bg-accent {
+    background-color: var(--color-accent) !important;
+  }
+
+  /* Text Colors */
+  .text-foreground {
+    color: var(--color-foreground) !important;
+  }
+  .text-muted {
+    color: var(--color-muted) !important;
+  }
+  .text-muted-foreground {
+    color: var(--color-muted-foreground) !important;
+  }
+  .text-accent {
+    color: var(--color-accent) !important;
+  }
+
+  /* Border Colors */
+  .border-border {
+    border-color: var(--color-border) !important;
+  }
+  .border-accent {
+    border-color: var(--color-accent) !important;
+  }
+
+  /* Gradient Colors (for beams) */
+  .from-accent {
+    --tw-gradient-from: var(--color-accent) !important;
+  }
+  .via-accent-light {
+    --tw-gradient-via: var(--color-accent-light) !important;
+  }
+  .to-accent-light {
+    --tw-gradient-to: var(--color-accent-light) !important;
+  }
+}
+
+/* ========================
+   Hover State Fixes
+   ======================== */
+.hover\:text-foreground:hover {
+  color: var(--color-foreground) !important;
+}
+
+/* Menu backgrounds */
+.bg-foreground\/10 {
+  background-color: color-mix(in srgb, var(--color-foreground) 10%, transparent) !important;
+}
+.hover\:bg-foreground\/10:hover {
+  background-color: color-mix(in srgb, var(--color-foreground) 10%, transparent) !important;
+}
+html.dark .dark\:bg-white\/15 {
+  background-color: rgba(255, 255, 255, 0.15) !important;
+}
+html.dark .dark\:hover\:bg-white\/20:hover {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* ========================
+   Pseudo-element Color Fixes
+   - after: and before: need explicit variable references
+   ======================== */
+.after\:bg-accent::after {
+  background-color: var(--color-accent) !important;
+}
+
+/* Group hover states */
+.group:hover .group-hover\:text-foreground {
+  color: var(--color-foreground) !important;
+}
+
+/* Group hover for underline animation */
+.group:hover .group-hover\:after\:scale-x-100::after {
+  transform: scaleX(1) !important;
+}
+.group:hover .group-hover\:after\:origin-bottom-left::after {
+  transform-origin: bottom left !important;
 }
 
 /* Subtle noise texture overlay */

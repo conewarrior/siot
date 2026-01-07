@@ -5,11 +5,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-npm run dev      # Start development server (localhost:3000)
-npm run build    # Production build
-npm run start    # Start production server
-npm run lint     # Run ESLint
+npm run dev              # Start development server (localhost:3000)
+npm run build            # Production build
+npm run start            # Start production server
+npm run lint             # Run ESLint
+npm run upload-images    # Upload local images to GitHub + jsDelivr CDN
+npm run upload-images:dry  # Preview image uploads without executing
 ```
+
+Working directory is `portfolio/`. Run `npm install` before first use.
 
 ## Architecture
 
@@ -132,3 +136,22 @@ Blog posts are pre-rendered at build time via `generateStaticParams()` in `[slug
 ### Korean Content
 
 Site content is in Korean. See `docs/planning/roadmap.md` for development status.
+
+## Blog Writing
+
+Use the `/blog-writer` skill for writing blog posts. Key rules:
+- **Location**: `docs/content/blog/[slug].mdx`
+- **Tone**: 평서체 (plain form, no honorifics: "~했다" O, "~했습니다" X)
+- **Structure**: Problem → Before → Journey → After → Takeaway
+- **Slug**: English kebab-case (e.g., `github-api-claude-commands.mdx`)
+
+## Image CDN
+
+The `upload-images` script uploads local images referenced in MDX to GitHub and converts URLs to jsDelivr CDN:
+- Images stored in `images` branch (separate from `main`)
+- CDN URL format: `https://cdn.jsdelivr.net/gh/conewarrior/siot@images/uploads/[filename]`
+- Requires `GITHUB_TOKEN` environment variable
+
+## Deployment
+
+Deployed on Vercel at https://siot-portfolio.vercel.app

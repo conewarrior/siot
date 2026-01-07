@@ -55,16 +55,16 @@ export function Header() {
                 href={item.href}
                 className={`
                   relative rounded-md px-3 py-1.5 text-sm font-medium
-                  text-foreground outline-ring transition
+                  text-foreground outline-ring transition-all duration-200
                   focus-visible:outline-2
-                  ${isActive(item.href) ? "" : "hover:text-foreground/60"}
+                  ${isActive(item.href) ? "" : "hover:bg-foreground/10 dark:hover:bg-white/20"}
                 `}
                 style={{ WebkitTapHighlightColor: "transparent" }}
               >
                 {isActive(item.href) && (
                   <motion.span
                     layoutId="nav-bubble"
-                    className="absolute inset-0 -z-10 bg-secondary"
+                    className="absolute inset-0 -z-10 bg-foreground/10 dark:bg-white/15"
                     style={{ borderRadius: 6 }}
                     transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                   />
