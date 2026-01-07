@@ -226,3 +226,98 @@ claude-toolkit/
 ```
 
 결국 둘 다 "로컬 상태에 의존하지 않는다"는 점에서 같다. 상황에 따라 편한 걸 쓰면 된다.
+
+## 플러그인의 네임스페이스 문제
+
+마켓플레이스로 플러그인을 설치하고 나서 불편한 점을 발견했다.
+
+```bash
+/toolkit-commands:install-command cleanup-ui  # 접두사 필수
+```
+
+플러그인으로 설치하면 `플러그인명:커맨드명` 형식으로만 호출할 수 있다. `/install-command`만 치고 싶은데, `/toolkit-commands:install-command`를 쳐야 한다.
+
+이건 Claude Code 플러그인 시스템의 설계다. 여러 플러그인이 같은 이름의 커맨드를 가질 수 있으니까 네임스페이스로 구분하는 것이다. 합리적이긴 한데, 자주 쓰는 커맨드에 매번 긴 접두사를 붙이기는 귀찮다.
+
+### 해결: 전역 commands 폴더
+
+Claude Code에서 커맨드를 인식하는 경로는 두 가지다:
+
+| 경로 | 호출 방식 |
+|------|-----------|
+| 플러그인 (`~/.claude/plugins/...`) | `플러그인명:커맨드명` |
+| 전역 commands (`~/.claude/commands/`) | `커맨드명` |
+
+플러그인의 커맨드 파일들을 전역 commands 폴더에 복사하면, 접두사 없이 바로 쓸 수 있다.
+
+```bash
+# 플러그인 커맨드들을 전역으로 복사
+cp ~/.claude/plugins/cache/claude-toolkit-marketplace/toolkit-commands/1.0.0/commands/*.md \
+   ~/.claude/commands/
+```
+
+이제 `/install-command`, `/publish-skill` 등을 바로 호출할 수 있다.
+
+### /global-plugin 커맨드
+
+매번 수동으로 복사하기 귀찮아서 `/global-plugin` 커맨드를 만들었다.
+
+```bash
+/global-plugin                      # 설치된 플러그인 목록
+/global-plugin toolkit-commands     # 해당 플러그인을 전역으로 설치
+```
+
+플러그인이 업데이트되면 다시 `/global-plugin`을 실행해서 최신 버전을 전역에 반영할 수 있다.
+
+결국 세 가지 설치 방식이 생겼다:
+
+| 방식 | 용도 | 접두사 |
+|------|------|--------|
+| `/install-command` | 개별 커맨드 설치 | 없음 |
+| `/plugin install` | 플러그인 전체 설치 | 필요 |
+| `/global-plugin` | 플러그인 → 전역 승격 | 없음 |
+
+개인적으로는 플러그인으로 설치한 뒤 바로 `/global-plugin`으로 전역에 복사하는 게 가장 편하다. 마켓플레이스의 버전 관리 기능도 쓰면서, 호출할 때는 짧은 이름을 쓸 수 있으니까.
+
+## 전역에서 만든 커맨드도 퍼블리시하기
+
+`/global-plugin`으로 전역에 커맨드를 설치하고 나면, 자연스럽게 전역 폴더(`~/.claude/commands/`)에서 커맨드를 수정하게 된다.
+
+문제는 `/publish-command`가 원래 **프로젝트 로컬 폴더만** 확인했다는 점이다.
+
+```bash
+# 예전 동작
+/publish-command cleanup-ui
+# → .claude/commands/cleanup-ui.md 만 확인
+# → 없으면 에러
+```
+
+전역에서 수정한 커맨드를 퍼블리시하려면, 일부러 프로젝트 폴더에 복사해야 했다. 번거롭다.
+
+### 해결: 로컬 → 전역 순서로 탐색
+
+`/publish-command`와 `/publish-skill`을 수정해서, 로컬에 없으면 전역을 확인하도록 했다.
+
+```
+탐색 순서:
+1. .claude/commands/$name.md (프로젝트 로컬)
+2. ~/.claude/commands/$name.md (전역)
+```
+
+스킬도 마찬가지:
+
+```
+탐색 순서:
+1. .claude/skills/$name/ (프로젝트 로컬)
+2. ~/.claude/skills/$name/ (전역)
+```
+
+이제 어디서 수정했든 상관없이 바로 퍼블리시할 수 있다:
+
+```bash
+# 전역에서 수정한 커맨드도 바로 퍼블리시
+/publish-command cleanup-ui
+# → ~/.claude/commands/cleanup-ui.md 찾아서 업로드
+```
+
+작은 수정이었지만, 전역에서 커맨드를 관리하는 워크플로우가 훨씬 자연스러워졌다.
