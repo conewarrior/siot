@@ -1,0 +1,122 @@
+---
+title: "jsDelivr CDN으로 블로그 이미지 자동 업로드하기"
+description: "GitHub에 이미지를 올리고 무료 CDN으로 서빙하는 자동화 스크립트"
+date: "2025-01-07"
+category: "개발"
+published: true
+---
+
+## 블로그에 이미지 넣기가 고민이었다
+
+블로그 글을 쓰다 보면 이미지가 필요할 때가 있다. 스크린샷이나 다이어그램 같은 것들.
+
+근데 이미지를 어디에 저장할지가 고민이었다. `public/images/`에 넣으면 간단하긴 한데, 이미지가 쌓이면 리포지토리 용량이 커진다. 특히 고해상도 스크린샷이 많아지면.
+
+## 외부 서비스를 쓸까?
+
+이미지 호스팅 서비스들을 찾아봤다.
+
+| 서비스 | 장점 | 단점 |
+|--------|------|------|
+| Cloudinary | 이미지 최적화 자동 | 설정 필요 |
+| imgBB | 완전 무료 | 서비스 안정성? |
+| Supabase Storage | 이미 쓰고 있음 | 추가 설정 필요 |
+
+다 괜찮은데, GitHub 리포에 이미지를 올리고 그냥 URL로 쓰면 안 되나 싶었다. 별도 서비스 없이 GitHub 하나로 관리하면 편할 것 같았다.
+
+## GitHub Raw URL은 CDN이 아니었다
+
+처음엔 GitHub raw URL을 쓰면 되겠다 싶었다.
+
+```
+https://raw.githubusercontent.com/user/repo/branch/image.png
+```
+
+근데 이건 CDN이 아니다. 캐싱이 약하고, 대역폭 제한도 있고, 남용하면 차단될 수도 있다. 프로덕션 용도로는 비추천이더라.
+
+## jsDelivr를 알게 됐다
+
+찾아보니 **jsDelivr**라는 서비스가 있었다. GitHub 파일을 진짜 CDN으로 서빙해주는 서비스다.
+
+```
+# GitHub Raw (CDN 아님)
+https://raw.githubusercontent.com/user/repo/branch/path/image.png
+
+# jsDelivr (진짜 CDN)
+https://cdn.jsdelivr.net/gh/user/repo@branch/path/image.png
+```
+
+URL 형식만 바꾸면 Cloudflare + Fastly + Bunny 백엔드를 거쳐서 전세계 CDN으로 서빙된다. 그리고 **완전 무료**다. 대역폭 제한도 없고, 상업적 용도도 OK.
+
+## 자동화 스크립트를 만들었다
+
+MDX 파일에서 로컬 이미지를 찾아서 GitHub에 업로드하고, URL을 자동으로 바꿔주는 스크립트를 만들었다.
+
+### 작동 방식
+
+1. `docs/content/` 내 MDX 파일 스캔
+2. 로컬 이미지 경로 찾기: `![alt](./images/pic.png)`
+3. GitHub `images` 브랜치에 업로드
+4. jsDelivr CDN URL로 자동 변환
+
+```bash
+# 미리보기 (실제 업로드 안 함)
+npm run upload-images:dry
+
+# 실제 업로드
+npm run upload-images
+```
+
+### 변환 결과
+
+```markdown
+# Before
+![스크린샷](./screenshot.png)
+
+# After
+![스크린샷](https://cdn.jsdelivr.net/gh/conewarrior/siot@images/uploads/1234567890-screenshot.png)
+```
+
+### 핵심 코드
+
+GitHub API로 파일을 업로드하는 부분이다:
+
+```javascript
+const response = await fetch(
+  `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
+  {
+    method: 'PUT',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      message: `Upload image: ${fileName}`,
+      content: base64Content,  // 이미지를 base64로 인코딩
+      branch: 'images',  // 이미지 전용 브랜치
+    }),
+  }
+);
+
+// jsDelivr CDN URL 생성
+const url = `https://cdn.jsdelivr.net/gh/${owner}/${repo}@images/${path}`;
+```
+
+## 이미지 전용 브랜치를 쓰는 이유
+
+`main` 브랜치에 이미지를 넣으면 결국 리포 용량이 커진다. 그래서 `images`라는 별도 브랜치를 만들어서 거기에만 이미지를 저장한다.
+
+- `main` 브랜치: 코드만 (가벼움)
+- `images` 브랜치: 이미지만 (따로 관리)
+
+클론할 때 `main`만 받으면 이미지 용량을 신경 안 써도 된다.
+
+## 결국 무료로 CDN을 쓰게 됐다
+
+정리하면:
+
+- **저장소**: GitHub (무료)
+- **CDN**: jsDelivr (무료)
+- **자동화**: 스크립트 한 번 실행
+
+외부 서비스 가입 없이, GitHub 계정만 있으면 이미지 CDN이 생긴 거다. 작은 개인 블로그에는 이 정도면 충분하다.

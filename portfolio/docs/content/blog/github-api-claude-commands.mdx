@@ -1,0 +1,228 @@
+---
+title: "GitHub API로 Claude Code 커맨드 관리하기"
+description: "로컬 클론 없이 커맨드를 설치하고 배포하는 워크플로우"
+date: "2025-01-06"
+category: "개발"
+published: true
+---
+
+## 여러 컴퓨터에서 같은 커맨드를 쓰고 싶었다
+
+Claude Code를 쓰다 보면 자주 쓰는 작업을 커맨드로 만들게 된다. `/cleanup-ui`처럼 UI 코드 정리하는 커맨드, `/commit` 같은 git 워크플로우 커맨드 등등.
+
+문제는 이런 커맨드들을 여러 컴퓨터에서 똑같이 쓰고 싶을 때였다. 집 컴퓨터에서 만든 커맨드를 회사에서도 쓰고 싶은데, 매번 파일을 복사하기는 귀찮았다.
+
+## 처음에는 GitHub 저장소를 클론해서 썼다
+
+`claude-toolkit`이라는 저장소를 만들어서 커맨드들을 모아뒀다.
+
+```
+claude-toolkit/
+├── commands/
+│   ├── cleanup-ui.md
+│   ├── install-command.md
+│   ├── install-skill.md
+│   ├── install-agent.md
+│   └── ...
+├── skills/
+│   ├── pdf/
+│   ├── pptx/
+│   ├── frontend-design/
+│   └── ...
+├── hooks/
+├── agents/
+└── README.md
+```
+
+새 컴퓨터에서 커맨드를 설치하려면:
+
+1. 저장소를 클론한다
+2. 원하는 커맨드 파일을 찾는다
+3. `.claude/commands/`에 복사한다
+
+새 커맨드를 만들어서 공유하려면:
+
+1. 로컬 저장소로 이동한다
+2. 파일을 복사한다
+3. git add, commit, push
+
+```bash
+# 기존: 저장소 클론 후 수동 복사
+cd ~/dev/claude-toolkit
+git pull origin main
+cp commands/cleanup-ui.md ~/my-project/.claude/commands/
+```
+
+동작은 하는데, 뭔가 번거로웠다. 특히 저장소를 클론해둔 경로를 기억해야 하고, 항상 그 폴더가 최신 상태인지도 신경 써야 했다.
+
+## `gh` CLI가 GitHub API를 지원한다는 걸 알게 됐다
+
+어느 날 Claude에게 "GitHub API로 파일을 직접 가져올 수 있어?"라고 물어봤다.
+
+답은 "그렇다"였다. `gh` CLI가 GitHub API를 래핑해서 제공하고 있었다.
+
+```bash
+# 파일 내용 가져오기
+gh api repos/owner/repo/contents/path/to/file.md \
+  --jq '.content' | base64 -d
+
+# 파일 업로드하기
+gh api repos/owner/repo/contents/path/to/file.md \
+  -X PUT \
+  -f message="Add file" \
+  -f content="$(base64 < local-file.md)"
+```
+
+이거면 로컬에 저장소를 클론해두지 않아도 되겠다 싶었다.
+
+## 커맨드 4개로 워크플로우를 만들었다
+
+GitHub API를 활용해서 커맨드 관리 시스템을 만들었다.
+
+### 설치 (GitHub → 로컬)
+
+| 커맨드 | 설명 |
+|--------|------|
+| `/install-command` | 프로젝트에 커맨드 설치 |
+| `/install-skill` | 프로젝트에 스킬 설치 + hook 등록 |
+| `/global-command` | 전역(`~/.claude/`)에 커맨드 설치 |
+| `/global-skill` | 전역에 스킬 설치 |
+
+### 배포 (로컬 → GitHub)
+
+| 커맨드 | 설명 |
+|--------|------|
+| `/publish-command` | 커맨드를 GitHub에 업로드 |
+| `/publish-skill` | 스킬 폴더를 GitHub에 업로드 |
+
+```
+skills/
+├── pdf/
+│   └── SKILL.md
+├── pptx/
+│   └── SKILL.md
+├── frontend-design/
+│   └── SKILL.md
+└── ...
+```
+
+이제 새 컴퓨터에서 커맨드를 설치하려면:
+
+```bash
+/install-command cleanup-ui
+```
+
+끝이다. 저장소 클론도, 경로 찾기도, 파일 복사도 필요 없다.
+
+새 커맨드를 공유하려면:
+
+```bash
+/publish-command my-new-command
+```
+
+현재 프로젝트의 `.claude/commands/my-new-command.md`가 바로 GitHub에 올라간다.
+
+## 잠깐, 마켓플레이스도 있잖아?
+
+이 글을 쓰다가 문득 생각났다. Claude Code에는 공식 플러그인 마켓플레이스가 있다.
+
+```bash
+# 마켓플레이스 추가
+/plugin marketplace add owner/repo
+
+# 플러그인 설치
+/plugin install plugin-name@marketplace-name
+```
+
+그럼 내가 만든 GitHub API 방식은 의미가 없는 걸까?
+
+둘은 용도가 다르다:
+
+| | 마켓플레이스 | 개인 GitHub 저장소 |
+|---|---|---|
+| **대상** | 공개 배포 (누구나 설치) | 개인/팀 전용 |
+| **비공개 커맨드** | ❌ | ✅ |
+| **업데이트** | 버전 관리 필요 | push하면 바로 반영 |
+| **설정** | `marketplace.json` 작성 | 파일만 있으면 됨 |
+
+예를 들어:
+- `/commit`, `/review-pr` 같은 범용 커맨드 → 마켓플레이스
+- `/cleanup-ui`, `/deploy-staging` 같은 개인/팀 워크플로우 → GitHub 저장소
+
+회사에서 쓰는 내부 커맨드나, 아직 다듬는 중인 개인 커맨드는 마켓플레이스보다 개인 저장소가 더 맞다.
+
+## 로컬 상태에 의존하지 않는 게 핵심이었다
+
+이번 개선에서 배운 건, **로컬 상태에 의존하지 않는 워크플로우**가 얼마나 편한지였다.
+
+예전 방식은 "저장소가 클론되어 있고, 최신 상태여야 한다"는 전제가 있었다. 이 전제가 깨지면 (다른 컴퓨터, 새 환경, 오래된 클론) 작업이 막혔다.
+
+새 방식은 인터넷만 되면 어디서든 똑같이 동작한다. GitHub이 single source of truth가 되니까, 동기화 걱정도 없다.
+
+마켓플레이스든 GitHub API든, 핵심은 같다. 로컬에 뭔가를 미리 세팅해두지 않아도 되는 것. 작은 개선이었지만, 일상적으로 쓰는 도구라서 체감이 꽤 컸다.
+
+## 결국 마켓플레이스로도 등록했다
+
+마켓플레이스가 있다는 걸 알게 되고 나니, 둘 다 쓰면 좋겠다는 생각이 들었다.
+
+- **마켓플레이스**: 새 컴퓨터에서 전체 셋업할 때
+- **GitHub API**: 개별 커맨드 빠르게 설치/업데이트할 때
+
+그래서 claude-toolkit 저장소에 마켓플레이스 구조를 추가했다.
+
+### 마켓플레이스 구조
+
+```
+claude-toolkit/
+├── .claude-plugin/
+│   ├── marketplace.json    # 마켓플레이스 정의
+│   └── plugin.json         # 플러그인 메타데이터
+├── commands/
+└── skills/
+```
+
+`marketplace.json`은 이렇게 생겼다:
+
+```json
+{
+  "name": "claude-toolkit-marketplace",
+  "owner": { "name": "conewarrior" },
+  "plugins": [
+    {
+      "name": "claude-toolkit",
+      "source": ".",
+      "description": "Commands and skills for Claude Code",
+      "version": "1.0.0"
+    }
+  ]
+}
+```
+
+### publish할 때 버전도 같이 올리기
+
+`/publish-command`를 수정해서, 파일 업로드할 때 `marketplace.json`의 버전도 자동으로 올리도록 했다.
+
+```bash
+/publish-command my-new-command
+# → commands/my-new-command.md 업로드
+# → marketplace.json 버전 1.0.0 → 1.0.1
+```
+
+이제 다른 컴퓨터에서 `/plugin marketplace update` 하면 새 버전이 반영된다.
+
+### 두 방식을 같이 쓰는 워크플로우
+
+**새 환경 셋업할 때:**
+```bash
+/plugin marketplace add conewarrior/claude-toolkit
+/plugin install claude-toolkit@claude-toolkit-marketplace
+# → 모든 커맨드/스킬 한 번에 설치
+```
+
+**특정 커맨드만 빠르게 설치할 때:**
+```bash
+/install-command cleanup-ui
+# → 해당 커맨드만 바로 설치
+```
+
+결국 둘 다 "로컬 상태에 의존하지 않는다"는 점에서 같다. 상황에 따라 편한 걸 쓰면 된다.
