@@ -1,0 +1,103 @@
+---
+title: "Claude Code에서 디자인 시스템 스킬 구축하기"
+description: "프론트엔드 개발 시 일관된 토큰 기반 컴포넌트를 자동으로 생성하는 방법"
+date: "2026-01-07"
+category: "개발"
+published: true
+---
+
+## 문제: 페이지마다 제각각인 스타일링
+
+Claude Code로 프론트엔드 개발을 하다 보니 문제가 생겼다. 페이지마다 CSS 작성 방식이 다 달랐다. 어떤 페이지는 하드코딩된 색상값, 어떤 페이지는 Tailwind 클래스, 또 어떤 페이지는 인라인 스타일.
+
+Footer 컴포넌트가 필요해서 만들었는데, 나중에 보니 비슷한 게 다른 페이지에도 있었다. 색상을 바꾸고 싶으면 여기저기 찾아다니며 수정해야 했다.
+
+[📸 제각각인 스타일링 코드 예시]
+
+## 원했던 것: 디자이너처럼 토큰 기반으로
+
+디자이너가 Figma에서 작업할 때를 떠올렸다. `brand.color.primary` 같은 토큰을 정의하고, 버튼이든 카드든 이 토큰을 참조한다. 토큰 값을 바꾸면 모든 컴포넌트가 일괄 변경된다.
+
+코드에서도 이런 구조가 가능할까?
+
+```
+Primitive (기본값)
+    ↓ 참조
+Semantic (의미)
+    ↓ 참조
+Component (컴포넌트)
+```
+
+`brand.color.blue.500`을 바꾸면 → `color.primary`가 바뀌고 → `button.background`가 바뀌는 연쇄 구조.
+
+## 해결: design-system 스킬 만들기
+
+Claude Code의 스킬 기능을 활용하기로 했다. `~/.claude/skills/design-system/SKILL.md`에 규칙을 정의하면, 프론트엔드 작업 시 이 규칙을 따르게 된다.
+
+### 핵심 규칙들
+
+**1. 3단계 토큰 계층**
+
+```json
+// Primitive - 가장 말단 값
+{ "brand.color.blue.500": "#3B82F6" }
+
+// Semantic - 의미 부여
+{ "color.primary": "{brand.color.blue.500}" }
+
+// Component - 컴포넌트별
+{ "button.background": "{color.primary}" }
+```
+
+**2. 폴더 구조 강제**
+
+```
+src/design-system/
+├── tokens/
+│   ├── primitive/
+│   ├── semantic/
+│   └── component/
+├── components/
+│   ├── Button/
+│   │   ├── Button.tsx
+│   │   └── Button.stories.tsx  ← 필수
+└── generated/
+    └── tokens.css  ← 빌드 결과물
+```
+
+**3. 컴포넌트 생성 규칙**
+- 토큰만 사용 (하드코딩 금지)
+- Story 파일 필수
+- 2개 이상 페이지에서 쓰이면 라이브러리에 등록
+
+### prd-to-dev와 연동
+
+PRD만 작성하면 자동으로 개발이 진행되는 `/dev-cycle`을 쓰고 있었다. 여기에 design-system 스킬을 연결했다.
+
+`prd-to-dev` 에이전트가 프론트엔드 작업을 감지하면:
+1. Phase 1에 "디자인 시스템 셋업" 태스크 자동 추가
+2. UI 컴포넌트 태스크에 `참조: design-system 스킬` 표기
+
+```markdown
+### Task 1-A: 디자인 시스템 셋업
+- **범위**: src/design-system/
+- **참조**: design-system 스킬
+- **설명**: 토큰 구조 생성, Storybook 설정
+```
+
+[📸 DEVELOPMENT.md에 자동 추가된 디자인 시스템 태스크]
+
+## 결과: PRD에 안 써도 자동으로 구조화
+
+이제 PRD에 "로그인 페이지 만들어줘"라고만 써도:
+1. 디자인 시스템 셋업이 먼저 진행되고
+2. Button, Input 등이 토큰 기반으로 생성되고
+3. Storybook story도 같이 만들어진다
+
+토큰 변경이 필요하면 Storybook에서 전체 컴포넌트를 한눈에 확인할 수 있다.
+
+## 배운 점
+
+스킬은 "이렇게 해줘"가 아니라 "이런 구조를 따라"라는 지침이다. Claude Code가 매번 물어보지 않아도 일관된 결과물을 낼 수 있게 된다.
+
+다음엔 이 구조 위에 실제 프로덕트를 만들어볼 예정이다.

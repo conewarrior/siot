@@ -1,0 +1,102 @@
+---
+title: "Claude Code hooks 설정하기"
+description: "알림 훅 설정 중 겪은 삽질과 플러그인으로 분리하기"
+date: "2025-01-07"
+category: "개발"
+published: true
+---
+
+## 불편했던 점
+
+Claude Code로 작업하다 보면 Claude가 뭔가를 물어볼 때가 있다. "Do you want to proceed?" 같은 권한 요청이나, 선택지를 묻는 질문들. 그런데 난 보통 Claude가 일하는 동안 다른 창에서 작업하고 있어서, 언제 질문이 왔는지 모를 때가 많았다.
+
+Claude Code에 hooks라는 기능이 있다는 걸 알게 됐다. 특정 이벤트가 발생하면 명령어를 실행할 수 있는 기능이다. macOS의 `say` 명령어로 음성 알림을 받으면 되겠다 싶었다.
+
+## 설정했는데 일부만 작동
+
+`~/.claude/settings.json`에 hooks를 설정했다.
+
+```json
+{
+  "hooks": {
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [{ "type": "command", "command": "say \"야 일할 시간이야\"" }]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "AskUserQuestion",
+        "hooks": [{ "type": "command", "command": "say \"야 이거 좀 확인해봐\"" }]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "matcher": "*",
+        "hooks": [{ "type": "command", "command": "says \"어렵다 퍼미션\"" }]
+      }
+    ]
+  }
+}
+```
+
+그런데 이상했다. `Stop`이랑 `PreToolUse`는 잘 작동하는데, `PermissionRequest`만 알림이 안 왔다.
+
+## 원인: 오타
+
+한참을 헤매다가 발견했다.
+
+```json
+"command": "says \"어렵다 퍼미션\""  // ❌ says
+"command": "say \"권한 수정해라\""   // ✅ say
+```
+
+`say`를 `says`로 오타 낸 거였다. macOS에 `says` 명령어는 없다.
+
+## hooks 종류 정리
+
+삽질하면서 hooks가 언제 발동되는지 정리했다.
+
+| 훅 | 발동 시점 |
+|---|---------|
+| `PreToolUse` | Claude가 도구 실행하기 전 |
+| `PostToolUse` | 도구 실행 완료 후 |
+| `PermissionRequest` | 권한 요청 다이얼로그 표시 시 |
+| `Stop` | Claude 작업 완료 시 |
+| `UserPromptSubmit` | 사용자가 프롬프트 제출 시 |
+
+`PermissionRequest`는 "Do you want to proceed?" 다이얼로그가 **뜰 때** 발동된다. 사용자가 Yes를 클릭하는 순간은 별도 훅이 없다.
+
+## 플러그인으로 분리
+
+이 hooks를 다른 컴퓨터에서도 쓰고 싶었다. 매번 settings.json에 복붙하기 귀찮으니까.
+
+Claude Code 플러그인으로 만들면 마켓플레이스에서 설치할 수 있다. 기존에 만들어둔 `claude-toolkit` 플러그인이 있었는데, hooks만 따로 분리하고 싶었다.
+
+hooks 폴더 안에 `.claude-plugin`을 추가하면 별도 플러그인이 된다.
+
+```
+hooks/
+├── .claude-plugin/
+│   └── plugin.json
+└── hooks.json
+```
+
+```json
+// plugin.json
+{
+  "name": "notification-hooks",
+  "description": "Claude Code notification hooks for macOS",
+  "version": "1.0.0",
+  "hooks": "./hooks.json"
+}
+```
+
+이제 `/global-plugin notification-hooks`로 hooks만 따로 설치할 수 있다.
+
+## 배운 점
+
+- hooks 설정할 때 **오타 주의**. 에러 메시지가 안 뜨니까 찾기 어렵다
+- `PermissionRequest`는 다이얼로그가 뜰 때 발동, Yes 클릭 시점엔 훅이 없다
+- 플러그인으로 분리하면 재사용 가능. `.claude-plugin` 폴더만 추가하면 된다
