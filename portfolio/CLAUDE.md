@@ -154,4 +154,4 @@ The `upload-images` script uploads local images referenced in MDX to GitHub and 
 
 ## Deployment
 
-Deployed on Vercel at https://siot-portfolio.vercel.app
+Deployed on Vercel at https://portfolio-six-azure-69.vercel.app
