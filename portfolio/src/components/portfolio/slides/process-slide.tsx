@@ -12,8 +12,6 @@ interface ProcessStep {
 
 interface ProcessSlideProps {
   children?: ReactNode;
-  backgroundColor?: string;
-  textColor?: string;
   className?: string;
   /** 슬라이드 제목 */
   heading?: string;
@@ -26,27 +24,9 @@ interface ProcessSlideProps {
 /**
  * 과정 슬라이드 컴포넌트
  * 프로젝트 진행 과정이나 방법론을 단계별로 나열하는 슬라이드.
- *
- * @example
- * <ProcessSlide
- *   heading="진행 과정"
- *   steps={[
- *     { label: "01", title: "리서치", description: "사용자 인터뷰 30건" },
- *     { label: "02", title: "설계", description: "와이어프레임 작성" },
- *     { label: "03", title: "검증", description: "A/B 테스트 진행" },
- *   ]}
- * />
- *
- * @example
- * // children으로 커스텀 콘텐츠 사용
- * <ProcessSlide heading="방법론">
- *   <Timeline>...</Timeline>
- * </ProcessSlide>
  */
 export function ProcessSlide({
   children,
-  backgroundColor,
-  textColor,
   className,
   heading,
   steps,
@@ -55,14 +35,10 @@ export function ProcessSlide({
   return (
     <div
       className={cn(
-        "h-full flex flex-col justify-center",
+        "flex flex-col justify-center",
         "w-full p-12",
         className
       )}
-      style={{
-        backgroundColor,
-        color: textColor,
-      }}
     >
       {heading && (
         <h2 className="text-sm md:text-base font-medium text-accent uppercase tracking-widest mb-8">
@@ -100,7 +76,7 @@ export function ProcessSlide({
               </div>
 
               {/* 단계 제목 */}
-              <h3 className="text-xl md:text-2xl font-semibold mb-2">
+              <h3 className="text-xl md:text-2xl font-semibold mb-2 text-foreground">
                 {step.title}
               </h3>
 

@@ -3,8 +3,6 @@ import { cn } from "@/lib/utils";
 
 interface CoverSlideProps {
   children?: ReactNode;
-  backgroundColor?: string;
-  textColor?: string;
   className?: string;
   /** 이름 */
   name?: string;
@@ -17,25 +15,9 @@ interface CoverSlideProps {
 /**
  * 커버 슬라이드 컴포넌트
  * 프레젠테이션의 첫 슬라이드로 사용. 중앙 정렬, 큰 타이틀 스타일.
- *
- * @example
- * <CoverSlide
- *   name="김한솔"
- *   title="Product Designer"
- *   subtitle="사용자 중심의 경험을 설계합니다"
- * />
- *
- * @example
- * // children으로 커스텀 콘텐츠 사용
- * <CoverSlide backgroundColor="#1a1a2e" textColor="#ffffff">
- *   <h1>프로젝트 제목</h1>
- *   <p>2024</p>
- * </CoverSlide>
  */
 export function CoverSlide({
   children,
-  backgroundColor,
-  textColor,
   className,
   name,
   title,
@@ -46,22 +28,18 @@ export function CoverSlide({
   return (
     <div
       className={cn(
-        "h-full flex flex-col items-center justify-center",
+        "flex flex-col items-center justify-center",
         "w-full p-12",
         "text-center",
         className
       )}
-      style={{
-        backgroundColor,
-        color: textColor,
-      }}
     >
       {children ? (
         children
       ) : hasDefaultContent ? (
         <div className="flex flex-col items-center gap-4">
           {name && (
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight">
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-foreground">
               {name}
             </h1>
           )}

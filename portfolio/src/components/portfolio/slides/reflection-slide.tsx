@@ -10,8 +10,6 @@ interface Insight {
 
 interface ReflectionSlideProps {
   children?: ReactNode;
-  backgroundColor?: string;
-  textColor?: string;
   className?: string;
   /** 슬라이드 제목 */
   heading?: string;
@@ -24,27 +22,9 @@ interface ReflectionSlideProps {
 /**
  * 회고 슬라이드 컴포넌트
  * 프로젝트에서 얻은 인사이트와 배운점을 정리하는 슬라이드. 인용구/강조 스타일.
- *
- * @example
- * <ReflectionSlide
- *   heading="회고"
- *   quote="좋은 디자인은 문제를 정의하는 것에서 시작한다"
- *   insights={[
- *     { title: "데이터 기반 의사결정", content: "A/B 테스트로 가설 검증" },
- *     { title: "협업의 중요성", content: "개발팀과의 긴밀한 소통이 핵심" },
- *   ]}
- * />
- *
- * @example
- * // children으로 커스텀 콘텐츠 사용
- * <ReflectionSlide quote="실패에서 배운다">
- *   <p>상세한 회고 내용...</p>
- * </ReflectionSlide>
  */
 export function ReflectionSlide({
   children,
-  backgroundColor,
-  textColor,
   className,
   heading,
   quote,
@@ -53,14 +33,10 @@ export function ReflectionSlide({
   return (
     <div
       className={cn(
-        "h-full flex flex-col justify-center",
+        "flex flex-col justify-center",
         "w-full p-12",
         className
       )}
-      style={{
-        backgroundColor,
-        color: textColor,
-      }}
     >
       {heading && (
         <h2 className="text-sm md:text-base font-medium text-accent uppercase tracking-widest mb-8">
@@ -77,7 +53,7 @@ export function ReflectionSlide({
           >
             &ldquo;
           </span>
-          <p className="text-2xl md:text-3xl lg:text-4xl font-medium italic leading-snug pl-6 border-l-4 border-accent">
+          <p className="text-2xl md:text-3xl lg:text-4xl font-medium italic leading-snug pl-6 border-l-4 border-accent text-foreground">
             {quote}
           </p>
         </blockquote>
@@ -98,7 +74,7 @@ export function ReflectionSlide({
               )}
             >
               {/* 인사이트 제목 */}
-              <h3 className="text-lg font-semibold mb-2 flex items-center gap-2">
+              <h3 className="text-lg font-semibold mb-2 flex items-center gap-2 text-foreground">
                 <span className="text-accent">●</span>
                 {insight.title}
               </h3>

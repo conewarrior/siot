@@ -14,8 +14,6 @@ interface Metric {
 
 interface OutcomeSlideProps {
   children?: ReactNode;
-  backgroundColor?: string;
-  textColor?: string;
   className?: string;
   /** 슬라이드 제목 */
   heading?: string;
@@ -28,22 +26,9 @@ interface OutcomeSlideProps {
 /**
  * 결과/지표 슬라이드 컴포넌트
  * 프로젝트의 성과와 핵심 지표를 표시하는 슬라이드. 숫자 강조 레이아웃.
- *
- * @example
- * <OutcomeSlide
- *   heading="결과"
- *   summary="사용자 경험 개선으로 핵심 지표 달성"
- *   metrics={[
- *     { label: "이탈률", value: "32%", change: "-18%p", positive: true },
- *     { label: "전환율", value: "4.2%", change: "+1.8%p", positive: true },
- *     { label: "NPS", value: "72", change: "+15", positive: true },
- *   ]}
- * />
  */
 export function OutcomeSlide({
   children,
-  backgroundColor,
-  textColor,
   className,
   heading,
   summary,
@@ -52,14 +37,10 @@ export function OutcomeSlide({
   return (
     <div
       className={cn(
-        "h-full flex flex-col justify-center",
+        "flex flex-col justify-center",
         "w-full p-12",
         className
       )}
-      style={{
-        backgroundColor,
-        color: textColor,
-      }}
     >
       {heading && (
         <h2 className="text-sm md:text-base font-medium text-accent uppercase tracking-widest mb-6">
@@ -68,7 +49,7 @@ export function OutcomeSlide({
       )}
 
       {summary && (
-        <p className="text-xl md:text-2xl lg:text-3xl font-semibold mb-10 max-w-3xl">
+        <p className="text-xl md:text-2xl lg:text-3xl font-semibold mb-10 max-w-3xl text-foreground">
           {summary}
         </p>
       )}
@@ -92,7 +73,7 @@ export function OutcomeSlide({
 
               {/* 지표 값 */}
               <div className="flex items-baseline gap-3">
-                <span className="text-4xl md:text-5xl font-bold tabular-nums">
+                <span className="text-4xl md:text-5xl font-bold tabular-nums text-foreground">
                   {metric.value}
                 </span>
 

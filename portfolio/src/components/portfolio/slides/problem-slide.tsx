@@ -3,8 +3,6 @@ import { cn } from "@/lib/utils";
 
 interface ProblemSlideProps {
   children?: ReactNode;
-  backgroundColor?: string;
-  textColor?: string;
   className?: string;
   /** 슬라이드 제목 */
   heading?: string;
@@ -17,27 +15,9 @@ interface ProblemSlideProps {
 /**
  * 문제 정의 슬라이드 컴포넌트
  * 프로젝트의 배경과 목표를 설명하는 슬라이드. 제목 + 본문 레이아웃.
- *
- * @example
- * <ProblemSlide
- *   heading="문제 정의"
- *   background="기존 시스템은 사용자 이탈률이 높았다"
- *   goal="이탈률 50% 감소"
- * />
- *
- * @example
- * // children으로 커스텀 콘텐츠 사용
- * <ProblemSlide heading="배경">
- *   <ul>
- *     <li>문제점 1</li>
- *     <li>문제점 2</li>
- *   </ul>
- * </ProblemSlide>
  */
 export function ProblemSlide({
   children,
-  backgroundColor,
-  textColor,
   className,
   heading,
   background,
@@ -48,14 +28,10 @@ export function ProblemSlide({
   return (
     <div
       className={cn(
-        "h-full flex flex-col justify-center",
+        "flex flex-col justify-center",
         "w-full p-12",
         className
       )}
-      style={{
-        backgroundColor,
-        color: textColor,
-      }}
     >
       {heading && (
         <h2 className="text-sm md:text-base font-medium text-accent uppercase tracking-widest mb-6">
@@ -72,7 +48,7 @@ export function ProblemSlide({
           {background && (
             <div>
               <h3 className="text-lg font-medium text-muted mb-2">배경</h3>
-              <p className="text-2xl md:text-3xl lg:text-4xl font-semibold leading-snug">
+              <p className="text-2xl md:text-3xl lg:text-4xl font-semibold leading-snug text-foreground">
                 {background}
               </p>
             </div>
