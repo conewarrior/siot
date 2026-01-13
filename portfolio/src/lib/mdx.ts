@@ -43,6 +43,11 @@ export function getBlogPosts(): BlogPost[] {
   const posts: BlogPost[] = []
 
   for (const entry of entries) {
+    // 언더스코어로 시작하는 파일/폴더는 제외 (예: _backup)
+    if (entry.name.startsWith("_")) {
+      continue
+    }
+
     let filePath: string
     let slug: string
 
