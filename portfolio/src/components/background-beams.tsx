@@ -12,6 +12,31 @@ export const BackgroundBeamsWithCollision = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const parentRef = useRef<HTMLDivElement>(null);
+  const [parentHeight, setParentHeight] = useState(1800);
+
+  // 부모 높이 동적 계산
+  useEffect(() => {
+    const updateHeight = () => {
+      if (parentRef.current) {
+        const height = parentRef.current.scrollHeight;
+        setParentHeight(Math.max(height, window.innerHeight) + 200);
+      }
+    };
+
+    updateHeight();
+    window.addEventListener("resize", updateHeight);
+
+    // MutationObserver로 콘텐츠 변화 감지
+    const observer = new MutationObserver(updateHeight);
+    if (parentRef.current) {
+      observer.observe(parentRef.current, { childList: true, subtree: true });
+    }
+
+    return () => {
+      window.removeEventListener("resize", updateHeight);
+      observer.disconnect();
+    };
+  }, []);
 
   const beams = [
     {
@@ -77,7 +102,7 @@ export const BackgroundBeamsWithCollision = ({
       {beams.map((beam) => (
         <CollisionMechanism
           key={beam.initialX + "beam-idx"}
-          beamOptions={beam}
+          beamOptions={{ ...beam, translateY: parentHeight }}
           containerRef={containerRef}
           parentRef={parentRef}
         />
@@ -101,7 +126,7 @@ const CollisionMechanism = React.forwardRef<
       initialX?: number;
       translateX?: number;
       initialY?: number;
-      translateY?: number;
+      translateY?: number | string;
       rotate?: number;
       className?: string;
       duration?: number;
@@ -181,7 +206,9 @@ const CollisionMechanism = React.forwardRef<
         }}
         variants={{
           animate: {
-            translateY: beamOptions.translateY || "1800px",
+            translateY: typeof beamOptions.translateY === "number"
+              ? `${beamOptions.translateY}px`
+              : beamOptions.translateY || "1800px",
             translateX: beamOptions.translateX || "0px",
             rotate: beamOptions.rotate || 0,
           },
