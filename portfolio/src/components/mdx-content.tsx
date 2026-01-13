@@ -1,5 +1,17 @@
 import { MDXRemote } from "next-mdx-remote/rsc"
 import remarkGfm from "remark-gfm"
+import {
+  ColorScale,
+  TokenStructure,
+  SpecTemplate,
+  ResultsDashboard,
+} from "@/components/portfolio/diagrams/design-system"
+import {
+  ActionFlow,
+  ShortcutUsageChart,
+  SpeedMetrics,
+  ToolbarComparison,
+} from "@/components/portfolio/diagrams/labeling-tool"
 
 interface MDXContentProps {
   source: string
@@ -62,6 +74,16 @@ const components = {
   strong: (props: React.HTMLAttributes<HTMLElement>) => (
     <strong className="font-semibold text-foreground" {...props} />
   ),
+  // Design System Diagrams
+  ColorScale,
+  TokenStructure,
+  SpecTemplate,
+  ResultsDashboard,
+  // Labeling Tool Diagrams
+  ActionFlow,
+  ShortcutUsageChart,
+  SpeedMetrics,
+  ToolbarComparison,
 }
 
 export function MDXContent({ source }: MDXContentProps) {

@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { FeatureConsolidation } from "@/components/portfolio/diagrams/ui-flow";
 
 interface Metric {
   /** 지표 레이블 */
@@ -21,19 +22,29 @@ interface OutcomeSlideProps {
   summary?: string;
   /** 핵심 지표들 */
   metrics?: Metric[];
+  /** 다이어그램 컴포넌트 이름 */
+  diagram?: "FeatureConsolidation";
 }
 
 /**
  * 결과/지표 슬라이드 컴포넌트
  * 프로젝트의 성과와 핵심 지표를 표시하는 슬라이드. 숫자 강조 레이아웃.
  */
+// 다이어그램 컴포넌트 매핑
+const diagramComponents = {
+  FeatureConsolidation,
+};
+
 export function OutcomeSlide({
   children,
   className,
   heading,
   summary,
   metrics,
+  diagram,
 }: OutcomeSlideProps) {
+  // 다이어그램 컴포넌트 렌더링
+  const DiagramComponent = diagram ? diagramComponents[diagram] : null;
   return (
     <div
       className={cn(
@@ -54,7 +65,11 @@ export function OutcomeSlide({
         </p>
       )}
 
-      {children ? (
+      {DiagramComponent ? (
+        <div className="flex-1 overflow-auto">
+          <DiagramComponent />
+        </div>
+      ) : children ? (
         <div className="flex-1">{children}</div>
       ) : metrics && metrics.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

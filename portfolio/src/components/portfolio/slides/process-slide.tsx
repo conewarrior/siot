@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { AsIsFlow, ToBeFlow } from "@/components/portfolio/diagrams/ui-flow";
 
 interface ProcessStep {
   /** 단계 번호 또는 레이블 */
@@ -19,19 +20,30 @@ interface ProcessSlideProps {
   steps?: ProcessStep[];
   /** 레이아웃 방향 */
   layout?: "horizontal" | "vertical";
+  /** 다이어그램 컴포넌트 이름 */
+  diagram?: "AsIsFlow" | "ToBeFlow";
 }
 
 /**
  * 과정 슬라이드 컴포넌트
  * 프로젝트 진행 과정이나 방법론을 단계별로 나열하는 슬라이드.
  */
+// 다이어그램 컴포넌트 매핑
+const diagramComponents = {
+  AsIsFlow,
+  ToBeFlow,
+};
+
 export function ProcessSlide({
   children,
   className,
   heading,
   steps,
   layout = "horizontal",
+  diagram,
 }: ProcessSlideProps) {
+  // 다이어그램 컴포넌트 렌더링
+  const DiagramComponent = diagram ? diagramComponents[diagram] : null;
   return (
     <div
       className={cn(
@@ -46,7 +58,11 @@ export function ProcessSlide({
         </h2>
       )}
 
-      {children ? (
+      {DiagramComponent ? (
+        <div className="flex-1 overflow-auto">
+          <DiagramComponent />
+        </div>
+      ) : children ? (
         <div className="flex-1">{children}</div>
       ) : steps && steps.length > 0 ? (
         <div

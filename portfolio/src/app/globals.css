@@ -218,6 +218,7 @@ html.dark .dark\:hover\:bg-white\/20:hover {
 
   /* 인쇄 시 숨길 네비게이션 요소들 */
   nav,
+  header,
   .print\:hidden,
   [data-print-hidden="true"] {
     display: none !important;
@@ -237,6 +238,28 @@ html.dark .dark\:hover\:bg-white\/20:hover {
     height: auto !important;
     overflow: visible !important;
     background: white !important;
+  }
+
+  /* 포트폴리오 페이지 레이아웃 조정 */
+  .h-screen {
+    height: auto !important;
+  }
+
+  .overflow-hidden {
+    overflow: visible !important;
+  }
+
+  .overflow-y-scroll {
+    overflow: visible !important;
+  }
+
+  /* 스냅 스크롤 해제 */
+  .snap-y {
+    scroll-snap-type: none !important;
+  }
+
+  .snap-start {
+    scroll-snap-align: unset !important;
   }
 
   /* 페이지 나누기 설정 */

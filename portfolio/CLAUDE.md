@@ -47,7 +47,8 @@ src/
 │   ├── hero-section.tsx   # Hero with Typewriter animation
 │   ├── mdx-content.tsx    # MDX renderer with styled components
 │   ├── text-rotate.tsx    # Rotating text with staggered character animation
-│   ├── project-showcase.tsx # Project list with mouse-following image preview
+│   ├── project-showcase.tsx # Project list with mouse-following image preview (홈페이지용)
+│   ├── side-project-grid.tsx # Side project grid with floating image hover (/projects)
 │   ├── header.tsx         # Navigation with TextRotate logo
 │   ├── typewriter.tsx     # Typing/deleting text animation
 │   └── theme-toggle.tsx   # Dark/light mode toggle
@@ -110,6 +111,12 @@ Blog posts are pre-rendered at build time via `generateStaticParams()` in `[slug
 - Synced underline that appears after last letter
 - Props: `duration`, `delay`, `underlineHeight`, `underlineOffset`
 
+**Floating Image** (Side projects, Project showcase):
+- Mouse-following image preview using lerp (linear interpolation)
+- `requestAnimationFrame` for smooth 60fps animation
+- Fixed positioning with `translate3d()` for GPU acceleration
+- Smooth opacity/scale transitions on hover enter/leave
+
 **Hover underline** (List items):
 - Scale-x transform pattern on parent element:
   ```
@@ -156,30 +163,23 @@ The `upload-images` script uploads local images referenced in MDX to GitHub and 
 
 Deployed on Vercel at https://portfolio-six-azure-69.vercel.app
 
-## Portfolio Page (v2 - 스크롤 기반)
+## Portfolio Page (v3 - 뷰포트 제약 레이아웃)
 
-포트폴리오 슬라이드 뷰어 (`/portfolio` 라우트)는 스크롤 스냅 기반의 세로 스크롤 프레젠테이션 페이지.
+포트폴리오 슬라이드 뷰어 (`/portfolio` 라우트)는 페이지 스크롤 없이 뷰포트 내에 모든 요소를 배치하는 프레젠테이션 페이지.
 
-### v2 변경사항 (2025-01)
+### v3 변경사항 (2025-01)
 
-**캐러셀 → 스크롤 스냅 전환:**
-- 좌우 캐러셀을 세로 스크롤 + 100vh 스냅 방식으로 변경
-- 좌측 네비게이션: 스크롤 진행률에 따라 카드 확장
-- 페이지 인디케이터: 프로그레스 바 형태
-- 기존 사이트 헤더 표시
-
-**삭제된 컴포넌트:**
-- `navigation-arrows.tsx` - 좌우 화살표 버튼
-- `keyboard-navigation.tsx` - 키보드 이벤트 핸들러
-- `slide-transition.tsx` - 좌우 슬라이드 전환 애니메이션
-- `section-entry.tsx` - 섹션 진입 알림
-- `use-portfolio-navigation.ts` - 캐러셀 네비게이션 훅
+**뷰포트 제약 레이아웃:**
+- 페이지 스크롤 제거 (`h-screen overflow-hidden`)
+- 사이드 네비게이션 + 캔버스를 `calc(100vh-140px)` 높이로 제한
+- 활성 섹션 카드 flex-grow 확장 (비활성 1 : 활성 2.5 비율)
+- 슬라이드 인디케이터: 활성 카드 우측에 세로 바로 표시
 
 ### Route Structure
 ```
 src/app/portfolio/
 ├── layout.tsx          # 헤더 포함, 라이트 테마 강제, robots noindex
-├── page.tsx            # 스크롤 스냅 컨테이너 + Intersection Observer
+├── page.tsx            # 뷰포트 제약 레이아웃 + Intersection Observer
 src/api/portfolio/
 └── route.ts            # 섹션 데이터 API
 ```
@@ -187,11 +187,8 @@ src/api/portfolio/
 ### Component Architecture
 ```
 src/components/portfolio/
-├── slide-container.tsx     # 슬라이드 래퍼 (비율 유지)
-├── staggered-content.tsx   # Intersection Observer 기반 순차 등장 애니메이션
-├── side-navigation.tsx     # 좌측 섹션 네비게이션 (스크롤 진행률 연동)
-├── page-indicator.tsx      # 하단 프로그레스 바 + PDF 버튼
-├── mobile-layout.tsx       # 모바일 반응형 레이아웃
+├── side-navigation.tsx     # 좌측 섹션 네비게이션 (flex-grow 카드 + 슬라이드 인디케이터)
+├── portfolio-menu-bar.tsx  # 상단 메뉴바 (섹션 색상 + 슬라이드 진행률)
 └── slides/                 # 슬라이드 타입별 템플릿
     ├── cover-slide.tsx
     ├── problem-slide.tsx
@@ -200,75 +197,48 @@ src/components/portfolio/
     └── reflection-slide.tsx
 ```
 
-### Scroll Snap Pattern
+### Layout Pattern (뷰포트 제약)
 
-**컨테이너 설정:**
+**페이지 스크롤 방지:**
 ```tsx
-<main
-  className="h-screen overflow-y-scroll snap-y snap-mandatory"
-  ref={containerRef}
->
-  {sections.map(section => (
-    <section className="h-screen snap-start">
-      <SlideComponent />
-    </section>
-  ))}
-</main>
+<div className="h-screen overflow-hidden px-4 py-2">
+  {/* 헤더(64px) + 패딩(16px) + 여유(60px) = 140px */}
+  <div className="mx-auto flex h-[calc(100vh-140px)] max-w-[1400px] gap-3">
+    <SideNavigation className="w-[160px] flex-shrink-0" />
+    <div className="flex flex-1 flex-col gap-2">
+      <PortfolioMenuBar />
+      <div className="flex-1 overflow-y-scroll snap-y snap-mandatory">
+        {/* 슬라이드들 */}
+      </div>
+    </div>
+  </div>
+</div>
+```
+
+**flex-grow 카드 크기 조정:**
+```tsx
+const INACTIVE_FLEX = 1;
+const ACTIVE_FLEX = 2.5;
+
+<nav className="flex h-full min-h-0 flex-col gap-2">
+  <motion.button style={{ flex: isActive ? ACTIVE_FLEX : INACTIVE_FLEX }}>
+    {/* min-h-0 필수: flex 자식이 콘텐츠보다 작아질 수 있도록 */}
+  </motion.button>
+</nav>
 ```
 
 **smooth scroll과 스냅 충돌 해결:**
-프로그래매틱 스크롤 시 스냅이 방해할 수 있으므로 임시 비활성화:
 ```tsx
-const scrollToSection = (index: number) => {
-  container.style.scrollSnapType = 'none';  // 임시 비활성화
-  slideRefs[index].scrollIntoView({ behavior: 'smooth' });
+const goToSection = (index: number) => {
+  canvas.style.scrollSnapType = 'none';  // 임시 비활성화
+  targetSlide.scrollIntoView({ behavior: 'smooth' });
   setTimeout(() => {
-    container.style.scrollSnapType = 'y mandatory';  // 복원
+    canvas.style.scrollSnapType = 'y mandatory';  // 복원
   }, 500);
 };
 ```
 
-### Intersection Observer Patterns
-
-**현재 섹션 감지 (스크롤 진행률용):**
-```tsx
-useEffect(() => {
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const index = slideRefs.indexOf(entry.target);
-          setCurrentIndex(index);
-        }
-      });
-    },
-    { root: containerRef.current, threshold: 0.5 }
-  );
-  slideRefs.forEach(ref => ref && observer.observe(ref));
-  return () => observer.disconnect();
-}, []);
-```
-
-**1회성 진입 애니메이션 (StaggeredContent):**
-```tsx
-const [hasAnimated, setHasAnimated] = useState(false);
-
-useEffect(() => {
-  const observer = new IntersectionObserver(
-    ([entry]) => {
-      if (entry.isIntersecting && !hasAnimated) {
-        setHasAnimated(true);
-      }
-    },
-    { threshold: 0.3 }
-  );
-  // 첫 진입 시에만 애니메이션, 재진입 시 즉시 표시
-}, []);
-```
-
 ### MDX Content (`docs/content/portfolio/`)
-
-슬라이드 콘텐츠는 `portfolio-mdx.ts`로 관리:
 
 ```typescript
 import { getPortfolioSections } from "@/lib/portfolio-mdx";
@@ -284,25 +254,99 @@ textColor: "#FFFFFF"       # 텍스트 색상
 slides:
   - type: "cover"          # cover | problem | process | outcome | reflection
     title: "슬라이드 제목"
-  - type: "problem"
-    title: "문제 정의"
-```
-
-### Semantic HTML Rules (리뷰 학습)
-
-**중복 시맨틱 태그 피하기:**
-- layout에서 `<main>`을 쓰면 page에서는 `<div>` 사용
-- page에서 `<section>`으로 감싸면 슬라이드 컴포넌트는 `<div>` 사용
-
-**ARIA 라벨 필수:**
-```tsx
-<main role="main" aria-label="포트폴리오 슬라이드">
-  <section aria-label={`${sectionName} - ${slideTitle}`}>
 ```
 
 ### Design Decisions
 
-- **라이트 테마 강제**: 포트폴리오는 프레젠테이션용이므로 다크모드 비활성화
+- **페이지 스크롤 금지**: 포트폴리오 UX에서 페이지 스크롤은 나쁜 경험 → 캔버스 내부 스크롤만 허용
 - **Flat Slide 구조**: 섹션-슬라이드 2중 구조를 flat 배열로 펼쳐서 선형 탐색 가능
-- **API Route 사용**: 클라이언트 컴포넌트에서 MDX 데이터 접근을 위해 `/api/portfolio` 엔드포인트 활용
-- **모바일**: 좌측 네비게이션 숨김 (`hidden md:block`)
+- **라이트 테마 강제**: 프레젠테이션용이므로 다크모드 비활성화
+- **모바일**: 좌측 네비게이션 숨김 (`hidden md:flex`)
+
+## 다이어그램 컴포넌트
+
+포트폴리오 슬라이드에 사용되는 인터랙티브 다이어그램 컴포넌트 패턴.
+
+### 디렉토리 구조
+
+```
+src/components/portfolio/diagrams/
+├── hooks/                      # 공통 훅
+│   └── use-in-view-animation.ts  # 진입 애니메이션 훅
+├── [project-name]/             # 프로젝트별 다이어그램
+│   ├── index.ts               # 배럴 파일 (export 관리)
+│   ├── SomeDiagram.tsx
+│   └── AnotherDiagram.tsx
+└── index.ts                    # 전체 배럴 파일
+```
+
+### 다이어그램 구현 패턴
+
+**진입 애니메이션 (useInView + Framer Motion):**
+```tsx
+import { useInView } from "framer-motion";
+
+export function SomeDiagram() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 20 }}
+      animate={isInView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.6, delay: 0.2 }}
+    >
+      {/* 다이어그램 내용 */}
+    </motion.div>
+  );
+}
+```
+
+### 슬라이드-다이어그램 연결
+
+`page.tsx`의 `getSlideDiagram()` 함수에서 섹션/슬라이드 타입별 매핑:
+
+```tsx
+function getSlideDiagram(sectionSlug: string, slideType: string): React.ReactNode {
+  if (sectionSlug === "cro-optimization") {
+    if (slideType === "process") return <CROProcessDiagram />;
+    if (slideType === "outcome") return <CROOutcomeDiagram />;
+  }
+  if (sectionSlug === "labeling-tool") {
+    if (slideType === "problem") return <LabelingProblemDiagram />;
+  }
+  return null;
+}
+
+// 슬라이드 컴포넌트에 children으로 전달
+<ProcessSlide {...props}>
+  {getSlideDiagram(section.slug, slide.type)}
+</ProcessSlide>
+```
+
+### 프로젝트별 테마 색상
+
+| 프로젝트 | 색상 코드 | 용도 |
+|---------|----------|------|
+| CRO 최적화 | `#F97316` (오렌지) | 메인 액센트 |
+| 라벨링 툴 | `#EC4899` (핑크) | 데이터/AI |
+| 디자인 시스템 | `#7C3AED` (보라) | 시스템/구조 |
+| UI Flow | `#2563EB` (파랑) | 인터랙션/흐름 |
+
+### MDX와 React 컴포넌트 통합
+
+**방법 1: mdx-content.tsx에 등록**
+```tsx
+// src/components/mdx-content.tsx
+const components = {
+  CRODiagram: dynamic(() => import("./portfolio/diagrams/cro")),
+  // ...
+};
+```
+
+**방법 2: page.tsx에서 직접 렌더링**
+```tsx
+// 슬라이드 타입에 따라 조건부 렌더링
+{slide.type === "process" && <ProcessDiagram />}
+```

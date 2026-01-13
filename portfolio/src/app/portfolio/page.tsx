@@ -10,6 +10,19 @@ import { OutcomeSlide } from "@/components/portfolio/slides/outcome-slide";
 import { ReflectionSlide } from "@/components/portfolio/slides/reflection-slide";
 import type { PortfolioSection, PortfolioSlide } from "@/lib/portfolio-mdx";
 
+// CRO 분석 다이어그램
+import { DataPipeline } from "@/components/portfolio/diagrams/cro/data-pipeline";
+import { CROMetricsChart } from "@/components/portfolio/diagrams/cro/metrics-chart";
+
+// UI Flow 다이어그램
+import { AsIsFlow, ToBeFlow, FeatureConsolidation } from "@/components/portfolio/diagrams/ui-flow";
+
+// 라벨링 툴 다이어그램
+import { ActionFlow, ShortcutUsageChart, SpeedMetrics, ToolbarComparison } from "@/components/portfolio/diagrams/labeling-tool";
+
+// 디자인 시스템 다이어그램
+import { ColorScale, TokenStructure, SpecTemplate, ResultsDashboard } from "@/components/portfolio/diagrams/design-system";
+
 // 클라이언트에서 사용할 플랫 슬라이드 타입
 interface FlatSlide {
   sectionIndex: number;
@@ -122,9 +135,68 @@ function PortfolioClient({ sections }: PortfolioClientProps) {
     [flatSlides]
   );
 
+  // 섹션별 다이어그램 컴포넌트 매핑
+  const getSlideDiagram = (sectionSlug: string, slideType: string, slideTitle: string) => {
+    // CRO 분석 프로젝트
+    if (sectionSlug === "project-1-cro-analysis") {
+      if (slideType === "process") {
+        return <DataPipeline />;
+      }
+      if (slideType === "outcome") {
+        return <CROMetricsChart />;
+      }
+    }
+    // 라벨링 툴 프로젝트
+    if (sectionSlug === "project-2-labeling-tool") {
+      if (slideType === "process" && slideTitle === "리서치") {
+        return <ActionFlow />;
+      }
+      if (slideType === "process" && slideTitle === "솔루션") {
+        return <ToolbarComparison />;
+      }
+      if (slideType === "outcome") {
+        return (
+          <div className="flex flex-col gap-8">
+            <ShortcutUsageChart />
+            <SpeedMetrics />
+          </div>
+        );
+      }
+    }
+    // 디자인 시스템 프로젝트
+    if (sectionSlug === "project-3-design-system") {
+      if (slideType === "process" && slideTitle === "컬러 시스템") {
+        return <ColorScale showDarkModeComparison={false} />;
+      }
+      if (slideType === "process" && slideTitle === "토큰 네이밍") {
+        return <TokenStructure />;
+      }
+      if (slideType === "process" && slideTitle === "명세 규칙") {
+        return <SpecTemplate />;
+      }
+      if (slideType === "outcome") {
+        return <ResultsDashboard />;
+      }
+    }
+    // UI Flow 개선 프로젝트
+    if (sectionSlug === "project-4-ui-flow") {
+      if (slideType === "process" && slideTitle === "AS-IS 분석") {
+        return <AsIsFlow />;
+      }
+      if (slideType === "process" && slideTitle === "TO-BE 설계") {
+        return <ToBeFlow />;
+      }
+      if (slideType === "outcome") {
+        return <FeatureConsolidation />;
+      }
+    }
+    return null;
+  };
+
   // 슬라이드 렌더링 (배경색 없이)
   const renderSlide = (flatSlide: FlatSlide) => {
-    const { slide, sectionTitle } = flatSlide;
+    const { slide, sectionTitle, sectionSlug } = flatSlide;
+    const diagram = getSlideDiagram(sectionSlug, slide.type, slide.title);
 
     switch (slide.type) {
       case "cover":
@@ -132,9 +204,9 @@ function PortfolioClient({ sections }: PortfolioClientProps) {
       case "problem":
         return <ProblemSlide heading={slide.title} />;
       case "process":
-        return <ProcessSlide heading={slide.title} />;
+        return <ProcessSlide heading={slide.title}>{diagram}</ProcessSlide>;
       case "outcome":
-        return <OutcomeSlide heading={slide.title} />;
+        return <OutcomeSlide heading={slide.title}>{diagram}</OutcomeSlide>;
       case "reflection":
         return <ReflectionSlide heading={slide.title} />;
       default:

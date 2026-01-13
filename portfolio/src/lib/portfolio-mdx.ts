@@ -7,6 +7,7 @@ const contentDirectory = path.join(process.cwd(), "docs/content")
 export interface PortfolioSlide {
   type: "cover" | "problem" | "process" | "outcome" | "reflection"
   title: string
+  diagram?: "AsIsFlow" | "ToBeFlow" | "FeatureConsolidation"
 }
 
 export interface PortfolioSection {
