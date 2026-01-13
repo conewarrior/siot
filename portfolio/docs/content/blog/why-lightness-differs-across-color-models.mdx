@@ -1,0 +1,57 @@
+---
+title: "왜 명도는 색상 모델마다 다르게 적용될까"
+description: "색상 모델이 명도를 구하는 공식과 각 모델별 명도값의 차이를 이해하기."
+date: "2025-03-09"
+category: "디자인"
+published: true
+---
+
+빛은 파장(Spectrum)으로 움직이며, 이 파장에 따라 색이 결정되고 우리 눈은 각 파장을 다른 색으로 인식한다. 인간의 눈이 관측할 수 있는 400~750nm 파장을 가시광선이라고 하며, 사람의 눈은 원추세포를 통해 이 가시광선을 색으로 인지한다. 청색원추세포는 420-440nm의 파장을 파란색으로, 녹색원추세포는 534-545nm의 파장을 초록색으로, 적색원추세포는 564-580nm의 파장을 붉은색으로 인식한다. 간상세포는 색은 인식하지 못하지만 어두운 빛을 인식할 수 있다.
+
+![가시광선](http://t1.daumcdn.net/brunch/service/user/2nUY/image/sspj1eOHRGoJWtXnt3ov_upKUJk)
+
+## 색상 모델(Color Model)
+
+색상 모델은 가시 스펙트럼의 현상을 개념화하고 인간의 색각을 체계화하는 방법론이다. 색상을 숫자 튜플로 표현할 수 있는 시스템이기도 하다.
+
+### CIE XYZ(CIE1931) Color System
+
+![CIE XYZ](http://t1.daumcdn.net/brunch/service/user/2nUY/image/B2uCcIa5uHD_-TtuKGviqiEhvc4.png)
+
+1931년 국제조명위원회(CIE)에 의해 도입된 이 모델은 실제로 보이는 색상을 수치적으로 표현할 수 있도록 수학적으로 설계된 첫 번째 수학적 색 공간이다. Y는 휘도(밝기)를, X와 Z는 색상의 매치를 완성하는 데 필요한 성분을 나타낸다.
+
+### RGB
+
+![RGB](http://t1.daumcdn.net/brunch/service/user/2nUY/image/Ua9sKdrVdPyIlQqbIg88ZnEYTeo.png)
+
+RGB는 "빨강, 녹색, 파랑의 세 가지 기본 색상을 혼합하여 색을 표현"하는 가산 혼합 방식으로, 컴퓨터 화면에서 주로 사용된다. 각 색상은 0~255 사이의 숫자로 표현된다.
+
+### HSV, HSL
+
+![HSV HSL](http://t1.daumcdn.net/brunch/service/user/2nUY/image/GIcYJaySeYf6ntEF83cWRjxq0nY.png)
+
+두 모델 모두 원통형 기하학으로 색조, 채도, 밝기의 세 요소로 표현된다. HSV의 'Value'는 가장 밝은 부분을 기준으로 하고, HSL의 'Lightness'는 가장 밝고 어두운 부분의 중간값을 기준으로 한다.
+
+## 색상 모델별 명도값의 차이
+
+### HSL
+
+![HSL 명도](http://t1.daumcdn.net/brunch/service/user/2nUY/image/dv55kLm_94cLl2EPSHpqvm23tlE.png)
+
+명도는 Lightness로 표현되며, RGB 값의 최대값과 최소값의 평균을 사용한다.
+
+### HSV
+
+![HSV 명도](http://t1.daumcdn.net/brunch/service/user/2nUY/image/Hk12vSCJ_RQ2yTTHdto-YWzEtbo.png)
+
+Value(또는 Brightness)를 사용해 색상의 밝기를 나타내며, RGB 값 중 최대값을 직접 사용한다.
+
+### CIELAB
+
+![CIELAB](http://t1.daumcdn.net/brunch/service/user/2nUY/image/_ZXpR2LqPrNaZVMyRLvn5MZ_xes.png)
+
+명도는 L값으로 표현되며, XYZ 색상 공간으로부터 변환되어 계산된다. 공식이 복잡한 이유는 인간의 눈이 밝기를 비선형적으로 인식한다는 특성을 반영하기 때문이다.
+
+![HCT](http://t1.daumcdn.net/brunch/service/user/2nUY/image/ckEA71m6og8_1T3TuchZomsEDUQ.png)
+
+구글은 Material Design용 색상 모델인 HCT의 T값으로 CIELAB 모델의 L값을 사용한다.

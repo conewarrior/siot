@@ -1,0 +1,31 @@
+---
+title: "다크모드는 라이트모드의 반전상태일까"
+description: "다크모드를 단순히 라이트모드의 반전색으로 만들 수 없는 이유."
+date: "2025-03-25"
+category: "디자인"
+published: true
+---
+
+회사의 디자인 시스템을 재설계하면서 다크모드를 구현할 기회가 있었다. 처음에는 다크모드가 라이트모드 컬러 팔레트의 단순한 반전일 것이라고 생각했지만, 이 접근 방식에는 결함이 있다는 것을 발견했다.
+
+![라이트모드와 다크모드 비교](http://t1.daumcdn.net/brunch/service/user/2nUY/image/rGaLRxoAE_WzlXwOOajCssqi4Nw.png)
+
+## 깊이 표현이 다르다
+
+![깊이 표현](http://t1.daumcdn.net/brunch/service/user/2nUY/image/oIAeXDwiwC4oa9-tP7ZL3rErgug.png)
+
+Material Design과 같은 디자인 시스템은 전통적인 회화 기법을 반영하여 밝기 변화로 계층적 레이어를 구분한다. 라이트모드에서는 흰색이 가장 두드러지게 보이고, 다크모드에서는 gray-800이 전경 위치를 전달한다. "어두운 요소는 들어가 보이며, 이는 인간의 시각적 인식과 일치한다."
+
+![반전의 문제](http://t1.daumcdn.net/brunch/service/user/2nUY/image/S85HwVXbky7aCTd5on6O6xBjT2o.png)
+
+그러나 라이트모드의 그레이스케일을 반전시키면 이러한 자연스러운 깊이 단서가 역전되어, 어두운 톤이 본질적으로 제공하는 시각적 계층 구조가 무너진다.
+
+## 명암비가 균일하지 않다
+
+![명암비 문제](http://t1.daumcdn.net/brunch/service/user/2nUY/image/p24emcTKmJ6ISd-oZH0HyI3hSiQ.png)
+
+라이트모드의 그레이스케일은 텍스트와 배경 간에 최소 4.5:1의 명암비를 유지하도록 WCAG 접근성 표준에 맞춰 신중하게 보정되었다. 단순히 반전시키면 이러한 정밀함이 파괴된다.
+
+![독립적인 최적화](http://t1.daumcdn.net/brunch/service/user/2nUY/image/3Q36GZUcOTjDPHRxbrRlvTv8D4c.png)
+
+"다크모드는 배경에 맞춰 독립적으로 최적화된 컬러 스케일이 필요하다"는 점을 강조한다. 단순히 반전된 라이트모드 팔레트가 아니라, 모든 사용자에게 가독성과 시각적 명료성을 보존하기 위해서다.
