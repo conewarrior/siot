@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <defs>
+    <linearGradient id="beusable" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#06B6D4"/>
+      <stop offset="100%" style="stop-color:#0891B2"/>
+    </linearGradient>
+    <linearGradient id="script" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B5CF6"/>
+      <stop offset="100%" style="stop-color:#7C3AED"/>
+    </linearGradient>
+    <linearGradient id="slack" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E11D48"/>
+      <stop offset="100%" style="stop-color:#BE123C"/>
+    </linearGradient>
+    <linearGradient id="sheets" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#22C55E"/>
+      <stop offset="100%" style="stop-color:#16A34A"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <style>
+    .title { font-family: system-ui, -apple-system, sans-serif; font-size: 14px; font-weight: 600; fill: white; }
+    .subtitle { font-family: system-ui, -apple-system, sans-serif; font-size: 11px; fill: rgba(255,255,255,0.85); }
+    .label { font-family: system-ui, -apple-system, sans-serif; font-size: 10px; fill: #64748B; }
+    .step { font-family: system-ui, -apple-system, sans-serif; font-size: 10px; font-weight: 600; fill: #94A3B8; }
+  </style>
+
+  <!-- Background -->
+  <rect width="800" height="400" fill="#F8FAFC"/>
+
+  <!-- Title -->
+  <text x="400" y="35" text-anchor="middle" style="font-family: system-ui; font-size: 16px; font-weight: 600; fill: #1E293B;">자동화 파이프라인</text>
+
+  <!-- Step 1: Beusable -->
+  <g transform="translate(60, 80)">
+    <rect width="160" height="100" rx="12" fill="url(#beusable)" filter="url(#shadow)"/>
+    <text x="80" y="40" text-anchor="middle" class="title">Beusable</text>
+    <text x="80" y="60" text-anchor="middle" class="subtitle">API 데이터 수집</text>
+    <rect x="20" y="70" width="120" height="20" rx="4" fill="rgba(255,255,255,0.2)"/>
+    <text x="80" y="84" text-anchor="middle" class="subtitle">히트맵 / 클릭 / 스크롤</text>
+  </g>
+  <text x="140" y="200" text-anchor="middle" class="step">STEP 1</text>
+  <text x="140" y="215" text-anchor="middle" class="label">데이터 수집</text>
+
+  <!-- Arrow 1 -->
+  <path d="M230 130 L280 130" stroke="#CBD5E1" stroke-width="2" stroke-dasharray="6,4"/>
+  <polygon points="280,125 295,130 280,135" fill="#CBD5E1"/>
+
+  <!-- Step 2: Processing -->
+  <g transform="translate(300, 80)">
+    <rect width="160" height="100" rx="12" fill="url(#script)" filter="url(#shadow)"/>
+    <text x="80" y="40" text-anchor="middle" class="title">분석 스크립트</text>
+    <text x="80" y="60" text-anchor="middle" class="subtitle">Python + Claude</text>
+    <rect x="20" y="70" width="120" height="20" rx="4" fill="rgba(255,255,255,0.2)"/>
+    <text x="80" y="84" text-anchor="middle" class="subtitle">지표 계산 / 인사이트</text>
+  </g>
+  <text x="380" y="200" text-anchor="middle" class="step">STEP 2</text>
+  <text x="380" y="215" text-anchor="middle" class="label">분석 처리</text>
+
+  <!-- Arrow 2 -->
+  <path d="M470 130 L520 130" stroke="#CBD5E1" stroke-width="2" stroke-dasharray="6,4"/>
+  <polygon points="520,125 535,130 520,135" fill="#CBD5E1"/>
+
+  <!-- Step 3: Output Split -->
+  <g transform="translate(540, 60)">
+    <!-- Slack -->
+    <rect width="140" height="70" rx="10" fill="url(#slack)" filter="url(#shadow)"/>
+    <text x="70" y="30" text-anchor="middle" class="title">Slack</text>
+    <text x="70" y="50" text-anchor="middle" class="subtitle">실시간 알림</text>
+  </g>
+
+  <g transform="translate(540, 150)">
+    <!-- Sheets -->
+    <rect width="140" height="70" rx="10" fill="url(#sheets)" filter="url(#shadow)"/>
+    <text x="70" y="30" text-anchor="middle" class="title">Google Sheets</text>
+    <text x="70" y="50" text-anchor="middle" class="subtitle">데이터 축적</text>
+  </g>
+  <text x="610" y="250" text-anchor="middle" class="step">STEP 3</text>
+  <text x="610" y="265" text-anchor="middle" class="label">결과 전달</text>
+
+  <!-- Cron indicator -->
+  <g transform="translate(60, 280)">
+    <rect width="680" height="60" rx="8" fill="white" stroke="#E2E8F0" stroke-width="1.5" stroke-dasharray="8,4"/>
+    <text x="340" y="25" text-anchor="middle" style="font-family: system-ui; font-size: 12px; font-weight: 500; fill: #64748B;">Cron Job: 매일 09:00 자동 실행</text>
+    <text x="340" y="45" text-anchor="middle" style="font-family: monospace; font-size: 11px; fill: #94A3B8;">0 9 * * * python analyze_cro.py</text>
+  </g>
+
+  <!-- Connection lines for split -->
+  <path d="M470 130 L510 95 L540 95" stroke="#CBD5E1" stroke-width="1.5" fill="none"/>
+  <path d="M470 130 L510 185 L540 185" stroke="#CBD5E1" stroke-width="1.5" fill="none"/>
+</svg>

@@ -8,8 +8,7 @@ published: true
 
 {/*
 📸 이미지 필요:
-1. 서브에이전트 병렬 실행 다이어그램 - 4단계 흐름도 → "4개의 단계로 구성" 섹션
-2. 병렬 개발 진행 화면 - 터미널에서 3개 태스크 동시 실행 → "Phase 2: 병렬 개발" 섹션
+- 병렬 개발 진행 화면 - 터미널에서 3개 태스크 동시 실행 → "Phase 2: 병렬 개발" 섹션
 */}
 
 ## PRD만 쓰면 나머지는 자동으로
@@ -50,12 +49,7 @@ Claude Code 문서를 뒤지다가 서브에이전트(Sub-agent)라는 개념을
 
 전체 개발 사이클을 이렇게 구성했다.
 
-```
-PRD ──→ Development Guide ──→ 병렬 개발 ──→ 리뷰 ──→ 학습 명문화
- │           │                   │          │          │
- │       prd-to-dev          parallel-dev  reviewer   codify
- │      서브에이전트          (병렬 실행)  서브에이전트  서브에이전트
-```
+![개발 사이클 흐름도](/images/blog/dev-cycle-flow.svg)
 
 ### Phase 1: PRD → Development Guide
 

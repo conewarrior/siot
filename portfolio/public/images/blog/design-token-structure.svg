@@ -1,0 +1,173 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 480">
+  <defs>
+    <linearGradient id="folder" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F59E0B"/>
+      <stop offset="100%" style="stop-color:#D97706"/>
+    </linearGradient>
+    <linearGradient id="file-ts" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3B82F6"/>
+      <stop offset="100%" style="stop-color:#2563EB"/>
+    </linearGradient>
+    <linearGradient id="file-css" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B5CF6"/>
+      <stop offset="100%" style="stop-color:#7C3AED"/>
+    </linearGradient>
+    <linearGradient id="file-json" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10B981"/>
+      <stop offset="100%" style="stop-color:#059669"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.1"/>
+    </filter>
+  </defs>
+
+  <style>
+    .folder-name { font-family: system-ui, -apple-system, sans-serif; font-size: 13px; font-weight: 600; fill: #1E293B; }
+    .file-name { font-family: 'SF Mono', Monaco, monospace; font-size: 12px; fill: #475569; }
+    .desc { font-family: system-ui, -apple-system, sans-serif; font-size: 10px; fill: #94A3B8; }
+    .badge { font-family: system-ui, -apple-system, sans-serif; font-size: 9px; font-weight: 500; fill: white; }
+  </style>
+
+  <!-- Background -->
+  <rect width="700" height="480" fill="#FAFBFC"/>
+
+  <!-- Title -->
+  <text x="350" y="35" text-anchor="middle" style="font-family: system-ui; font-size: 16px; font-weight: 600; fill: #1E293B;">디자인 토큰 파일 구조</text>
+
+  <!-- Root: design-system/ -->
+  <g transform="translate(40, 60)">
+    <!-- Folder icon -->
+    <rect x="0" y="0" width="24" height="20" rx="3" fill="url(#folder)" filter="url(#shadow)"/>
+    <rect x="0" y="0" width="12" height="8" rx="2" fill="#D97706"/>
+    <text x="35" y="15" class="folder-name">design-system/</text>
+  </g>
+
+  <!-- tokens/ folder -->
+  <g transform="translate(70, 100)">
+    <path d="M0 0 L0 330" stroke="#E2E8F0" stroke-width="1.5"/>
+    <path d="M0 15 L20 15" stroke="#E2E8F0" stroke-width="1.5"/>
+
+    <rect x="25" y="5" width="20" height="18" rx="3" fill="url(#folder)" filter="url(#shadow)"/>
+    <rect x="25" y="5" width="10" height="7" rx="2" fill="#D97706"/>
+    <text x="55" y="18" class="folder-name">tokens/</text>
+    <text x="120" y="18" class="desc">디자인 토큰 정의</text>
+  </g>
+
+  <!-- Token files -->
+  <g transform="translate(100, 135)">
+    <path d="M0 0 L0 120" stroke="#E2E8F0" stroke-width="1"/>
+
+    <!-- colors.ts -->
+    <g transform="translate(0, 0)">
+      <path d="M0 15 L15 15" stroke="#E2E8F0" stroke-width="1"/>
+      <rect x="20" y="5" width="18" height="22" rx="2" fill="url(#file-ts)" filter="url(#shadow)"/>
+      <text x="29" y="20" style="font-size:8px; fill:white; font-weight:600;">TS</text>
+      <text x="48" y="20" class="file-name">colors.ts</text>
+      <text x="130" y="20" class="desc">색상 팔레트 (primitive → semantic)</text>
+    </g>
+
+    <!-- spacing.ts -->
+    <g transform="translate(0, 35)">
+      <path d="M0 15 L15 15" stroke="#E2E8F0" stroke-width="1"/>
+      <rect x="20" y="5" width="18" height="22" rx="2" fill="url(#file-ts)" filter="url(#shadow)"/>
+      <text x="29" y="20" style="font-size:8px; fill:white; font-weight:600;">TS</text>
+      <text x="48" y="20" class="file-name">spacing.ts</text>
+      <text x="130" y="20" class="desc">간격 스케일 (4px 베이스)</text>
+    </g>
+
+    <!-- typography.ts -->
+    <g transform="translate(0, 70)">
+      <path d="M0 15 L15 15" stroke="#E2E8F0" stroke-width="1"/>
+      <rect x="20" y="5" width="18" height="22" rx="2" fill="url(#file-ts)" filter="url(#shadow)"/>
+      <text x="29" y="20" style="font-size:8px; fill:white; font-weight:600;">TS</text>
+      <text x="48" y="20" class="file-name">typography.ts</text>
+      <text x="145" y="20" class="desc">폰트 크기, 행간, 자간</text>
+    </g>
+
+    <!-- index.ts -->
+    <g transform="translate(0, 105)">
+      <path d="M0 15 L15 15" stroke="#E2E8F0" stroke-width="1"/>
+      <rect x="20" y="5" width="18" height="22" rx="2" fill="url(#file-ts)" filter="url(#shadow)"/>
+      <text x="29" y="20" style="font-size:8px; fill:white; font-weight:600;">TS</text>
+      <text x="48" y="20" class="file-name">index.ts</text>
+      <text x="115" y="20" class="desc">통합 export</text>
+    </g>
+  </g>
+
+  <!-- components/ folder -->
+  <g transform="translate(70, 275)">
+    <path d="M0 15 L20 15" stroke="#E2E8F0" stroke-width="1.5"/>
+
+    <rect x="25" y="5" width="20" height="18" rx="3" fill="url(#folder)" filter="url(#shadow)"/>
+    <rect x="25" y="5" width="10" height="7" rx="2" fill="#D97706"/>
+    <text x="55" y="18" class="folder-name">components/</text>
+    <text x="150" y="18" class="desc">UI 컴포넌트</text>
+  </g>
+
+  <!-- Component files -->
+  <g transform="translate(100, 305)">
+    <path d="M0 0 L0 50" stroke="#E2E8F0" stroke-width="1"/>
+
+    <!-- Button.tsx -->
+    <g transform="translate(0, 0)">
+      <path d="M0 15 L15 15" stroke="#E2E8F0" stroke-width="1"/>
+      <rect x="20" y="5" width="18" height="22" rx="2" fill="url(#file-ts)" filter="url(#shadow)"/>
+      <text x="29" y="20" style="font-size:7px; fill:white; font-weight:600;">TSX</text>
+      <text x="48" y="20" class="file-name">Button.tsx</text>
+    </g>
+
+    <!-- Input.tsx -->
+    <g transform="translate(0, 35)">
+      <path d="M0 15 L15 15" stroke="#E2E8F0" stroke-width="1"/>
+      <rect x="20" y="5" width="18" height="22" rx="2" fill="url(#file-ts)" filter="url(#shadow)"/>
+      <text x="29" y="20" style="font-size:7px; fill:white; font-weight:600;">TSX</text>
+      <text x="48" y="20" class="file-name">Input.tsx</text>
+    </g>
+  </g>
+
+  <!-- styles/ folder -->
+  <g transform="translate(70, 380)">
+    <path d="M0 15 L20 15" stroke="#E2E8F0" stroke-width="1.5"/>
+
+    <rect x="25" y="5" width="20" height="18" rx="3" fill="url(#folder)" filter="url(#shadow)"/>
+    <rect x="25" y="5" width="10" height="7" rx="2" fill="#D97706"/>
+    <text x="55" y="18" class="folder-name">styles/</text>
+    <text x="110" y="18" class="desc">생성된 CSS</text>
+  </g>
+
+  <!-- Style files -->
+  <g transform="translate(100, 410)">
+    <!-- variables.css -->
+    <g transform="translate(0, 0)">
+      <path d="M0 15 L15 15" stroke="#E2E8F0" stroke-width="1"/>
+      <rect x="20" y="5" width="18" height="22" rx="2" fill="url(#file-css)" filter="url(#shadow)"/>
+      <text x="29" y="20" style="font-size:7px; fill:white; font-weight:600;">CSS</text>
+      <text x="48" y="20" class="file-name">variables.css</text>
+      <text x="145" y="20" class="desc">CSS 변수 (자동 생성)</text>
+    </g>
+  </g>
+
+  <!-- Legend -->
+  <g transform="translate(450, 100)">
+    <rect width="210" height="140" rx="8" fill="white" stroke="#E2E8F0" stroke-width="1" filter="url(#shadow)"/>
+    <text x="105" y="25" text-anchor="middle" style="font-family: system-ui; font-size: 11px; font-weight: 600; fill: #64748B;">토큰 계층</text>
+
+    <g transform="translate(20, 45)">
+      <rect width="60" height="22" rx="4" fill="#F1F5F9"/>
+      <text x="30" y="15" text-anchor="middle" style="font-size: 10px; fill: #64748B;">Primitive</text>
+      <text x="85" y="15" style="font-size: 10px; fill: #94A3B8;">gray-500</text>
+    </g>
+
+    <g transform="translate(20, 75)">
+      <rect width="60" height="22" rx="4" fill="#EEF2FF"/>
+      <text x="30" y="15" text-anchor="middle" style="font-size: 10px; fill: #6366F1;">Semantic</text>
+      <text x="85" y="15" style="font-size: 10px; fill: #94A3B8;">text-muted</text>
+    </g>
+
+    <g transform="translate(20, 105)">
+      <rect width="60" height="22" rx="4" fill="#FEF3C7"/>
+      <text x="30" y="15" text-anchor="middle" style="font-size: 10px; fill: #D97706;">Component</text>
+      <text x="85" y="15" style="font-size: 10px; fill: #94A3B8;">btn-bg</text>
+    </g>
+  </g>
+</svg>

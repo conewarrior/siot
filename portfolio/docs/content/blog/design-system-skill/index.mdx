@@ -8,8 +8,8 @@ published: true
 
 {/*
 📸 이미지 필요:
-1. 제각각인 스타일링 코드 예시 - 하드코딩 vs 토큰 비교 → "문제: 페이지마다 제각각인 스타일링" 섹션
-2. DEVELOPMENT.md 자동 추가 태스크 - prd-to-dev가 생성한 결과 → "prd-to-dev와 연동" 섹션
+- 제각각인 스타일링 코드 예시 - 하드코딩 vs 토큰 비교 → "문제: 페이지마다 제각각인 스타일링" 섹션
+- DEVELOPMENT.md 자동 추가 태스크 - prd-to-dev가 생성한 결과 → "prd-to-dev와 연동" 섹션
 */}
 
 ## 문제: 페이지마다 제각각인 스타일링
@@ -55,19 +55,7 @@ Claude Code의 스킬 기능을 활용하기로 했다. `~/.claude/skills/design
 
 **2. 폴더 구조 강제**
 
-```
-src/design-system/
-├── tokens/
-│   ├── primitive/
-│   ├── semantic/
-│   └── component/
-├── components/
-│   ├── Button/
-│   │   ├── Button.tsx
-│   │   └── Button.stories.tsx  ← 필수
-└── generated/
-    └── tokens.css  ← 빌드 결과물
-```
+![디자인 토큰 파일 구조](/images/blog/design-token-structure.svg)
 
 **3. 컴포넌트 생성 규칙**
 
