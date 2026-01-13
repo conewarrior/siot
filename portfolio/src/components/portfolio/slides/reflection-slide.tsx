@@ -53,8 +53,8 @@ export function ReflectionSlide({
   return (
     <div
       className={cn(
-        "flex flex-col justify-center",
-        "w-full h-full p-12",
+        "h-full flex flex-col justify-center",
+        "w-full p-12",
         className
       )}
       style={{
@@ -75,7 +75,7 @@ export function ReflectionSlide({
             className="absolute -left-2 -top-4 text-6xl text-accent/20 font-serif"
             aria-hidden="true"
           >
-            "
+            &ldquo;
           </span>
           <p className="text-2xl md:text-3xl lg:text-4xl font-medium italic leading-snug pl-6 border-l-4 border-accent">
             {quote}

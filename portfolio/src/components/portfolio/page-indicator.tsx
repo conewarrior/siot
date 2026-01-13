@@ -1,67 +1,53 @@
 "use client"
 
-import { cn, formatNumber } from "@/lib/utils"
+import { cn } from "@/lib/utils"
 
 interface PageIndicatorProps {
-  current: number      // 현재 슬라이드 (1-indexed)
-  total: number        // 전체 슬라이드 수
-  sectionName?: string // 현재 섹션/프로젝트명 (선택적)
+  progress: number // 0-1, 전체 진행률
+  onDownloadPDF?: () => void
   className?: string
-  position?: "fixed" | "relative"
 }
 
 /**
- * 페이지 인디케이터 컴포넌트
- * therawmaterials.com 스타일 참고: "(7-Eleven Mobile)" + "● 04 / 23" 형식
+ * 페이지 프로그레스 인디케이터 컴포넌트
+ * 하단 고정 프로그레스 바 + PDF 다운로드 버튼
  *
  * @example
- * // 기본 사용
- * <PageIndicator current={2} total={5} />
- *
- * // 섹션명과 함께
- * <PageIndicator current={4} total={23} sectionName="7-Eleven Mobile" />
- *
- * // 상대 위치 (부모 컨테이너 내 배치)
- * <PageIndicator current={1} total={10} position="relative" />
+ * <PageIndicator progress={0.4} onDownloadPDF={() => handleDownload()} />
  */
 function PageIndicator({
-  current,
-  total,
-  sectionName,
+  progress,
+  onDownloadPDF,
   className,
-  position = "fixed",
 }: PageIndicatorProps) {
   return (
     <div
       className={cn(
-        "z-50 flex items-center gap-3",
-        position === "fixed" && "fixed bottom-6 right-6",
-        position === "relative" && "relative",
+        "fixed bottom-0 left-0 right-0 z-50 px-4 py-3 bg-background/80 backdrop-blur-sm",
         className
       )}
-      role="status"
-      aria-label={`${current} / ${total} 페이지${sectionName ? `, ${sectionName}` : ""}`}
+      role="progressbar"
+      aria-valuenow={Math.round(progress * 100)}
+      aria-valuemin={0}
+      aria-valuemax={100}
+      aria-label={`진행률 ${Math.round(progress * 100)}%`}
     >
-      {/* 섹션명 (선택적) */}
-      {sectionName && (
-        <span className="text-xs text-muted-foreground">
-          ({sectionName})
-        </span>
-      )}
-
-      {/* 페이지 번호: ● 04 / 23 */}
-      <span className="flex items-center gap-1.5 text-xs text-muted">
-        <span className="text-accent" aria-hidden="true">
-          ●
-        </span>
-        <span className="tabular-nums tracking-wide">
-          {formatNumber(current)}
-        </span>
-        <span className="text-muted-foreground">/</span>
-        <span className="tabular-nums tracking-wide text-muted-foreground">
-          {formatNumber(total)}
-        </span>
-      </span>
+      <div className="max-w-5xl mx-auto flex items-center gap-4">
+        {/* 프로그레스 바 */}
+        <div className="flex-1 h-1 bg-muted rounded-full overflow-hidden">
+          <div
+            className="h-full bg-accent transition-all duration-150"
+            style={{ width: `${progress * 100}%` }}
+          />
+        </div>
+        {/* PDF 다운로드 버튼 */}
+        <button
+          onClick={onDownloadPDF}
+          className="text-sm text-muted hover:text-foreground transition-colors"
+        >
+          PDF 다운로드
+        </button>
+      </div>
     </div>
   )
 }

@@ -55,8 +55,8 @@ export function ProcessSlide({
   return (
     <div
       className={cn(
-        "flex flex-col justify-center",
-        "w-full h-full p-12",
+        "h-full flex flex-col justify-center",
+        "w-full p-12",
         className
       )}
       style={{

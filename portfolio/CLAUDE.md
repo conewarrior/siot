@@ -156,15 +156,30 @@ The `upload-images` script uploads local images referenced in MDX to GitHub and 
 
 Deployed on Vercel at https://portfolio-six-azure-69.vercel.app
 
-## Portfolio Page
+## Portfolio Page (v2 - 스크롤 기반)
 
-포트폴리오 슬라이드 뷰어 (`/portfolio` 라우트)는 메인 사이트와 별도로 동작하는 프레젠테이션 모드 페이지.
+포트폴리오 슬라이드 뷰어 (`/portfolio` 라우트)는 스크롤 스냅 기반의 세로 스크롤 프레젠테이션 페이지.
+
+### v2 변경사항 (2025-01)
+
+**캐러셀 → 스크롤 스냅 전환:**
+- 좌우 캐러셀을 세로 스크롤 + 100vh 스냅 방식으로 변경
+- 좌측 네비게이션: 스크롤 진행률에 따라 카드 확장
+- 페이지 인디케이터: 프로그레스 바 형태
+- 기존 사이트 헤더 표시
+
+**삭제된 컴포넌트:**
+- `navigation-arrows.tsx` - 좌우 화살표 버튼
+- `keyboard-navigation.tsx` - 키보드 이벤트 핸들러
+- `slide-transition.tsx` - 좌우 슬라이드 전환 애니메이션
+- `section-entry.tsx` - 섹션 진입 알림
+- `use-portfolio-navigation.ts` - 캐러셀 네비게이션 훅
 
 ### Route Structure
 ```
 src/app/portfolio/
-├── layout.tsx          # 독립 레이아웃 (라이트 테마 강제, robots noindex)
-├── page.tsx            # 클라이언트 컴포넌트 (API fetch + 슬라이드 렌더)
+├── layout.tsx          # 헤더 포함, 라이트 테마 강제, robots noindex
+├── page.tsx            # 스크롤 스냅 컨테이너 + Intersection Observer
 src/api/portfolio/
 └── route.ts            # 섹션 데이터 API
 ```
@@ -173,19 +188,82 @@ src/api/portfolio/
 ```
 src/components/portfolio/
 ├── slide-container.tsx     # 슬라이드 래퍼 (비율 유지)
-├── slide-transition.tsx    # 좌우 슬라이드 전환 애니메이션
-├── staggered-content.tsx   # 순차 등장 애니메이션 래퍼
-├── navigation-arrows.tsx   # 좌우 화살표 버튼
-├── side-navigation.tsx     # 좌측 섹션 네비게이션
-├── page-indicator.tsx      # 하단 페이지 표시
-├── keyboard-navigation.tsx # 키보드 이벤트 핸들러
-├── section-entry.tsx       # 섹션 진입 알림
+├── staggered-content.tsx   # Intersection Observer 기반 순차 등장 애니메이션
+├── side-navigation.tsx     # 좌측 섹션 네비게이션 (스크롤 진행률 연동)
+├── page-indicator.tsx      # 하단 프로그레스 바 + PDF 버튼
+├── mobile-layout.tsx       # 모바일 반응형 레이아웃
 └── slides/                 # 슬라이드 타입별 템플릿
     ├── cover-slide.tsx
     ├── problem-slide.tsx
     ├── process-slide.tsx
     ├── outcome-slide.tsx
     └── reflection-slide.tsx
+```
+
+### Scroll Snap Pattern
+
+**컨테이너 설정:**
+```tsx
+<main
+  className="h-screen overflow-y-scroll snap-y snap-mandatory"
+  ref={containerRef}
+>
+  {sections.map(section => (
+    <section className="h-screen snap-start">
+      <SlideComponent />
+    </section>
+  ))}
+</main>
+```
+
+**smooth scroll과 스냅 충돌 해결:**
+프로그래매틱 스크롤 시 스냅이 방해할 수 있으므로 임시 비활성화:
+```tsx
+const scrollToSection = (index: number) => {
+  container.style.scrollSnapType = 'none';  // 임시 비활성화
+  slideRefs[index].scrollIntoView({ behavior: 'smooth' });
+  setTimeout(() => {
+    container.style.scrollSnapType = 'y mandatory';  // 복원
+  }, 500);
+};
+```
+
+### Intersection Observer Patterns
+
+**현재 섹션 감지 (스크롤 진행률용):**
+```tsx
+useEffect(() => {
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const index = slideRefs.indexOf(entry.target);
+          setCurrentIndex(index);
+        }
+      });
+    },
+    { root: containerRef.current, threshold: 0.5 }
+  );
+  slideRefs.forEach(ref => ref && observer.observe(ref));
+  return () => observer.disconnect();
+}, []);
+```
+
+**1회성 진입 애니메이션 (StaggeredContent):**
+```tsx
+const [hasAnimated, setHasAnimated] = useState(false);
+
+useEffect(() => {
+  const observer = new IntersectionObserver(
+    ([entry]) => {
+      if (entry.isIntersecting && !hasAnimated) {
+        setHasAnimated(true);
+      }
+    },
+    { threshold: 0.3 }
+  );
+  // 첫 진입 시에만 애니메이션, 재진입 시 즉시 표시
+}, []);
 ```
 
 ### MDX Content (`docs/content/portfolio/`)
@@ -210,40 +288,21 @@ slides:
     title: "문제 정의"
 ```
 
-### Animation Patterns
+### Semantic HTML Rules (리뷰 학습)
 
-**SlideTransition** (슬라이드 전환):
+**중복 시맨틱 태그 피하기:**
+- layout에서 `<main>`을 쓰면 page에서는 `<div>` 사용
+- page에서 `<section>`으로 감싸면 슬라이드 컴포넌트는 `<div>` 사용
+
+**ARIA 라벨 필수:**
 ```tsx
-<SlideTransition direction="right" slideKey={currentSlide}>
-  {/* 콘텐츠 */}
-</SlideTransition>
-```
-- `direction`: 이동 방향 ("right" = 다음, "left" = 이전)
-- Spring animation: `stiffness: 300, damping: 30`
-
-**StaggeredContent** (순차 등장):
-```tsx
-<StaggeredContent delay={0.1} staggerDelay={0.08}>
-  <h1>첫 번째</h1>
-  <p>두 번째</p>
-  <img />  {/* 세 번째 */}
-</StaggeredContent>
-```
-- 자식 요소들이 순서대로 fade-up 애니메이션
-- Spring animation: `damping: 20, stiffness: 400`
-
-### Navigation Hook
-
-```typescript
-import { usePortfolioNavigation } from "@/hooks/use-portfolio-navigation";
-
-const { currentSlide, goNext, goPrev, goToSlide, hasNext, hasPrev, progress } =
-  usePortfolioNavigation({ totalSlides: 10, initialSlide: 0 });
+<main role="main" aria-label="포트폴리오 슬라이드">
+  <section aria-label={`${sectionName} - ${slideTitle}`}>
 ```
 
-### Design Decisions (2025-01)
+### Design Decisions
 
 - **라이트 테마 강제**: 포트폴리오는 프레젠테이션용이므로 다크모드 비활성화
 - **Flat Slide 구조**: 섹션-슬라이드 2중 구조를 flat 배열로 펼쳐서 선형 탐색 가능
 - **API Route 사용**: 클라이언트 컴포넌트에서 MDX 데이터 접근을 위해 `/api/portfolio` 엔드포인트 활용
-- **섹션 진입 알림**: 섹션 변경 시 2초간 토스트 형태로 표시
+- **모바일**: 좌측 네비게이션 숨김 (`hidden md:block`)

@@ -46,8 +46,8 @@ export function CoverSlide({
   return (
     <div
       className={cn(
-        "flex flex-col items-center justify-center",
-        "w-full h-full p-12",
+        "h-full flex flex-col items-center justify-center",
+        "w-full p-12",
         "text-center",
         className
       )}

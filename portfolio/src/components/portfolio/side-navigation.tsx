@@ -14,13 +14,18 @@ interface Section {
 interface SideNavigationProps {
   sections: Section[]
   currentIndex: number
+  sectionProgress?: number // 0-1, 현재 섹션 내 진행률 (선택적)
   onSelect: (index: number) => void
 }
 
-function SideNavigation({ sections, currentIndex, onSelect }: SideNavigationProps) {
+// 카드 높이 상수
+const BASE_HEIGHT = 40
+const MAX_EXPANDED_HEIGHT = 80
+
+function SideNavigation({ sections, currentIndex, sectionProgress = 0, onSelect }: SideNavigationProps) {
   return (
     <nav
-      className="fixed left-6 top-1/2 z-50 -translate-y-1/2"
+      className="fixed left-6 top-1/2 z-50 -translate-y-1/2 hidden md:block"
       aria-label="섹션 내비게이션"
     >
       <ul className="flex flex-col gap-2">
@@ -28,24 +33,32 @@ function SideNavigation({ sections, currentIndex, onSelect }: SideNavigationProp
           const isActive = currentIndex === index
           const sectionNumber = index.toString().padStart(2, "0")
 
+          // 활성 카드의 높이 계산: 기본 40px + 진행률에 따라 최대 40px 추가
+          const cardHeight = isActive
+            ? BASE_HEIGHT + sectionProgress * (MAX_EXPANDED_HEIGHT - BASE_HEIGHT)
+            : BASE_HEIGHT
+
           return (
             <li key={section.id}>
               <motion.button
                 onClick={() => onSelect(index)}
                 className={cn(
-                  "group relative flex h-10 w-10 items-center justify-center rounded-lg font-medium transition-colors",
+                  "group relative flex w-10 items-center justify-center rounded-lg font-medium transition-colors",
                   "focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 )}
                 style={{
                   backgroundColor: section.color,
                   color: section.textColor,
                 }}
+                animate={{
+                  height: cardHeight,
+                }}
                 whileHover={{ scale: 1.15 }}
                 whileTap={{ scale: 0.95 }}
                 transition={{
                   type: "spring",
-                  stiffness: 400,
-                  damping: 20,
+                  stiffness: 300,
+                  damping: 30,
                 }}
                 aria-label={`${section.title} 섹션으로 이동`}
                 aria-current={isActive ? "page" : undefined}

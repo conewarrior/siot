@@ -1,6 +1,6 @@
 "use client";
 
-import { Children, type ReactNode } from "react";
+import { Children, type ReactNode, useState, useEffect, useRef } from "react";
 import { motion, type Variants } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -40,8 +40,21 @@ const itemVariants: Variants = {
   },
 };
 
+// 애니메이션 완료 후 즉시 표시용 variants
+const itemVariantsImmediate: Variants = {
+  hidden: {
+    opacity: 1,
+    y: 0,
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+  },
+};
+
 /**
  * 자식 요소들을 순차적으로 애니메이션하는 래퍼 컴포넌트
+ * 뷰포트에 처음 진입할 때만 애니메이션이 실행되고, 이후에는 즉시 표시
  *
  * @example
  * <StaggeredContent delay={0.2}>
@@ -57,26 +70,49 @@ export function StaggeredContent({
   staggerDelay = 0.1,
   className,
 }: StaggeredContentProps) {
+  const [hasAnimated, setHasAnimated] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
   const childArray = Children.toArray(children);
+
+  useEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !hasAnimated) {
+          setHasAnimated(true);
+        }
+      },
+      { threshold: 0.3 }
+    );
+
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [hasAnimated]);
+
+  // 애니메이션 완료 후에는 즉시 표시
+  const activeItemVariants = hasAnimated ? itemVariantsImmediate : itemVariants;
 
   return (
     <motion.div
+      ref={ref}
       className={cn("flex flex-col", className)}
       variants={{
         ...containerVariants,
         visible: {
           ...containerVariants.visible,
           transition: {
-            staggerChildren: staggerDelay,
-            delayChildren: delay,
+            staggerChildren: hasAnimated ? 0 : staggerDelay,
+            delayChildren: hasAnimated ? 0 : delay,
           },
         },
       }}
       initial="hidden"
-      animate="visible"
+      animate={hasAnimated ? "visible" : "hidden"}
     >
       {childArray.map((child, index) => (
-        <motion.div key={index} variants={itemVariants}>
+        <motion.div key={index} variants={activeItemVariants}>
           {child}
         </motion.div>
       ))}

@@ -6,16 +6,20 @@ import { cn } from "@/lib/utils"
 import type { PortfolioSection } from "@/lib/portfolio-mdx"
 import { ChevronDown } from "lucide-react"
 
-// useMediaQuery 훅
+// useMediaQuery 훅 - SSR에서는 기본값 사용, 클라이언트에서는 미디어 쿼리 결과 반환
 function useMediaQuery(query: string): boolean {
-  const [matches, setMatches] = useState(false)
+  // 클라이언트에서 초기값을 계산 (SSR에서는 항상 false)
+  const getInitialValue = () => {
+    if (typeof window === "undefined") return false
+    return window.matchMedia(query).matches
+  }
+
+  const [matches, setMatches] = useState(getInitialValue)
 
   useEffect(() => {
-    // 서버 사이드에서는 false 반환
     if (typeof window === "undefined") return
 
     const mediaQuery = window.matchMedia(query)
-    setMatches(mediaQuery.matches)
 
     const handler = (event: MediaQueryListEvent) => {
       setMatches(event.matches)
