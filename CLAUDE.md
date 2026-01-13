@@ -2,7 +2,19 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-**포트폴리오 사이트 작업**: `portfolio/CLAUDE.md` 참조
+## Repository Structure
+
+```
+siot/
+├── portfolio/           # Next.js 포트폴리오 사이트 (주요 작업 영역)
+│   ├── CLAUDE.md       # 포트폴리오 전용 가이드
+│   ├── src/            # 소스 코드
+│   └── docs/           # MDX 콘텐츠 + 기획 문서
+├── vercel.json         # Vercel 배포 설정 (portfolio 디렉토리 지정)
+└── CLAUDE.md           # 이 파일
+```
+
+**포트폴리오 사이트 작업**: `portfolio/CLAUDE.md` 참조 (명령어, 아키텍처, 스타일링 등)
 
 ## Development Workflow
 

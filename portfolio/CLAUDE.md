@@ -155,3 +155,95 @@ The `upload-images` script uploads local images referenced in MDX to GitHub and 
 ## Deployment
 
 Deployed on Vercel at https://portfolio-six-azure-69.vercel.app
+
+## Portfolio Page
+
+포트폴리오 슬라이드 뷰어 (`/portfolio` 라우트)는 메인 사이트와 별도로 동작하는 프레젠테이션 모드 페이지.
+
+### Route Structure
+```
+src/app/portfolio/
+├── layout.tsx          # 독립 레이아웃 (라이트 테마 강제, robots noindex)
+├── page.tsx            # 클라이언트 컴포넌트 (API fetch + 슬라이드 렌더)
+src/api/portfolio/
+└── route.ts            # 섹션 데이터 API
+```
+
+### Component Architecture
+```
+src/components/portfolio/
+├── slide-container.tsx     # 슬라이드 래퍼 (비율 유지)
+├── slide-transition.tsx    # 좌우 슬라이드 전환 애니메이션
+├── staggered-content.tsx   # 순차 등장 애니메이션 래퍼
+├── navigation-arrows.tsx   # 좌우 화살표 버튼
+├── side-navigation.tsx     # 좌측 섹션 네비게이션
+├── page-indicator.tsx      # 하단 페이지 표시
+├── keyboard-navigation.tsx # 키보드 이벤트 핸들러
+├── section-entry.tsx       # 섹션 진입 알림
+└── slides/                 # 슬라이드 타입별 템플릿
+    ├── cover-slide.tsx
+    ├── problem-slide.tsx
+    ├── process-slide.tsx
+    ├── outcome-slide.tsx
+    └── reflection-slide.tsx
+```
+
+### MDX Content (`docs/content/portfolio/`)
+
+슬라이드 콘텐츠는 `portfolio-mdx.ts`로 관리:
+
+```typescript
+import { getPortfolioSections } from "@/lib/portfolio-mdx";
+const sections = await getPortfolioSections();
+```
+
+**Frontmatter 형식:**
+```yaml
+title: "프로젝트명"
+order: 1                    # 섹션 순서 (낮을수록 먼저)
+color: "#F97316"           # 섹션 테마 색상
+textColor: "#FFFFFF"       # 텍스트 색상
+slides:
+  - type: "cover"          # cover | problem | process | outcome | reflection
+    title: "슬라이드 제목"
+  - type: "problem"
+    title: "문제 정의"
+```
+
+### Animation Patterns
+
+**SlideTransition** (슬라이드 전환):
+```tsx
+<SlideTransition direction="right" slideKey={currentSlide}>
+  {/* 콘텐츠 */}
+</SlideTransition>
+```
+- `direction`: 이동 방향 ("right" = 다음, "left" = 이전)
+- Spring animation: `stiffness: 300, damping: 30`
+
+**StaggeredContent** (순차 등장):
+```tsx
+<StaggeredContent delay={0.1} staggerDelay={0.08}>
+  <h1>첫 번째</h1>
+  <p>두 번째</p>
+  <img />  {/* 세 번째 */}
+</StaggeredContent>
+```
+- 자식 요소들이 순서대로 fade-up 애니메이션
+- Spring animation: `damping: 20, stiffness: 400`
+
+### Navigation Hook
+
+```typescript
+import { usePortfolioNavigation } from "@/hooks/use-portfolio-navigation";
+
+const { currentSlide, goNext, goPrev, goToSlide, hasNext, hasPrev, progress } =
+  usePortfolioNavigation({ totalSlides: 10, initialSlide: 0 });
+```
+
+### Design Decisions (2025-01)
+
+- **라이트 테마 강제**: 포트폴리오는 프레젠테이션용이므로 다크모드 비활성화
+- **Flat Slide 구조**: 섹션-슬라이드 2중 구조를 flat 배열로 펼쳐서 선형 탐색 가능
+- **API Route 사용**: 클라이언트 컴포넌트에서 MDX 데이터 접근을 위해 `/api/portfolio` 엔드포인트 활용
+- **섹션 진입 알림**: 섹션 변경 시 2초간 토스트 형태로 표시

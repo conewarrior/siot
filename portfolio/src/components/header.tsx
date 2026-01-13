@@ -10,6 +10,7 @@ const navItems = [
   { href: "/", label: "홈" },
   { href: "/blog", label: "블로그" },
   { href: "/projects", label: "프로젝트" },
+  { href: "/portfolio", label: "포트폴리오" },
   { href: "/about", label: "소개" },
 ]
 
