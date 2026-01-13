@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { Header } from "@/components/header"
 import { ProjectShowcase } from "@/components/project-showcase"
 import { AnimatedText } from "@/components/animated-text"
+import { TagChip } from "@/components/tag-chip"
 
 export const metadata: Metadata = {
   title: "프로젝트",
@@ -68,14 +69,9 @@ export default function ProjectsPage() {
               <p className="text-muted text-sm leading-relaxed mb-3 mt-2">
                 {project.description}
               </p>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-1.5">
                 {project.tech.map((tech) => (
-                  <span
-                    key={tech}
-                    className="text-xs font-mono text-muted/70 bg-secondary px-2 py-0.5 rounded"
-                  >
-                    {tech}
-                  </span>
+                  <TagChip key={tech} label={tech} variant="tech" />
                 ))}
               </div>
             </div>

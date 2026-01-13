@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { Header } from "@/components/header"
 import { AnimatedText } from "@/components/animated-text"
+import { TagChip } from "@/components/tag-chip"
 import { getBlogPosts } from "@/lib/mdx"
 import Link from "next/link"
 
@@ -49,9 +50,7 @@ export default function BlogPage() {
                 <p className="text-muted text-sm leading-relaxed mb-2">
                   {post.description}
                 </p>
-                <span className="text-xs text-muted/70 uppercase tracking-wide">
-                  {post.category}
-                </span>
+                <TagChip label={post.category} variant="category" />
               </article>
             </Link>
           ))}

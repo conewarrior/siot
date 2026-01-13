@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { Suspense } from "react"
 import { Header } from "@/components/header"
 import { MDXContent } from "@/components/mdx-content"
+import { TagChip } from "@/components/tag-chip"
 import { getBlogPost, getBlogPosts } from "@/lib/mdx"
 import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
@@ -68,7 +69,7 @@ export default async function BlogPostPage({
 
         <header className="mb-12">
           <div className="flex items-center gap-3 text-sm text-muted mb-4">
-            <span className="uppercase tracking-wide">{post.category}</span>
+            <TagChip label={post.category} variant="category" />
             <span>·</span>
             <span className="font-mono tabular-nums">{post.date.replace(/-/g, ".")}</span>
           </div>

@@ -6,11 +6,17 @@ category: "개발"
 published: true
 ---
 
+{/*
+📸 이미지 필요:
+1. claude-toolkit 저장소 구조 - GitHub 폴더 구조 스크린샷 → "처음에는 GitHub 저장소를 클론해서 썼다" 섹션
+2. 마켓플레이스 설치 화면 - /plugin install 실행 결과 → "마켓플레이스 등록과 병행" 섹션
+*/}
+
 ## 여러 컴퓨터에서 같은 커맨드를 쓰고 싶었다
 
-Claude Code를 쓰다 보면 자주 쓰는 작업을 커맨드로 만들게 된다. `/cleanup-ui`처럼 UI 코드 정리하는 커맨드, `/commit` 같은 git 워크플로우 커맨드 등등.
+Claude Code를 쓰다 보면 자주 쓰는 작업을 커맨드로 만들게 된다. `/cleanup-ui`처럼 UI 코드 정리하는 커맨드, `/commit` 같은 git 워크플로우 커맨드 등이 그렇다.
 
-문제는 이런 커맨드들을 여러 컴퓨터에서 똑같이 쓰고 싶을 때였다. 집 컴퓨터에서 만든 커맨드를 회사에서도 쓰고 싶은데, 매번 파일을 복사하기는 귀찮았다.
+이런 커맨드들을 여러 컴퓨터에서 똑같이 쓰고 싶을 때가 있다. 집 컴퓨터에서 만든 커맨드를 회사에서도 쓰고 싶은데, 매번 파일을 복사하기는 번거로웠다.
 
 ## 처음에는 GitHub 저장소를 클론해서 썼다
 
@@ -34,17 +40,7 @@ claude-toolkit/
 └── README.md
 ```
 
-새 컴퓨터에서 커맨드를 설치하려면:
-
-1. 저장소를 클론한다
-2. 원하는 커맨드 파일을 찾는다
-3. `.claude/commands/`에 복사한다
-
-새 커맨드를 만들어서 공유하려면:
-
-1. 로컬 저장소로 이동한다
-2. 파일을 복사한다
-3. git add, commit, push
+새 컴퓨터에서 커맨드를 설치하려면 저장소를 클론하고, 원하는 커맨드 파일을 찾아서 `.claude/commands/`에 복사해야 했다. 새 커맨드를 만들어서 공유하려면 로컬 저장소로 이동해서 파일을 복사한 뒤 git add, commit, push를 해야 했다.
 
 ```bash
 # 기존: 저장소 클론 후 수동 복사
@@ -53,13 +49,11 @@ git pull origin main
 cp commands/cleanup-ui.md ~/my-project/.claude/commands/
 ```
 
-동작은 하는데, 뭔가 번거로웠다. 특히 저장소를 클론해둔 경로를 기억해야 하고, 항상 그 폴더가 최신 상태인지도 신경 써야 했다.
+동작은 하지만 번거로웠다. 특히 저장소를 클론해둔 경로를 기억해야 하고, 항상 그 폴더가 최신 상태인지도 신경 써야 했다.
 
-## `gh` CLI가 GitHub API를 지원한다는 걸 알게 됐다
+## `gh` CLI가 GitHub API를 지원한다
 
-어느 날 Claude에게 "GitHub API로 파일을 직접 가져올 수 있어?"라고 물어봤다.
-
-답은 "그렇다"였다. `gh` CLI가 GitHub API를 래핑해서 제공하고 있었다.
+어느 날 Claude에게 "GitHub API로 파일을 직접 가져올 수 있는지" 물어봤다. `gh` CLI가 GitHub API를 래핑해서 제공하고 있었다.
 
 ```bash
 # 파일 내용 가져오기
@@ -73,7 +67,7 @@ gh api repos/owner/repo/contents/path/to/file.md \
   -f content="$(base64 < local-file.md)"
 ```
 
-이거면 로컬에 저장소를 클론해두지 않아도 되겠다 싶었다.
+이 방식이라면 로컬에 저장소를 클론해두지 않아도 된다.
 
 ## 커맨드 4개로 워크플로우를 만들었다
 
@@ -95,78 +89,34 @@ GitHub API를 활용해서 커맨드 관리 시스템을 만들었다.
 | `/publish-command` | 커맨드를 GitHub에 업로드 |
 | `/publish-skill` | 스킬 폴더를 GitHub에 업로드 |
 
-```
-skills/
-├── pdf/
-│   └── SKILL.md
-├── pptx/
-│   └── SKILL.md
-├── frontend-design/
-│   └── SKILL.md
-└── ...
-```
+이제 새 컴퓨터에서 커맨드를 설치하려면 `/install-command cleanup-ui`만 실행하면 된다. 저장소 클론도, 경로 찾기도, 파일 복사도 필요 없다.
 
-이제 새 컴퓨터에서 커맨드를 설치하려면:
+새 커맨드를 공유하려면 `/publish-command my-new-command`를 실행하면 현재 프로젝트의 `.claude/commands/my-new-command.md`가 바로 GitHub에 올라간다.
 
-```bash
-/install-command cleanup-ui
-```
+## 마켓플레이스와의 차이
 
-끝이다. 저장소 클론도, 경로 찾기도, 파일 복사도 필요 없다.
-
-새 커맨드를 공유하려면:
-
-```bash
-/publish-command my-new-command
-```
-
-현재 프로젝트의 `.claude/commands/my-new-command.md`가 바로 GitHub에 올라간다.
-
-## 잠깐, 마켓플레이스도 있잖아?
-
-이 글을 쓰다가 문득 생각났다. Claude Code에는 공식 플러그인 마켓플레이스가 있다.
-
-```bash
-# 마켓플레이스 추가
-/plugin marketplace add owner/repo
-
-# 플러그인 설치
-/plugin install plugin-name@marketplace-name
-```
-
-그럼 내가 만든 GitHub API 방식은 의미가 없는 걸까?
-
-둘은 용도가 다르다:
+Claude Code에는 공식 플러그인 마켓플레이스가 있다. 둘은 용도가 다르다.
 
 | | 마켓플레이스 | 개인 GitHub 저장소 |
 |---|---|---|
 | **대상** | 공개 배포 (누구나 설치) | 개인/팀 전용 |
-| **비공개 커맨드** | ❌ | ✅ |
+| **비공개 커맨드** | 불가 | 가능 |
 | **업데이트** | 버전 관리 필요 | push하면 바로 반영 |
 | **설정** | `marketplace.json` 작성 | 파일만 있으면 됨 |
 
-예를 들어:
-- `/commit`, `/review-pr` 같은 범용 커맨드 → 마켓플레이스
-- `/cleanup-ui`, `/deploy-staging` 같은 개인/팀 워크플로우 → GitHub 저장소
+예를 들어 `/commit`, `/review-pr` 같은 범용 커맨드는 마켓플레이스가 적합하고, `/cleanup-ui`, `/deploy-staging` 같은 개인/팀 워크플로우는 GitHub 저장소가 더 맞다. 회사에서 쓰는 내부 커맨드나 아직 다듬는 중인 개인 커맨드는 마켓플레이스보다 개인 저장소가 적합하다.
 
-회사에서 쓰는 내부 커맨드나, 아직 다듬는 중인 개인 커맨드는 마켓플레이스보다 개인 저장소가 더 맞다.
+## 로컬 상태에 의존하지 않는 워크플로우
 
-## 로컬 상태에 의존하지 않는 게 핵심이었다
-
-이번 개선에서 배운 건, **로컬 상태에 의존하지 않는 워크플로우**가 얼마나 편한지였다.
+이번 개선에서 배운 것은 로컬 상태에 의존하지 않는 워크플로우의 편리함이었다.
 
 예전 방식은 "저장소가 클론되어 있고, 최신 상태여야 한다"는 전제가 있었다. 이 전제가 깨지면 (다른 컴퓨터, 새 환경, 오래된 클론) 작업이 막혔다.
 
-새 방식은 인터넷만 되면 어디서든 똑같이 동작한다. GitHub이 single source of truth가 되니까, 동기화 걱정도 없다.
+새 방식은 인터넷만 되면 어디서든 똑같이 동작한다. GitHub이 single source of truth가 되니까 동기화 걱정도 없다.
 
-마켓플레이스든 GitHub API든, 핵심은 같다. 로컬에 뭔가를 미리 세팅해두지 않아도 되는 것. 작은 개선이었지만, 일상적으로 쓰는 도구라서 체감이 꽤 컸다.
+## 마켓플레이스 등록과 병행
 
-## 결국 마켓플레이스로도 등록했다
-
-마켓플레이스가 있다는 걸 알게 되고 나니, 둘 다 쓰면 좋겠다는 생각이 들었다.
-
-- **마켓플레이스**: 새 컴퓨터에서 전체 셋업할 때
-- **GitHub API**: 개별 커맨드 빠르게 설치/업데이트할 때
+마켓플레이스가 있다는 걸 알게 되고 나서 둘 다 쓰면 좋겠다는 생각이 들었다. 마켓플레이스는 새 컴퓨터에서 전체 셋업할 때 유용하고, GitHub API는 개별 커맨드를 빠르게 설치/업데이트할 때 유용하다.
 
 그래서 claude-toolkit 저장소에 마켓플레이스 구조를 추가했다.
 
@@ -181,95 +131,31 @@ claude-toolkit/
 └── skills/
 ```
 
-`marketplace.json`은 이렇게 생겼다:
-
-```json
-{
-  "name": "claude-toolkit-marketplace",
-  "owner": { "name": "conewarrior" },
-  "plugins": [
-    {
-      "name": "claude-toolkit",
-      "source": ".",
-      "description": "Commands and skills for Claude Code",
-      "version": "1.0.0"
-    }
-  ]
-}
-```
-
-### publish할 때 버전도 같이 올리기
-
-`/publish-command`를 수정해서, 파일 업로드할 때 `marketplace.json`의 버전도 자동으로 올리도록 했다.
-
-```bash
-/publish-command my-new-command
-# → commands/my-new-command.md 업로드
-# → marketplace.json 버전 1.0.0 → 1.0.1
-```
-
-이제 다른 컴퓨터에서 `/plugin marketplace update` 하면 새 버전이 반영된다.
-
-### 두 방식을 같이 쓰는 워크플로우
-
-**새 환경 셋업할 때:**
-```bash
-/plugin marketplace add conewarrior/claude-toolkit
-/plugin install claude-toolkit@claude-toolkit-marketplace
-# → 모든 커맨드/스킬 한 번에 설치
-```
-
-**특정 커맨드만 빠르게 설치할 때:**
-```bash
-/install-command cleanup-ui
-# → 해당 커맨드만 바로 설치
-```
-
-결국 둘 다 "로컬 상태에 의존하지 않는다"는 점에서 같다. 상황에 따라 편한 걸 쓰면 된다.
+`/publish-command`를 수정해서 파일 업로드할 때 `marketplace.json`의 버전도 자동으로 올리도록 했다. 이제 다른 컴퓨터에서 `/plugin marketplace update`를 실행하면 새 버전이 반영된다.
 
 ## 플러그인의 네임스페이스 문제
 
-마켓플레이스로 플러그인을 설치하고 나서 불편한 점을 발견했다.
+마켓플레이스로 플러그인을 설치하고 나서 불편한 점을 발견했다. 플러그인으로 설치하면 `플러그인명:커맨드명` 형식으로만 호출할 수 있다. `/install-command`만 치고 싶은데 `/toolkit-commands:install-command`를 쳐야 한다.
 
-```bash
-/toolkit-commands:install-command cleanup-ui  # 접두사 필수
-```
-
-플러그인으로 설치하면 `플러그인명:커맨드명` 형식으로만 호출할 수 있다. `/install-command`만 치고 싶은데, `/toolkit-commands:install-command`를 쳐야 한다.
-
-이건 Claude Code 플러그인 시스템의 설계다. 여러 플러그인이 같은 이름의 커맨드를 가질 수 있으니까 네임스페이스로 구분하는 것이다. 합리적이긴 한데, 자주 쓰는 커맨드에 매번 긴 접두사를 붙이기는 귀찮다.
+이건 Claude Code 플러그인 시스템의 설계다. 여러 플러그인이 같은 이름의 커맨드를 가질 수 있으니까 네임스페이스로 구분하는 것이다. 합리적이긴 하지만 자주 쓰는 커맨드에 매번 긴 접두사를 붙이기는 번거롭다.
 
 ### 해결: 전역 commands 폴더
 
-Claude Code에서 커맨드를 인식하는 경로는 두 가지다:
+Claude Code에서 커맨드를 인식하는 경로는 두 가지다.
 
 | 경로 | 호출 방식 |
 |------|-----------|
 | 플러그인 (`~/.claude/plugins/...`) | `플러그인명:커맨드명` |
 | 전역 commands (`~/.claude/commands/`) | `커맨드명` |
 
-플러그인의 커맨드 파일들을 전역 commands 폴더에 복사하면, 접두사 없이 바로 쓸 수 있다.
-
-```bash
-# 플러그인 커맨드들을 전역으로 복사
-cp ~/.claude/plugins/cache/claude-toolkit-marketplace/toolkit-commands/1.0.0/commands/*.md \
-   ~/.claude/commands/
-```
-
-이제 `/install-command`, `/publish-skill` 등을 바로 호출할 수 있다.
-
-### /global-plugin 커맨드
-
-매번 수동으로 복사하기 귀찮아서 `/global-plugin` 커맨드를 만들었다.
+플러그인의 커맨드 파일들을 전역 commands 폴더에 복사하면 접두사 없이 바로 쓸 수 있다. 매번 수동으로 복사하기 번거로워서 `/global-plugin` 커맨드를 만들었다.
 
 ```bash
 /global-plugin                      # 설치된 플러그인 목록
 /global-plugin toolkit-commands     # 해당 플러그인을 전역으로 설치
 ```
 
-플러그인이 업데이트되면 다시 `/global-plugin`을 실행해서 최신 버전을 전역에 반영할 수 있다.
-
-결국 세 가지 설치 방식이 생겼다:
+결국 세 가지 설치 방식이 생겼다.
 
 | 방식 | 용도 | 접두사 |
 |------|------|--------|
@@ -277,26 +163,15 @@ cp ~/.claude/plugins/cache/claude-toolkit-marketplace/toolkit-commands/1.0.0/com
 | `/plugin install` | 플러그인 전체 설치 | 필요 |
 | `/global-plugin` | 플러그인 → 전역 승격 | 없음 |
 
-개인적으로는 플러그인으로 설치한 뒤 바로 `/global-plugin`으로 전역에 복사하는 게 가장 편하다. 마켓플레이스의 버전 관리 기능도 쓰면서, 호출할 때는 짧은 이름을 쓸 수 있으니까.
+개인적으로는 플러그인으로 설치한 뒤 바로 `/global-plugin`으로 전역에 복사하는 방식이 가장 편하다. 마켓플레이스의 버전 관리 기능도 쓰면서 호출할 때는 짧은 이름을 쓸 수 있다.
 
 ## 전역에서 만든 커맨드도 퍼블리시하기
 
-`/global-plugin`으로 전역에 커맨드를 설치하고 나면, 자연스럽게 전역 폴더(`~/.claude/commands/`)에서 커맨드를 수정하게 된다.
+`/global-plugin`으로 전역에 커맨드를 설치하고 나면 자연스럽게 전역 폴더(`~/.claude/commands/`)에서 커맨드를 수정하게 된다.
 
-문제는 `/publish-command`가 원래 **프로젝트 로컬 폴더만** 확인했다는 점이다.
+문제는 `/publish-command`가 원래 프로젝트 로컬 폴더만 확인했다는 점이다. 전역에서 수정한 커맨드를 퍼블리시하려면 일부러 프로젝트 폴더에 복사해야 했다.
 
-```bash
-# 예전 동작
-/publish-command cleanup-ui
-# → .claude/commands/cleanup-ui.md 만 확인
-# → 없으면 에러
-```
-
-전역에서 수정한 커맨드를 퍼블리시하려면, 일부러 프로젝트 폴더에 복사해야 했다. 번거롭다.
-
-### 해결: 로컬 → 전역 순서로 탐색
-
-`/publish-command`와 `/publish-skill`을 수정해서, 로컬에 없으면 전역을 확인하도록 했다.
+`/publish-command`와 `/publish-skill`을 수정해서 로컬에 없으면 전역을 확인하도록 했다.
 
 ```
 탐색 순서:
@@ -304,20 +179,5 @@ cp ~/.claude/plugins/cache/claude-toolkit-marketplace/toolkit-commands/1.0.0/com
 2. ~/.claude/commands/$name.md (전역)
 ```
 
-스킬도 마찬가지:
+이제 어디서 수정했든 상관없이 바로 퍼블리시할 수 있다.
 
-```
-탐색 순서:
-1. .claude/skills/$name/ (프로젝트 로컬)
-2. ~/.claude/skills/$name/ (전역)
-```
-
-이제 어디서 수정했든 상관없이 바로 퍼블리시할 수 있다:
-
-```bash
-# 전역에서 수정한 커맨드도 바로 퍼블리시
-/publish-command cleanup-ui
-# → ~/.claude/commands/cleanup-ui.md 찾아서 업로드
-```
-
-작은 수정이었지만, 전역에서 커맨드를 관리하는 워크플로우가 훨씬 자연스러워졌다.
