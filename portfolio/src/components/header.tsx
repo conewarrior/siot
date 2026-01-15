@@ -10,9 +10,9 @@ const navItems = [
   { href: "/", label: "홈" },
   { href: "/blog", label: "블로그" },
   { href: "/projects", label: "프로젝트" },
-  { href: "/portfolio", label: "포트폴리오" },
+  { href: "/portfolio", label: "포트폴리오", newTab: true },
   { href: "/about", label: "소개" },
-]
+] as const
 
 export function Header() {
   const pathname = usePathname()
@@ -54,6 +54,9 @@ export function Header() {
               <Link
                 key={item.href}
                 href={item.href}
+                {...("newTab" in item && item.newTab
+                  ? { target: "_blank", rel: "noopener noreferrer" }
+                  : {})}
                 className={`
                   relative rounded-md px-3 py-1.5 text-sm font-medium
                   text-foreground outline-ring transition-all duration-200
@@ -71,6 +74,9 @@ export function Header() {
                   />
                 )}
                 {item.label}
+                {"newTab" in item && item.newTab && (
+                  <span className="ml-1 text-[10px] opacity-50">↗</span>
+                )}
               </Link>
             ))}
           </div>
