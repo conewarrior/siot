@@ -1,23 +1,48 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { Grid } from "@/components/portfolio/grid";
+import { Body, Caption } from "@/components/portfolio/typography";
 
 interface ProblemSlideProps {
   children?: ReactNode;
   className?: string;
-  /** 슬라이드 제목 */
+  /** 슬라이드 제목 (기본: "PROBLEM") */
   heading?: string;
   /** 문제 배경 컨텍스트 (불릿 리스트) */
   context?: string[];
 }
 
 /**
+ * 숫자 강조 처리 헬퍼
+ * 텍스트 내 숫자(정수, 소수, 백분율, 시간 등)에 강조 스타일 적용
+ */
+function highlightNumbers(text: string): ReactNode {
+  // 숫자 패턴: 정수, 소수, 백분율, 시간(00:00), 단위 포함
+  const numberPattern = /(\d+(?:\.\d+)?(?:%|시간|분|초|개|건|명)?|\d+:\d+)/g;
+  const parts = text.split(numberPattern);
+
+  return parts.map((part, index) => {
+    if (numberPattern.test(part)) {
+      // Reset lastIndex for global regex
+      numberPattern.lastIndex = 0;
+      return (
+        <span key={index} className="font-semibold text-accent">
+          {part}
+        </span>
+      );
+    }
+    return part;
+  });
+}
+
+/**
  * 문제 정의 슬라이드 컴포넌트
- * 비즈니스 임팩트를 숫자 강조형으로 보여주는 슬라이드.
+ * 6-6 그리드 레이아웃으로 배경 컨텍스트와 다이어그램/비즈니스 임팩트 분리
  */
 export function ProblemSlide({
   children,
   className,
-  heading,
+  heading = "PROBLEM",
   context,
 }: ProblemSlideProps) {
   const hasContext = context && context.length > 0;
@@ -25,35 +50,41 @@ export function ProblemSlide({
   return (
     <div
       className={cn(
-        "flex flex-col justify-center",
         "w-full h-full p-6 md:p-12",
         className
       )}
     >
-      {heading && (
-        <h2 className="text-sm md:text-base font-medium text-accent uppercase tracking-widest mb-4 md:mb-6">
-          {heading}
-        </h2>
-      )}
+      <Grid cols="6-6" align="start" gap="lg" className="h-full">
+        {/* 좌측 영역: 라벨 + 배경 컨텍스트 */}
+        <div className="flex flex-col justify-center h-full">
+          <Caption className="text-accent uppercase tracking-widest mb-4">
+            {heading}
+          </Caption>
 
-      {/* 문제 배경 컨텍스트 */}
-      {hasContext && (
-        <ul className="mb-6 md:mb-8 space-y-2 max-w-2xl">
-          {context.map((item, index) => (
-            <li key={index} className="flex items-start gap-2 text-sm md:text-base text-foreground/80">
-              <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-accent flex-shrink-0" />
-              <span>{item}</span>
-            </li>
-          ))}
-        </ul>
-      )}
-
-      {/* children: MetricCard 등 구조화된 컴포넌트가 들어옴 */}
-      {children && (
-        <div className="flex-1 flex items-center min-h-0">
-          <div className="w-full">{children}</div>
+          {/* 문제 배경 컨텍스트 - 불릿 리스트 */}
+          {hasContext && (
+            <ul className="space-y-3">
+              {context.map((item, index) => (
+                <li key={index} className="flex items-start gap-3">
+                  <span className="mt-2 w-1.5 h-1.5 rounded-full bg-accent flex-shrink-0" />
+                  <Body className="text-foreground/80">
+                    {highlightNumbers(item)}
+                  </Body>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
-      )}
+
+        {/* 우측 영역: children (다이어그램/비즈니스 임팩트) */}
+        <div className="min-h-0 flex items-center justify-center h-full">
+          {children && (
+            <div className="w-full [&_img]:object-contain">
+              {children}
+            </div>
+          )}
+        </div>
+      </Grid>
     </div>
   );
 }

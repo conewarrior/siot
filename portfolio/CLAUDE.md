@@ -288,6 +288,127 @@ slides:
 - **라이트 테마 강제**: 프레젠테이션용이므로 다크모드 비활성화
 - **모바일**: 좌측 네비게이션 숨김 (`hidden md:flex`)
 
+## 포트폴리오 디자인 시스템
+
+포트폴리오 슬라이드에서 사용하는 타이포그래피, 그리드, 컴포넌트 규칙.
+
+### 타이포그래피 (5단계)
+
+| 계층 | 클래스 | 크기/스타일 | 용도 |
+|-----|--------|------------|------|
+| Hero | `text-5xl md:text-6xl font-bold` | 60px, Bold | 커버 메인 타이틀 |
+| H1 | `text-3xl md:text-4xl font-semibold` | 36px, Semibold | 슬라이드 제목 |
+| H2 | `text-xl md:text-2xl font-medium` | 24px, Medium | 섹션 제목, 카드 헤더 |
+| Body | `text-base md:text-lg text-muted-foreground` | 18px, Regular, 회색 | 본문, 설명 |
+| Caption | `text-sm text-muted-foreground/70` | 14px, Regular, 연한 회색 | 부가 정보, 라벨 |
+
+**사용 예시:**
+```tsx
+<h1 className="text-5xl md:text-6xl font-bold">CRO 최적화</h1>
+<p className="text-lg text-muted-foreground mt-4">전환율 개선 프로젝트</p>
+```
+
+### 그리드 시스템 (12컬럼)
+
+`Grid`, `GridItem` 컴포넌트로 12컬럼 기반 레이아웃 구성.
+
+**주요 레이아웃 조합:**
+| 패턴 | 용도 | 예시 |
+|-----|------|------|
+| 4-8 | 좌측 라벨 + 우측 콘텐츠 | Problem 슬라이드 |
+| 5-7 | 텍스트 + 이미지 균형 | Process 슬라이드 |
+| 6-6 | 동등 비중 | Before/After 비교 |
+
+**사용 예시:**
+```tsx
+import { Grid, GridItem } from "@/components/portfolio/grid";
+
+<Grid>
+  <GridItem span={4}>
+    <h2 className="text-2xl font-medium">문제 정의</h2>
+  </GridItem>
+  <GridItem span={8}>
+    <p className="text-lg text-muted-foreground">
+      기존 시스템의 한계점 분석...
+    </p>
+  </GridItem>
+</Grid>
+```
+
+### 카드 사용 원칙
+
+**사용하지 말아야 할 때:**
+- 단순 텍스트 나열 (리스트로 충분)
+- 이미 그리드로 구분된 영역
+- 정보 밀도가 낮은 경우
+
+**사용해야 할 때:**
+- 클릭/호버 인터랙션이 필요한 요소
+- 시각적으로 그룹핑해야 하는 독립 단위
+- 메트릭/통계 강조 (숫자 카드)
+
+**대안 표현:**
+```tsx
+// 카드 대신 배경색 + 패딩으로 영역 구분
+<div className="bg-muted/30 rounded-lg p-6">
+  <h3 className="font-medium">섹션 제목</h3>
+  <p className="text-muted-foreground">내용</p>
+</div>
+
+// 카드 대신 리스트로 표현
+<ul className="space-y-3">
+  <li className="flex items-start gap-3">
+    <span className="text-accent">•</span>
+    <span>항목 내용</span>
+  </li>
+</ul>
+```
+
+### 슬라이드 컴포넌트 구조
+
+| 컴포넌트 | 용도 | 주요 props |
+|---------|------|-----------|
+| `intro-slide` | 포트폴리오 전체 커버 | title, subtitle |
+| `cover-slide` | 개별 프로젝트 커버 | title, subtitle, period, role |
+| `problem-slide` | 문제 정의 | title, problems[], insights[] |
+| `process-slide` | 해결 과정 | title, steps[], children(다이어그램) |
+| `outcome-slide` | 결과/성과 | title, metrics[], insights[] |
+| `reflection-slide` | 회고/학습 | title, learnings[], timeline[] |
+| `epilogue-slide` | About + Contact 통합 | profile, contact, skills[] |
+
+**슬라이드 선택 가이드:**
+```
+프로젝트 시작     → cover-slide
+무엇이 문제였나   → problem-slide
+어떻게 해결했나   → process-slide (+ 다이어그램)
+결과는 무엇인가   → outcome-slide (정량 지표 강조)
+무엇을 배웠나     → reflection-slide
+포트폴리오 마무리 → epilogue-slide (About 섹션)
+```
+
+### 이미지 레이아웃 패턴
+
+**단일 이미지 (전체 폭):**
+```tsx
+<div className="relative aspect-video w-full overflow-hidden rounded-lg">
+  <Image src={url} alt={alt} fill className="object-cover" />
+</div>
+```
+
+**2열 이미지 비교:**
+```tsx
+<div className="grid grid-cols-2 gap-4">
+  <div className="relative aspect-video">
+    <Image src={before} alt="Before" fill className="object-cover" />
+    <span className="absolute top-2 left-2 bg-black/50 text-white px-2 py-1 text-sm rounded">Before</span>
+  </div>
+  <div className="relative aspect-video">
+    <Image src={after} alt="After" fill className="object-cover" />
+    <span className="absolute top-2 left-2 bg-accent text-white px-2 py-1 text-sm rounded">After</span>
+  </div>
+</div>
+```
+
 ## 다이어그램 컴포넌트
 
 포트폴리오 슬라이드에 사용되는 인터랙티브 다이어그램 컴포넌트 패턴.

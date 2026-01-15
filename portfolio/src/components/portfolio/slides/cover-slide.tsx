@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
-import { Building2, Calendar, User } from "lucide-react";
+import { H1, Body, Caption } from "@/components/portfolio/typography";
 
 interface MetaInfo {
   company?: string;
@@ -8,6 +8,13 @@ interface MetaInfo {
   role?: string;
 }
 
+interface Outcome {
+  label: string;
+  value: string;
+  change?: string;
+}
+
+/** @deprecated projects 대신 outcomes 사용 권장 */
 interface ProjectPreview {
   title: string;
   highlight: string;
@@ -19,7 +26,7 @@ interface CoverSlideProps {
   className?: string;
   /** 프로젝트명 */
   name?: string;
-  /** 서브타이틀 */
+  /** 서브타이틀 (역할/카테고리) */
   title?: string;
   /** 프로젝트 설명 (한 줄 개요) */
   description?: string;
@@ -29,13 +36,15 @@ interface CoverSlideProps {
   accentColor?: string;
   /** 인트로/소개 텍스트 (여러 줄 가능) */
   intro?: string[];
-  /** 프로젝트 미리보기 목록 */
+  /** 핵심 성과 수치 */
+  outcomes?: Outcome[];
+  /** @deprecated outcomes 사용 권장 - 호환성을 위해 유지 */
   projects?: ProjectPreview[];
 }
 
 /**
  * 커버 슬라이드 컴포넌트
- * 프로젝트 표지. 큰 제목 + 간단한 메타 정보.
+ * 프로젝트 표지. 좌측 정렬 레이아웃 + 핵심 성과 수치.
  */
 export function CoverSlide({
   children,
@@ -46,112 +55,104 @@ export function CoverSlide({
   meta,
   accentColor = "#F97316",
   intro,
+  outcomes,
   projects,
 }: CoverSlideProps) {
-  const hasMeta = meta && (meta.company || meta.period || meta.role);
+  const hasMeta = meta && (meta.company || meta.period);
   const hasIntro = intro && intro.length > 0;
-  const hasProjects = projects && projects.length > 0;
+  const hasOutcomes = outcomes && outcomes.length > 0;
+  // projects를 outcomes 형식으로 변환 (호환성)
+  const hasProjects = !hasOutcomes && projects && projects.length > 0;
+
+  // 메타 정보를 구분자로 연결
+  const metaText = [meta?.company, meta?.period].filter(Boolean).join(" · ");
 
   return (
     <div
       className={cn(
-        "flex flex-col items-center justify-center gap-4 md:gap-6",
+        "flex flex-col justify-center gap-4 md:gap-6",
         "w-full h-full p-4 md:p-12",
-        "text-center",
+        "text-left",
         className
       )}
     >
-      {/* 메인 타이틀 */}
-      {name && (
-        <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold tracking-tight text-foreground leading-tight">
-          {name}
-        </h1>
+      {/* 상단 메타 정보 (플랫 텍스트) */}
+      {hasMeta && (
+        <Caption className="text-muted-foreground">{metaText}</Caption>
       )}
 
-      {/* 서브타이틀 */}
+      {/* 메인 타이틀 */}
+      {name && (
+        <H1 className="text-3xl md:text-5xl lg:text-6xl tracking-tight leading-tight">
+          {name}
+        </H1>
+      )}
+
+      {/* 역할/카테고리 */}
       {title && (
-        <p className="text-base md:text-xl text-muted max-w-2xl px-2">
-          {title}
-        </p>
+        <Caption className="text-muted">{title}</Caption>
       )}
 
       {/* 프로젝트 설명 (개요) */}
       {description && (
-        <p className="mt-2 md:mt-4 text-sm md:text-base text-foreground/80 max-w-2xl px-4 leading-relaxed">
+        <Body className="mt-2 md:mt-4 max-w-2xl leading-relaxed">
           {description}
-        </p>
+        </Body>
       )}
 
       {/* 인트로 텍스트 */}
       {hasIntro && (
-        <div className="mt-2 md:mt-4 space-y-1 max-w-xl px-2">
+        <div className="mt-2 md:mt-4 space-y-1 max-w-xl">
           {intro.map((line, index) => (
-            <p key={index} className="text-sm md:text-base text-muted leading-relaxed">
+            <Body key={index} className="text-muted leading-relaxed">
               {line}
-            </p>
+            </Body>
           ))}
         </div>
       )}
 
-      {/* 프로젝트 미리보기 */}
-      {hasProjects && (
-        <div className="mt-4 md:mt-8 grid grid-cols-2 gap-2 md:gap-3 w-full max-w-3xl px-2">
-          {projects.map((project, index) => (
-            <div
-              key={index}
-              className="flex flex-col items-center gap-1 md:gap-2 p-3 md:p-4 rounded-xl bg-secondary/30 border border-border/30"
-            >
-              <div
-                className="w-2 h-2 md:w-3 md:h-3 rounded-full"
-                style={{ backgroundColor: project.color }}
-              />
-              <span className="text-xs md:text-sm font-medium text-foreground">
-                {project.title}
-              </span>
+      {/* 핵심 성과 수치 */}
+      {hasOutcomes && (
+        <div className="mt-6 md:mt-10 flex flex-wrap gap-8 md:gap-12">
+          {outcomes.map((outcome, index) => (
+            <div key={index} className="flex flex-col gap-1">
               <span
-                className="text-[10px] md:text-xs font-semibold"
+                className="text-3xl md:text-4xl font-bold"
+                style={{ color: accentColor }}
+              >
+                {outcome.value}
+              </span>
+              <Caption className="text-muted">{outcome.label}</Caption>
+              {outcome.change && (
+                <span className="text-xs text-muted-foreground">
+                  {outcome.change}
+                </span>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* 프로젝트 미리보기 (deprecated - outcomes로 마이그레이션 권장) */}
+      {hasProjects && (
+        <div className="mt-6 md:mt-10 flex flex-wrap gap-8 md:gap-12">
+          {projects.map((project, index) => (
+            <div key={index} className="flex flex-col gap-1">
+              <span
+                className="text-3xl md:text-4xl font-bold"
                 style={{ color: project.color }}
               >
                 {project.highlight}
               </span>
+              <Caption className="text-muted">{project.title}</Caption>
             </div>
           ))}
-        </div>
-      )}
-
-      {/* 메타 정보 카드 */}
-      {hasMeta && (
-        <div className="mt-4 md:mt-8 flex flex-wrap justify-center gap-2 md:gap-4 px-2">
-          {meta.company && (
-            <div
-              className="flex items-center gap-1.5 md:gap-2 px-3 md:px-4 py-1.5 md:py-2 rounded-full bg-secondary/50 border border-border/50"
-            >
-              <Building2 className="w-3 h-3 md:w-4 md:h-4" style={{ color: accentColor }} />
-              <span className="text-xs md:text-sm font-medium text-foreground">{meta.company}</span>
-            </div>
-          )}
-          {meta.period && (
-            <div
-              className="flex items-center gap-1.5 md:gap-2 px-3 md:px-4 py-1.5 md:py-2 rounded-full bg-secondary/50 border border-border/50"
-            >
-              <Calendar className="w-3 h-3 md:w-4 md:h-4" style={{ color: accentColor }} />
-              <span className="text-xs md:text-sm font-medium text-foreground">{meta.period}</span>
-            </div>
-          )}
-          {meta.role && (
-            <div
-              className="flex items-center gap-1.5 md:gap-2 px-3 md:px-4 py-1.5 md:py-2 rounded-full bg-secondary/50 border border-border/50"
-            >
-              <User className="w-3 h-3 md:w-4 md:h-4" style={{ color: accentColor }} />
-              <span className="text-xs md:text-sm font-medium text-foreground">{meta.role}</span>
-            </div>
-          )}
         </div>
       )}
 
       {/* children은 추가 콘텐츠로 렌더링 */}
       {children && (
-        <div className="mt-4 flex flex-wrap justify-center gap-4">
+        <div className="mt-4 flex flex-wrap gap-4">
           {children}
         </div>
       )}
@@ -159,4 +160,4 @@ export function CoverSlide({
   );
 }
 
-export type { CoverSlideProps, MetaInfo, ProjectPreview };
+export type { CoverSlideProps, MetaInfo, Outcome, ProjectPreview };

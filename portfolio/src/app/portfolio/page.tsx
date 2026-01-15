@@ -1,7 +1,10 @@
 "use client";
 
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import type { MDXRemoteSerializeResult } from "next-mdx-remote";
+import { motion, AnimatePresence } from "framer-motion";
+import { Monitor } from "lucide-react";
 import { SideNavigation } from "@/components/portfolio/side-navigation";
 import { PortfolioMenuBar } from "@/components/portfolio/portfolio-menu-bar";
 import { CoverSlide } from "@/components/portfolio/slides/cover-slide";
@@ -11,6 +14,7 @@ import { OutcomeSlide } from "@/components/portfolio/slides/outcome-slide";
 import { ProfileSlide } from "@/components/portfolio/slides/profile-slide";
 import { ContactSlide } from "@/components/portfolio/slides/contact-slide";
 import { EpilogueSlide } from "@/components/portfolio/slides/epilogue-slide";
+import { IntroSlide } from "@/components/portfolio/slides/intro-slide";
 import type { PortfolioSection } from "@/lib/portfolio-mdx";
 
 // API에서 받아오는 슬라이드 타입 (serializedContent 포함)
@@ -714,10 +718,64 @@ function PortfolioClient({ sections }: PortfolioClientProps) {
   );
 }
 
+// 모바일 감지 훅
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  return isMobile;
+}
+
+// 모바일 안내 모달 컴포넌트
+function MobileBlockModal() {
+  const router = useRouter();
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-background px-6">
+      <motion.div
+        initial={{ scale: 0.95, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.3 }}
+        className="w-full max-w-sm rounded-2xl border border-border bg-background p-6 shadow-xl"
+      >
+        <div className="flex flex-col items-center text-center gap-4">
+          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-accent/10">
+            <Monitor className="h-7 w-7 text-accent" />
+          </div>
+          <div>
+            <h3 className="text-xl font-semibold text-foreground">
+              데스크탑에서 확인해주세요
+            </h3>
+            <p className="mt-3 text-sm text-muted leading-relaxed">
+              포트폴리오는 더 나은 경험을 위해<br />
+              데스크탑 환경에 최적화되어 있습니다.
+            </p>
+          </div>
+          <button
+            onClick={() => router.push("/")}
+            className="mt-2 w-full rounded-lg bg-accent px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-accent/90"
+          >
+            홈으로 돌아가기
+          </button>
+        </div>
+      </motion.div>
+    </div>
+  );
+}
+
 export default function PortfolioPage() {
   const [sections, setSections] = useState<ClientPortfolioSection[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     fetch("/api/portfolio")
@@ -736,6 +794,22 @@ export default function PortfolioPage() {
         setLoading(false);
       });
   }, []);
+
+  // 모바일 감지 전 (null) - 로딩 표시
+  if (isMobile === null) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-accent border-t-transparent" />
+        </div>
+      </div>
+    );
+  }
+
+  // 모바일이면 안내 모달 표시
+  if (isMobile) {
+    return <MobileBlockModal />;
+  }
 
   if (loading) {
     return (

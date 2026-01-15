@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { Caption } from "@/components/portfolio/typography";
 
 interface ScreenshotItem {
   src: string;
@@ -37,20 +38,18 @@ export function ScreenshotGallery({
     return (
       <div className={containerClass}>
         <figure className="flex flex-col items-center">
-          <div className="relative rounded-lg overflow-hidden border border-border/50 shadow-lg bg-secondary/20">
+          <div className="relative rounded-lg overflow-hidden border border-border/50 shadow-lg bg-secondary/20 flex items-center justify-center">
             <Image
               src={images[0].src}
               alt={images[0].alt}
               width={800}
               height={450}
-              className="w-auto h-auto max-w-full max-h-[160px] md:max-h-[200px] object-contain"
+              className="w-full h-auto max-h-[400px] object-contain"
               sizes="(max-width: 768px) 100vw, 800px"
             />
           </div>
           {images[0].caption && (
-            <figcaption className="mt-2 text-center text-xs text-muted">
-              {images[0].caption}
-            </figcaption>
+            <Caption className="mt-2 text-center">{images[0].caption}</Caption>
           )}
         </figure>
       </div>
@@ -60,21 +59,19 @@ export function ScreenshotGallery({
   return (
     <div className={containerClass}>
       {images.map((image, index) => (
-        <figure key={index} className="flex flex-col items-center flex-1 min-w-0">
-          <div className="relative rounded-lg overflow-hidden border border-border/50 shadow-lg bg-secondary/20">
+        <figure key={index} className="flex flex-col items-center flex-1 min-w-0 min-h-0">
+          <div className="relative rounded-lg overflow-hidden border border-border/50 shadow-lg bg-secondary/20 flex items-center justify-center">
             <Image
               src={image.src}
               alt={image.alt}
               width={400}
               height={300}
-              className="w-auto h-auto max-w-full max-h-[180px] md:max-h-[240px] object-contain"
+              className="w-full h-auto max-h-[400px] object-contain"
               sizes="(max-width: 768px) 100vw, 400px"
             />
           </div>
           {image.caption && (
-            <figcaption className="mt-2 text-center text-xs text-muted">
-              {image.caption}
-            </figcaption>
+            <Caption className="mt-2 text-center">{image.caption}</Caption>
           )}
         </figure>
       ))}
@@ -98,25 +95,23 @@ export function BeforeAfterComparison({
 }: BeforeAfterProps) {
   return (
     <div className={cn("w-full flex flex-col md:flex-row gap-4 items-center justify-center", className)}>
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center min-h-0">
         <span className="text-xs font-medium text-muted uppercase tracking-wider mb-2 text-center">
           Before
         </span>
         <figure className="flex flex-col items-center">
-          <div className="relative rounded-lg overflow-hidden border border-border/50 shadow-lg bg-secondary/20">
+          <div className="relative rounded-lg overflow-hidden border border-border/50 shadow-lg bg-secondary/20 flex items-center justify-center">
             <Image
               src={before.src}
               alt={before.alt}
               width={400}
               height={300}
-              className="w-auto h-auto max-w-full max-h-[160px] md:max-h-[220px] object-contain"
+              className="w-full h-auto max-h-[400px] object-contain"
               sizes="(max-width: 768px) 100vw, 400px"
             />
           </div>
           {before.caption && (
-            <figcaption className="mt-2 text-center text-xs text-muted">
-              {before.caption}
-            </figcaption>
+            <Caption className="mt-2 text-center">{before.caption}</Caption>
           )}
         </figure>
       </div>
@@ -127,25 +122,23 @@ export function BeforeAfterComparison({
         </div>
       </div>
 
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center min-h-0">
         <span className="text-xs font-medium text-accent uppercase tracking-wider mb-2 text-center">
           After
         </span>
         <figure className="flex flex-col items-center">
-          <div className="relative rounded-lg overflow-hidden border-2 border-accent/30 shadow-lg bg-secondary/20">
+          <div className="relative rounded-lg overflow-hidden border-2 border-accent/30 shadow-lg bg-secondary/20 flex items-center justify-center">
             <Image
               src={after.src}
               alt={after.alt}
               width={400}
               height={300}
-              className="w-auto h-auto max-w-full max-h-[160px] md:max-h-[220px] object-contain"
+              className="w-full h-auto max-h-[400px] object-contain"
               sizes="(max-width: 768px) 100vw, 400px"
             />
           </div>
           {after.caption && (
-            <figcaption className="mt-2 text-center text-xs text-muted">
-              {after.caption}
-            </figcaption>
+            <Caption className="mt-2 text-center">{after.caption}</Caption>
           )}
         </figure>
       </div>

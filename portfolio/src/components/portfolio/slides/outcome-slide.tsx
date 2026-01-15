@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { FeatureConsolidation } from "@/components/portfolio/diagrams/ui-flow";
-import { CheckCircle2, AlertCircle } from "lucide-react";
+import { Body, Caption } from "@/components/portfolio/typography";
 
 interface Metric {
   /** 지표 레이블 */
@@ -33,8 +33,6 @@ interface OutcomeSlideProps {
   strengths?: ReflectionItem[];
   /** 개선할 점 (회고) */
   improvements?: ReflectionItem[];
-  /** 테마 색상 */
-  accentColor?: string;
 }
 
 /**
@@ -55,7 +53,6 @@ export function OutcomeSlide({
   diagram,
   strengths,
   improvements,
-  accentColor = "#F97316",
 }: OutcomeSlideProps) {
   // 다이어그램 컴포넌트 렌더링
   const DiagramComponent = diagram ? diagramComponents[diagram] : null;
@@ -69,46 +66,30 @@ export function OutcomeSlide({
         className
       )}
     >
+      {/* OUTCOME 라벨 */}
       {heading && (
-        <h2 className="text-sm md:text-base font-medium text-accent uppercase tracking-widest mb-6">
+        <Caption className="text-accent uppercase tracking-widest mb-4">
           {heading}
-        </h2>
+        </Caption>
       )}
 
+      {/* 요약 문구 */}
       {summary && (
         <p className="text-xl md:text-2xl lg:text-3xl font-semibold mb-10 max-w-3xl text-foreground">
           {summary}
         </p>
       )}
 
-      {DiagramComponent ? (
-        <div className="flex-1 overflow-auto">
-          <DiagramComponent />
-        </div>
-      ) : children ? (
-        <div className="flex-1">{children}</div>
-      ) : metrics && metrics.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {/* 상단 - 핵심 성과 수치 (플랫한 스타일) */}
+      {metrics && metrics.length > 0 && (
+        <div className="flex flex-wrap gap-8 mb-8">
           {metrics.map((metric, index) => (
-            <div
-              key={index}
-              className={cn(
-                "p-6 rounded-lg",
-                "bg-secondary/50 border border-border"
-              )}
-            >
-              {/* 지표 레이블 */}
-              <p className="text-sm text-muted font-medium mb-2">
-                {metric.label}
-              </p>
-
-              {/* 지표 값 */}
-              <div className="flex items-baseline gap-3">
-                <span className="text-4xl md:text-5xl font-bold tabular-nums text-foreground">
+            <div key={index} className="flex flex-col">
+              {/* 큰 숫자 */}
+              <div className="flex items-baseline gap-2">
+                <span className="text-4xl font-bold text-accent tabular-nums">
                   {metric.value}
                 </span>
-
-                {/* 변화량 */}
                 {metric.change && (
                   <span
                     className={cn(
@@ -120,51 +101,56 @@ export function OutcomeSlide({
                   </span>
                 )}
               </div>
+              {/* 설명 */}
+              <Caption>{metric.label}</Caption>
             </div>
           ))}
         </div>
+      )}
+
+      {/* 중단 - 다이어그램/이미지 영역 */}
+      {DiagramComponent ? (
+        <div className="flex-1 overflow-auto [&_img]:object-contain [&_img]:max-h-[300px]">
+          <DiagramComponent />
+        </div>
+      ) : children ? (
+        <div className="flex-1 [&_img]:object-contain [&_img]:max-h-[300px]">
+          {children}
+        </div>
       ) : null}
 
-      {/* 회고 섹션 - 컴팩트하게 하단에 표시 */}
+      {/* 하단 - 회고 영역 (카드 없이 2컬럼 텍스트) */}
       {hasReflection && (
-        <div className="mt-8 pt-6 border-t border-border/50">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* 잘한 점 */}
-            {strengths && strengths.length > 0 && (
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 mb-3">
-                  <CheckCircle2 className="w-4 h-4" style={{ color: accentColor }} />
-                  <h3 className="text-sm font-semibold text-foreground">잘한 점</h3>
-                </div>
-                <ul className="space-y-1.5">
-                  {strengths.map((item, index) => (
-                    <li key={index} className="text-xs text-muted leading-relaxed flex items-start gap-2">
-                      <span className="w-1 h-1 rounded-full mt-1.5 flex-shrink-0" style={{ backgroundColor: accentColor }} />
-                      {item.text}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
+        <div className="grid grid-cols-2 gap-8 mt-6">
+          {/* 잘한 점 */}
+          {strengths && strengths.length > 0 && (
+            <div>
+              <Caption className="text-foreground mb-3">잘한 점</Caption>
+              <ul className="space-y-2">
+                {strengths.map((item, index) => (
+                  <li key={index} className="flex items-start gap-2">
+                    <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-green-500 flex-shrink-0" />
+                    <Body>{item.text}</Body>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
-            {/* 개선할 점 */}
-            {improvements && improvements.length > 0 && (
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 mb-3">
-                  <AlertCircle className="w-4 h-4 text-muted" />
-                  <h3 className="text-sm font-semibold text-foreground">개선할 점</h3>
-                </div>
-                <ul className="space-y-1.5">
-                  {improvements.map((item, index) => (
-                    <li key={index} className="text-xs text-muted leading-relaxed flex items-start gap-2">
-                      <span className="w-1 h-1 rounded-full bg-muted/50 mt-1.5 flex-shrink-0" />
-                      {item.text}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
+          {/* 개선할 점 */}
+          {improvements && improvements.length > 0 && (
+            <div>
+              <Caption className="text-foreground mb-3">개선할 점</Caption>
+              <ul className="space-y-2">
+                {improvements.map((item, index) => (
+                  <li key={index} className="flex items-start gap-2">
+                    <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-amber-500 flex-shrink-0" />
+                    <Body>{item.text}</Body>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       )}
     </div>

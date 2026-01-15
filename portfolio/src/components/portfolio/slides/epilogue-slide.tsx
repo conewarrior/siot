@@ -1,9 +1,11 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
-import { Code, Palette, BarChart3, Figma, Mail, Github, Linkedin, ExternalLink } from "lucide-react";
+import { Mail, Github, Linkedin, ExternalLink } from "lucide-react";
+import { Grid } from "@/components/portfolio/grid";
+import { H2, Body, Caption } from "@/components/portfolio/typography";
 
 interface Skill {
-  icon: "code" | "palette" | "chart" | "figma";
+  icon?: "code" | "palette" | "chart" | "figma";
   title: string;
   description: string;
 }
@@ -33,13 +35,6 @@ interface EpilogueSlideProps {
   accentColor?: string;
 }
 
-const skillIconMap = {
-  code: Code,
-  palette: Palette,
-  chart: BarChart3,
-  figma: Figma,
-};
-
 const contactIconMap = {
   email: Mail,
   github: Github,
@@ -50,6 +45,7 @@ const contactIconMap = {
 /**
  * 에필로그 슬라이드 컴포넌트
  * Profile + Contact 통합 - 포트폴리오 마무리용
+ * 5-7 그리드 레이아웃, 스킬/연락처 텍스트 기반
  */
 export function EpilogueSlide({
   children,
@@ -65,123 +61,97 @@ export function EpilogueSlide({
   return (
     <div
       className={cn(
-        "flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-16",
-        "w-full h-full p-8 md:p-12",
+        "flex items-center justify-center w-full h-full p-8 md:p-12",
         className
       )}
     >
-      {/* 좌측: 프로필 정보 */}
-      <div className="flex flex-col items-center lg:items-start gap-6 max-w-md">
-        {/* 이름 & 직함 */}
-        <div className="text-center lg:text-left">
-          <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground mb-2">
-            {name}
-          </h2>
-          <p className="text-base md:text-lg text-muted">{role}</p>
+      <Grid cols="5-7" align="center" gap="lg" className="w-full max-w-5xl">
+        {/* 좌측 영역 (5컬럼) - 프로필 정보 */}
+        <div className="flex flex-col">
+          {/* ABOUT 라벨 */}
+          <span
+            className="text-sm font-medium uppercase tracking-widest mb-4"
+            style={{ color: accentColor }}
+          >
+            ABOUT
+          </span>
+
+          {/* 이름 & 직함 */}
+          <H2>{name}</H2>
+          <Caption className="mt-1">{role}</Caption>
+
+          {/* 철학/소개문 */}
+          {philosophy && philosophy.length > 0 && (
+            <div className="mt-4 space-y-1.5">
+              {philosophy.map((line, index) => (
+                <Body key={index} className="text-muted">
+                  {line}
+                </Body>
+              ))}
+            </div>
+          )}
+
+          {/* 구분선 */}
+          <hr className="my-6 border-border" />
+
+          {/* 연락처 (인라인 링크) */}
+          {links && links.length > 0 && (
+            <div className="flex items-center gap-4 flex-wrap">
+              {links.map((link) => {
+                const IconComponent = contactIconMap[link.type];
+                return (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    target={link.type !== "email" ? "_blank" : undefined}
+                    rel={link.type !== "email" ? "noopener noreferrer" : undefined}
+                    className="inline-flex items-center gap-1.5 text-muted hover:text-foreground transition-colors"
+                    style={{ "--hover-color": accentColor } as React.CSSProperties}
+                  >
+                    <IconComponent className="w-4 h-4" />
+                    <Caption>{link.label}</Caption>
+                  </a>
+                );
+              })}
+            </div>
+          )}
         </div>
 
-        {/* 주요 역량 */}
-        {skills && skills.length > 0 && (
-          <div className="grid grid-cols-2 gap-3 w-full">
-            {skills.map((skill, index) => {
-              const IconComponent = skillIconMap[skill.icon];
-              return (
-                <div
-                  key={index}
-                  className="flex items-start gap-2 p-3 rounded-lg bg-secondary/30 border border-border/30"
-                >
-                  <div
-                    className="flex-shrink-0 w-8 h-8 rounded-md flex items-center justify-center"
-                    style={{ backgroundColor: `${accentColor}20` }}
-                  >
-                    <IconComponent
-                      className="w-4 h-4"
-                      style={{ color: accentColor }}
-                    />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-xs font-semibold text-foreground leading-tight">
-                      {skill.title}
-                    </h3>
-                    <p className="text-[10px] text-muted leading-snug mt-0.5">
-                      {skill.description}
-                    </p>
+        {/* 우측 영역 (7컬럼) - 스킬 & Thank You */}
+        <div className="flex flex-col">
+          {/* 스킬 (2컬럼 텍스트 리스트) */}
+          {skills && skills.length > 0 && (
+            <div className="grid grid-cols-2 gap-x-6 gap-y-3">
+              {skills.map((skill) => (
+                <div key={skill.title} className="flex items-start gap-2">
+                  <span
+                    className="mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0"
+                    style={{ backgroundColor: accentColor }}
+                  />
+                  <div>
+                    <Body className="font-medium">{skill.title}</Body>
+                    <Caption>{skill.description}</Caption>
                   </div>
                 </div>
-              );
-            })}
-          </div>
-        )}
+              ))}
+            </div>
+          )}
 
-        {/* 철학 */}
-        {philosophy && philosophy.length > 0 && (
-          <div className="space-y-1.5 text-center lg:text-left">
-            {philosophy.map((line, index) => (
-              <p
-                key={index}
-                className="text-xs text-muted leading-relaxed"
-              >
-                {line}
-              </p>
-            ))}
-          </div>
-        )}
-      </div>
+          {/* 구분선 */}
+          <hr className="my-6 border-border" />
 
-      {/* 구분선 (데스크톱) */}
-      <div className="hidden lg:block w-px h-48 bg-border/50" />
-
-      {/* 우측: 연락처 */}
-      <div className="flex flex-col items-center lg:items-start gap-4">
-        <h3
-          className="text-2xl md:text-3xl font-bold tracking-tight"
-          style={{ color: accentColor }}
-        >
-          Thank You
-        </h3>
-        <p className="text-sm text-muted text-center lg:text-left max-w-xs">
-          새로운 프로젝트, 협업 제안, 또는 단순한 대화도 환영합니다.
-        </p>
-
-        {/* 연락처 링크 */}
-        {links && links.length > 0 && (
-          <div className="flex flex-col gap-2 w-full max-w-xs">
-            {links.map((link, index) => {
-              const IconComponent = contactIconMap[link.type];
-              return (
-                <a
-                  key={index}
-                  href={link.href}
-                  target={link.type !== "email" ? "_blank" : undefined}
-                  rel={link.type !== "email" ? "noopener noreferrer" : undefined}
-                  className={cn(
-                    "flex items-center gap-3 px-4 py-2.5 rounded-lg",
-                    "bg-secondary/50 border border-border/50",
-                    "hover:bg-secondary/80 hover:border-border transition-colors",
-                    "group"
-                  )}
-                >
-                  <IconComponent
-                    className="w-4 h-4 flex-shrink-0"
-                    style={{ color: accentColor }}
-                  />
-                  <span className="text-sm font-medium text-foreground flex-1 text-left truncate">
-                    {link.label}
-                  </span>
-                  <ExternalLink className="w-3.5 h-3.5 text-muted opacity-0 group-hover:opacity-100 transition-opacity" />
-                </a>
-              );
-            })}
-          </div>
-        )}
-
-        {/* 추가 메시지 */}
-        {message && (
-          <p className="text-[10px] text-muted/70 italic mt-2">
-            {message}
-          </p>
-        )}
-      </div>
+          {/* Thank You 메시지 */}
+          <h2
+            className="text-2xl font-semibold leading-snug"
+            style={{ color: accentColor }}
+          >
+            Thank You
+          </h2>
+          <Body className="mt-2 text-muted">
+            {message || "새로운 프로젝트, 협업 제안, 또는 단순한 대화도 환영합니다."}
+          </Body>
+        </div>
+      </Grid>
 
       {children}
     </div>
