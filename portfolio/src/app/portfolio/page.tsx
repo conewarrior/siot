@@ -10,11 +10,12 @@ import { ProcessSlide } from "@/components/portfolio/slides/process-slide";
 import { OutcomeSlide } from "@/components/portfolio/slides/outcome-slide";
 import { ProfileSlide } from "@/components/portfolio/slides/profile-slide";
 import { ContactSlide } from "@/components/portfolio/slides/contact-slide";
+import { EpilogueSlide } from "@/components/portfolio/slides/epilogue-slide";
 import type { PortfolioSection } from "@/lib/portfolio-mdx";
 
 // API에서 받아오는 슬라이드 타입 (serializedContent 포함)
 interface ClientPortfolioSlide {
-  type: "cover" | "problem" | "process" | "outcome" | "reflection" | "profile" | "contact";
+  type: "cover" | "problem" | "process" | "outcome" | "reflection" | "profile" | "contact" | "epilogue";
   title: string;
   content: string;
   serializedContent: MDXRemoteSerializeResult | null;
@@ -632,6 +633,19 @@ function PortfolioClient({ sections }: PortfolioClientProps) {
           <ContactSlide
             heading={CONTACT_DATA.heading}
             subtext={CONTACT_DATA.subtext}
+            links={CONTACT_DATA.links}
+            message={CONTACT_DATA.message}
+            accentColor={sectionColor}
+          />
+        );
+      case "epilogue":
+        // 에필로그: Profile + Contact 통합
+        return (
+          <EpilogueSlide
+            name={PROFILE_DATA.name}
+            role={PROFILE_DATA.role}
+            skills={PROFILE_DATA.skills}
+            philosophy={PROFILE_DATA.philosophy}
             links={CONTACT_DATA.links}
             message={CONTACT_DATA.message}
             accentColor={sectionColor}

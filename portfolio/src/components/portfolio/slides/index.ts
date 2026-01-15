@@ -24,3 +24,16 @@ export {
   type ContactSlideProps,
   type ContactLink,
 } from "./contact-slide";
+export {
+  EpilogueSlide,
+  type EpilogueSlideProps,
+  type Skill as EpilogueSkill,
+  type ContactLink as EpilogueContactLink,
+} from "./epilogue-slide";
+export {
+  ScreenshotGallery,
+  BeforeAfterComparison,
+  type ScreenshotItem,
+  type ScreenshotGalleryProps,
+  type BeforeAfterProps,
+} from "./screenshot-gallery";

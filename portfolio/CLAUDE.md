@@ -215,7 +215,11 @@ src/components/portfolio/
     ├── problem-slide.tsx
     ├── process-slide.tsx
     ├── outcome-slide.tsx
-    └── reflection-slide.tsx
+    ├── reflection-slide.tsx
+    ├── profile-slide.tsx
+    ├── contact-slide.tsx
+    ├── epilogue-slide.tsx      # Profile + Contact 통합 (About 섹션용)
+    └── screenshot-gallery.tsx  # 이미지 갤러리 + Before/After 비교
 ```
 
 ### Layout Pattern (뷰포트 제약)
@@ -273,7 +277,7 @@ order: 1                    # 섹션 순서 (낮을수록 먼저)
 color: "#F97316"           # 섹션 테마 색상
 textColor: "#FFFFFF"       # 텍스트 색상
 slides:
-  - type: "cover"          # cover | problem | process | outcome | reflection
+  - type: "cover"          # cover | problem | process | outcome | reflection | profile | contact | epilogue
     title: "슬라이드 제목"
 ```
 

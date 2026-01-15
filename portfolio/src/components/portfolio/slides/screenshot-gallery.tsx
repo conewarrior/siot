@@ -17,6 +17,7 @@ interface ScreenshotGalleryProps {
 
 /**
  * 실제 스크린샷/이미지를 표시하는 갤러리 컴포넌트
+ * 이미지 비율을 유지하면서 슬라이드 내에 맞춤
  */
 export function ScreenshotGallery({
   images,
@@ -26,7 +27,7 @@ export function ScreenshotGallery({
   if (images.length === 0) return null;
 
   const containerClass = cn(
-    "w-full h-full flex items-center justify-center",
+    "w-full flex items-center justify-center",
     layout === "grid" && "grid grid-cols-2 gap-4",
     layout === "side-by-side" && "flex flex-row gap-4",
     className
@@ -35,13 +36,14 @@ export function ScreenshotGallery({
   if (layout === "single" && images.length === 1) {
     return (
       <div className={containerClass}>
-        <figure className="relative w-full max-w-4xl">
-          <div className="relative aspect-video rounded-lg overflow-hidden border border-border/50 shadow-lg bg-secondary/20">
+        <figure className="flex flex-col items-center">
+          <div className="relative rounded-lg overflow-hidden border border-border/50 shadow-lg bg-secondary/20">
             <Image
               src={images[0].src}
               alt={images[0].alt}
-              fill
-              className="object-contain"
+              width={800}
+              height={450}
+              className="w-auto h-auto max-w-full max-h-[160px] md:max-h-[200px] object-contain"
               sizes="(max-width: 768px) 100vw, 800px"
             />
           </div>
@@ -58,13 +60,14 @@ export function ScreenshotGallery({
   return (
     <div className={containerClass}>
       {images.map((image, index) => (
-        <figure key={index} className="relative flex-1 min-w-0">
-          <div className="relative aspect-video rounded-lg overflow-hidden border border-border/50 shadow-lg bg-secondary/20">
+        <figure key={index} className="flex flex-col items-center flex-1 min-w-0">
+          <div className="relative rounded-lg overflow-hidden border border-border/50 shadow-lg bg-secondary/20">
             <Image
               src={image.src}
               alt={image.alt}
-              fill
-              className="object-contain"
+              width={400}
+              height={300}
+              className="w-auto h-auto max-w-full max-h-[180px] md:max-h-[240px] object-contain"
               sizes="(max-width: 768px) 100vw, 400px"
             />
           </div>
@@ -94,18 +97,19 @@ export function BeforeAfterComparison({
   className,
 }: BeforeAfterProps) {
   return (
-    <div className={cn("w-full flex flex-col md:flex-row gap-4 items-stretch", className)}>
-      <div className="flex-1 flex flex-col">
+    <div className={cn("w-full flex flex-col md:flex-row gap-4 items-center justify-center", className)}>
+      <div className="flex flex-col items-center">
         <span className="text-xs font-medium text-muted uppercase tracking-wider mb-2 text-center">
           Before
         </span>
-        <figure className="relative flex-1">
-          <div className="relative aspect-video rounded-lg overflow-hidden border border-border/50 shadow-lg bg-secondary/20">
+        <figure className="flex flex-col items-center">
+          <div className="relative rounded-lg overflow-hidden border border-border/50 shadow-lg bg-secondary/20">
             <Image
               src={before.src}
               alt={before.alt}
-              fill
-              className="object-contain"
+              width={400}
+              height={300}
+              className="w-auto h-auto max-w-full max-h-[160px] md:max-h-[220px] object-contain"
               sizes="(max-width: 768px) 100vw, 400px"
             />
           </div>
@@ -117,23 +121,24 @@ export function BeforeAfterComparison({
         </figure>
       </div>
 
-      <div className="hidden md:flex items-center justify-center px-2">
+      <div className="flex items-center justify-center px-2">
         <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center">
           <span className="text-accent">→</span>
         </div>
       </div>
 
-      <div className="flex-1 flex flex-col">
+      <div className="flex flex-col items-center">
         <span className="text-xs font-medium text-accent uppercase tracking-wider mb-2 text-center">
           After
         </span>
-        <figure className="relative flex-1">
-          <div className="relative aspect-video rounded-lg overflow-hidden border-2 border-accent/30 shadow-lg bg-secondary/20">
+        <figure className="flex flex-col items-center">
+          <div className="relative rounded-lg overflow-hidden border-2 border-accent/30 shadow-lg bg-secondary/20">
             <Image
               src={after.src}
               alt={after.alt}
-              fill
-              className="object-contain"
+              width={400}
+              height={300}
+              className="w-auto h-auto max-w-full max-h-[160px] md:max-h-[220px] object-contain"
               sizes="(max-width: 768px) 100vw, 400px"
             />
           </div>
