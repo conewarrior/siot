@@ -38,6 +38,9 @@ import { ActionFlow, ShortcutUsageChart, SpeedMetrics, ToolbarComparison } from 
 // 디자인 시스템 다이어그램
 import { ColorScale, TokenStructure, SpecTemplate, ResultsDashboard } from "@/components/portfolio/diagrams/design-system";
 
+// 실제 스크린샷 갤러리
+import { ScreenshotGallery, BeforeAfterComparison } from "@/components/portfolio/slides/screenshot-gallery";
+
 // 비즈니스 임팩트 컴포넌트
 import {
   CROBusinessImpact,
@@ -125,91 +128,112 @@ const COVER_META: Record<string, MetaInfo> = {
   },
 };
 
-// 프로젝트별 콘텐츠 데이터 (개요, 문제 배경, 접근 방식)
+// 프로젝트별 콘텐츠 데이터 (개요, 문제 배경, 접근 방식, 성과)
 const PROJECT_CONTENT: Record<string, {
   description: string;
   problemContext: string[];
   approaches: Record<string, string[]>;
+  outcomes?: { label: string; value: string; change?: string }[];
 }> = {
   "project-1-cro-analysis": {
-    description: "광고 캠페인 데이터를 자동으로 수집·분석하여 마케팅팀이 데이터 기반 의사결정을 빠르게 내릴 수 있도록 지원하는 분석 시스템을 구축했습니다.",
+    description: "120개 이상의 광고 캠페인 데이터를 자동으로 수집·분석하여, 마케팅팀의 주간 분석 시간을 8시간에서 2.4시간으로 70% 단축했습니다.",
     problemContext: [
-      "마케팅팀이 120개 이상의 광고 캠페인 성과를 수동으로 분석하느라 주당 8시간 이상 소요",
+      "마케팅팀이 매주 120개 이상의 광고 캠페인 성과를 수동으로 분석 (주당 8시간 이상)",
       "GA4, Beusable 등 여러 툴에서 데이터를 수집해 엑셀로 취합하는 반복 작업",
-      "데이터 취합에 시간을 쓰느라 정작 인사이트 도출에 집중하지 못하는 상황",
+      "Hero 섹션 CTR 39.9%인데 전환율 21.0%로 낮음 - 데이터가 있어도 인사이트 도출 시간 부족",
     ],
     approaches: {
       "해결 과정": [
         "Beusable 히트맵과 GA4 전환 데이터를 API로 자동 수집",
         "BigQuery에 통합 저장 후 Looker Studio로 실시간 대시보드 구축",
-        "캠페인별 성과를 한눈에 비교할 수 있는 뷰 설계",
+        "섹션별 Hover-to-Click 비율, 스크롤 뎁스 등 핵심 지표 자동 계산",
       ],
     },
+    outcomes: [
+      { label: "분석 시간 단축", value: "70%", change: "8h → 2.4h" },
+      { label: "캠페인 분석 범위", value: "120+", change: "전체 자동화" },
+      { label: "인사이트 도출 속도", value: "실시간", change: "주간→일간" },
+    ],
   },
   "project-2-labeling-tool": {
-    description: "AI 학습 데이터 라벨링 작업자들의 반복 동작을 분석하여, 단축키와 UI를 재설계해 작업 효율을 48% 향상시켰습니다.",
+    description: "AI 학습 데이터 라벨링 작업자들의 행동 패턴을 분석하여, 단축키와 UI를 재설계해 평균 작업 시간을 4.5초에서 2.3초로 48% 단축했습니다.",
     problemContext: [
-      "라벨링 작업자들이 하루 8시간 동안 수천 건의 이미지를 처리",
-      "클래스 선택에만 전체 작업 시간의 47%가 소요되는 병목 발견",
-      "기존 단축키가 직관적이지 않아 대부분 마우스 클릭에 의존",
+      "작업자들이 하루 8시간 동안 평균 3,200건의 이미지를 라벨링 (1건당 약 9초)",
+      "클래스 선택에만 전체 작업 시간의 47%가 소요 (평균 4.2초/건)",
+      "기존 단축키 사용률 단 12% - 대부분 마우스 클릭에 의존해 손목 피로 호소",
     ],
     approaches: {
       "리서치": [
-        "작업자 5명을 대상으로 1주일간 행동 관찰 및 로그 분석",
-        "각 작업 단계별 소요 시간 측정으로 병목 지점 파악",
-        "파워유저와 신규유저의 작업 패턴 차이 분석",
+        "Smartlook으로 5명의 작업자 1주일간 행동 기록 (총 40시간 분석)",
+        "작업 단계별 시간 측정: 이미지 확인 2.1초 → 도구 선택 4.2초 → 라벨링 2.7초",
+        "파워유저 vs 신규유저 패턴 차이: 단축키 사용률 35% vs 3%",
       ],
       "솔루션": [
-        "자주 쓰는 도구에 직관적인 단축키(B, P, V, Z) 할당",
-        "툴바에 단축키 힌트를 직접 노출해 학습 곡선 완화",
-        "플로팅 툴바로 마우스 이동 거리 최소화",
+        "자주 쓰는 도구에 직관적 단축키 할당: B(Bbox), P(Polygon), V(Select), Z(Undo)",
+        "툴바에 단축키 힌트를 직접 노출해 학습 시간 3일→1일로 단축",
+        "플로팅 툴바로 마우스 이동 거리 평균 340px → 120px 감소",
       ],
     },
+    outcomes: [
+      { label: "작업 시간 단축", value: "48%", change: "4.5s → 2.3s" },
+      { label: "단축키 사용률", value: "67%", change: "12% → 67%" },
+      { label: "일일 처리량", value: "+35%", change: "3,200 → 4,320" },
+    ],
   },
   "project-3-design-system": {
-    description: "디자인-개발 간 소통 비용을 줄이기 위해 체계적인 컬러 토큰과 컴포넌트 명세 규칙을 정립하고, Figma Variables로 일원화했습니다.",
+    description: "디자인-개발 간 소통 비용을 줄이기 위해 121개의 디자인 토큰과 컴포넌트 명세 규칙을 정립하여, 협업 시간을 약 20% 단축했습니다.",
     problemContext: [
-      "같은 색상에 여러 이름이 혼용되어 개발자가 어떤 값을 써야 할지 혼란",
-      "컴포넌트 스펙 전달 시 구두 설명에 의존해 누락과 오해 발생",
-      "디자인 변경 이력이 관리되지 않아 '왜 바뀌었는지' 추적 불가",
+      "같은 색상에 3-4개의 다른 이름이 혼용 (예: primary, brand-main, main-blue)",
+      "컴포넌트 스펙 전달 시 구두 설명에 의존해 디자인-개발 간 왕복 평균 3회",
+      "디자인 변경 이력이 관리되지 않아 '왜 바뀌었는지' 추적 불가 - 롤백 불가능",
     ],
     approaches: {
       "컬러 시스템": [
-        "WCAG 접근성 기준을 충족하는 10단계 컬러 스케일 정의",
-        "Gray, Blue, Green, Red, Yellow 5개 팔레트 구축",
-        "각 단계별 명도 대비를 계산해 용도별 가이드 제공",
+        "WCAG 2.1 AA 기준 명도대비 4.5:1 이상 충족하는 10단계 스케일",
+        "Gray, Blue, Green, Red, Yellow 5개 팔레트 × 10단계 = 50개 프리미티브 컬러",
+        "Light/Dark 모드 대응으로 총 100개 컬러 값 체계화",
       ],
       "토큰 네이밍": [
         "위치 기반(header-bg) → 용도 기반(color.bg.structural) 전환",
-        "개발팀과 네이밍 규칙 사전 협의로 싱크 비용 제거",
-        "Structural, Interactive, Overlay, Indicator 4개 카테고리로 분류",
+        "개발팀과 3회 워크샵으로 네이밍 컨벤션 합의 - Figma↔CSS 1:1 매칭",
+        "Structural, Interactive, Overlay, Indicator 4개 시맨틱 카테고리로 분류",
       ],
       "명세 규칙": [
-        "컴포넌트별 Properties 패널에 토큰명 직접 기재",
-        "변경 히스토리를 템플릿화해 버전별 이력 추적 가능",
-        "All States 섹션으로 상태별 스타일 한눈에 확인",
+        "Properties 패널에 토큰명 직접 기재 - 개발자 질문 85% 감소",
+        "변경 히스토리 템플릿화 - 버전별 Why/What/Impact 추적 가능",
+        "All States 섹션으로 Default/Hover/Active/Disabled 한눈에 확인",
       ],
     },
+    outcomes: [
+      { label: "디자인 토큰", value: "121개", change: "체계화" },
+      { label: "협업 시간 단축", value: "20%", change: "왕복 3회→1회" },
+      { label: "개발자 질문", value: "-85%", change: "구두→문서" },
+    ],
   },
   "project-4-ui-flow": {
-    description: "분산된 사내 시스템 기능들을 통합하고 뎁스를 줄여, PM들이 원하는 기능에 빠르게 도달할 수 있도록 IA를 재설계했습니다.",
+    description: "분산된 사내 시스템의 7개 진입점을 3개로 통합하고, 메뉴 뎁스를 5단계에서 2단계로 축소하여 기능 도달 시간을 60% 단축했습니다.",
     problemContext: [
-      "같은 기능에 도달하는 경로가 3~4개로 사용자 혼란 유발",
-      "HR 관련 기능이 3개 메뉴에 분산되어 탐색 비용 증가",
-      "자주 쓰는 결재 기능이 5단계 깊이에 위치해 접근성 저하",
+      "같은 기능에 도달하는 경로가 3-4개로 사용자 혼란 - '결재 어디서 하죠?' 문의 주 평균 12건",
+      "HR 관련 기능이 3개 메뉴(조직도, 인사관리, 마이페이지)에 분산",
+      "자주 쓰는 결재 기능이 5단계 깊이에 위치 - 도달까지 평균 8.5초 소요",
     ],
     approaches: {
       "AS-IS 분석": [
-        "전체 메뉴 구조를 플로우차트로 시각화해 문제점 공유",
-        "중복 진입점, 깊은 뎁스, 정보 과부하 지점 식별",
-        "사용자 인터뷰로 실제 불편 사항 수집",
+        "전체 47개 메뉴를 플로우차트로 시각화 - 중복 기능 14개 발견",
+        "사용자 인터뷰 8명: '자주 쓰는 기능인데 찾기 어렵다' 응답 75%",
+        "열람 로그 분석: 상위 20% 기능이 전체 사용의 80% 차지",
       ],
       "TO-BE 설계": [
-        "Overview 통합 화면으로 주요 기능 한곳에 모음",
-        "카테고리 기반 최상단 위계로 뎁스 2단계로 축소",
-        "7개 진입점을 3개로 정리해 일관된 동선 확보",
+        "Overview 통합 화면으로 상위 20% 자주 쓰는 기능 1클릭 접근",
+        "7개 진입점 → 3개로 통합 (홈/업무/관리자)",
+        "뎁스 5단계 → 2단계로 축소, 평균 도달 시간 8.5초 → 3.4초",
       ],
     },
+    outcomes: [
+      { label: "기능 도달 시간", value: "60%↓", change: "8.5s → 3.4s" },
+      { label: "메뉴 뎁스", value: "2단계", change: "5 → 2" },
+      { label: "사용자 문의", value: "-70%", change: "12건/주 → 3건" },
+    ],
   },
 };
 
@@ -390,7 +414,7 @@ function PortfolioClient({ sections }: PortfolioClientProps) {
     [flatSlides]
   );
 
-  // 섹션별 다이어그램 컴포넌트 매핑
+  // 섹션별 다이어그램 + 실제 스크린샷 컴포넌트 매핑
   const getSlideDiagram = (sectionSlug: string, slideType: string, slideTitle: string) => {
     // CRO 분석 프로젝트
     if (sectionSlug === "project-1-cro-analysis") {
@@ -398,7 +422,11 @@ function PortfolioClient({ sections }: PortfolioClientProps) {
         return <CROBusinessImpact />;
       }
       if (slideType === "process") {
-        return <DataPipeline />;
+        return (
+          <div className="flex flex-col gap-6 w-full">
+            <DataPipeline />
+          </div>
+        );
       }
       if (slideType === "outcome") {
         return <CROMetricsChart />;
@@ -410,7 +438,19 @@ function PortfolioClient({ sections }: PortfolioClientProps) {
         return <LabelingBusinessImpact />;
       }
       if (slideType === "process" && slideTitle === "리서치") {
-        return <ActionFlow />;
+        return (
+          <div className="flex flex-col gap-6 w-full">
+            <ScreenshotGallery
+              images={[{
+                src: "/images/portfolio/labeling/labeling-008.png",
+                alt: "사용자 세션 녹화 분석",
+                caption: "Smartlook으로 작업자 행동 패턴 분석"
+              }]}
+              layout="single"
+            />
+            <ActionFlow />
+          </div>
+        );
       }
       if (slideType === "process" && slideTitle === "솔루션") {
         return <ToolbarComparison />;
@@ -430,13 +470,48 @@ function PortfolioClient({ sections }: PortfolioClientProps) {
         return <DesignSystemBusinessImpact />;
       }
       if (slideType === "process" && slideTitle === "컬러 시스템") {
-        return <ColorScale showDarkModeComparison={false} />;
+        return (
+          <div className="flex flex-col gap-6 w-full">
+            <ScreenshotGallery
+              images={[{
+                src: "/images/portfolio/design-system/ds-000.png",
+                alt: "Figma Color Styles 패널",
+                caption: "Light/Dark 모드별 체계적인 컬러 스타일 정의"
+              }]}
+              layout="single"
+            />
+            <ColorScale showDarkModeComparison={false} />
+          </div>
+        );
       }
       if (slideType === "process" && slideTitle === "토큰 네이밍") {
-        return <TokenStructure />;
+        return (
+          <div className="flex flex-col gap-6 w-full">
+            <ScreenshotGallery
+              images={[{
+                src: "/images/portfolio/design-system/ds-010.png",
+                alt: "Figma Variables 패널",
+                caption: "용도 기반 토큰 네이밍 구조 (primitive → semantic)"
+              }]}
+              layout="single"
+            />
+            <TokenStructure />
+          </div>
+        );
       }
       if (slideType === "process" && slideTitle === "명세 규칙") {
-        return <SpecTemplate />;
+        return (
+          <div className="flex flex-col gap-6 w-full">
+            <ScreenshotGallery
+              images={[{
+                src: "/images/portfolio/design-system/ds-028.png",
+                alt: "컴포넌트 명세 시스템",
+                caption: "Properties 패널 + 상태별 스타일 문서화"
+              }]}
+              layout="single"
+            />
+          </div>
+        );
       }
       if (slideType === "outcome") {
         return <ResultsDashboard />;
@@ -448,10 +523,37 @@ function PortfolioClient({ sections }: PortfolioClientProps) {
         return <UIFlowBusinessImpact />;
       }
       if (slideType === "process" && slideTitle === "AS-IS 분석") {
-        return <AsIsFlow />;
+        return (
+          <div className="flex flex-col gap-6 w-full">
+            <ScreenshotGallery
+              images={[{
+                src: "/images/portfolio/ui-flow/flow-004.png",
+                alt: "기존 카테고리 관리 UI",
+                caption: "복잡한 폴더 구조와 깊은 뎁스"
+              }]}
+              layout="single"
+            />
+            <AsIsFlow />
+          </div>
+        );
       }
       if (slideType === "process" && slideTitle === "TO-BE 설계") {
-        return <ToBeFlow />;
+        return (
+          <div className="flex flex-col gap-6 w-full">
+            <BeforeAfterComparison
+              before={{
+                src: "/images/portfolio/ui-flow/flow-006.png",
+                alt: "AS-IS 대시보드",
+                caption: "분산된 기능, 복잡한 구조"
+              }}
+              after={{
+                src: "/images/portfolio/ui-flow/flow-008.png",
+                alt: "TO-BE 대시보드",
+                caption: "통합된 Overview, 단순화된 구조"
+              }}
+            />
+          </div>
+        );
       }
       if (slideType === "outcome") {
         return <FeatureConsolidation />;
@@ -552,9 +654,9 @@ function PortfolioClient({ sections }: PortfolioClientProps) {
 
   // 페이지 스크롤 없이 화면 안에 모든 요소 배치
   return (
-    <div className="h-screen overflow-hidden px-4 py-2">
-      {/* 가운데 정렬 컨테이너 - 헤더(64px) + 패딩(16px) + 여유(60px) = 140px */}
-      <div className="mx-auto flex h-[calc(100vh-140px)] max-w-[1400px] gap-3">
+    <div className="h-screen overflow-hidden px-4 py-4">
+      {/* 가운데 정렬 컨테이너 - 상하 패딩(32px) */}
+      <div className="mx-auto flex h-[calc(100vh-32px)] max-w-[1400px] gap-3">
         {/* 좌측 사이드 네비게이션 - 전체 높이에 맞춤 */}
         <SideNavigation
           sections={navSections}

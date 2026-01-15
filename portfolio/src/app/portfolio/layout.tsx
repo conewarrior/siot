@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { ThemeProvider } from "@/components/theme-provider";
-import { Header } from "@/components/header";
 
 export const metadata: Metadata = {
   title: "포트폴리오",
@@ -28,11 +27,8 @@ export default function PortfolioLayout({
       forcedTheme="light"
       disableTransitionOnChange
     >
-      <div className="min-h-screen bg-background text-foreground flex flex-col">
-        <Header />
-        <div className="flex-1">
-          {children}
-        </div>
+      <div className="min-h-screen bg-background text-foreground">
+        {children}
       </div>
     </ThemeProvider>
   );
