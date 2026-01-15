@@ -1,113 +1,61 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
-import { AsIsFlow, ToBeFlow } from "@/components/portfolio/diagrams/ui-flow";
-
-interface ProcessStep {
-  /** 단계 번호 또는 레이블 */
-  label?: string;
-  /** 단계 제목 */
-  title: string;
-  /** 단계 설명 */
-  description?: string;
-}
 
 interface ProcessSlideProps {
   children?: ReactNode;
   className?: string;
   /** 슬라이드 제목 */
   heading?: string;
-  /** 프로세스 단계들 */
-  steps?: ProcessStep[];
-  /** 레이아웃 방향 */
-  layout?: "horizontal" | "vertical";
-  /** 다이어그램 컴포넌트 이름 */
-  diagram?: "AsIsFlow" | "ToBeFlow";
+  /** 접근 방식 설명 (불릿 리스트) */
+  approach?: string[];
 }
 
 /**
  * 과정 슬라이드 컴포넌트
- * 프로젝트 진행 과정이나 방법론을 단계별로 나열하는 슬라이드.
+ * 다이어그램이 중심. 최소한의 텍스트.
  */
-// 다이어그램 컴포넌트 매핑
-const diagramComponents = {
-  AsIsFlow,
-  ToBeFlow,
-};
-
 export function ProcessSlide({
   children,
   className,
   heading,
-  steps,
-  layout = "horizontal",
-  diagram,
+  approach,
 }: ProcessSlideProps) {
-  // 다이어그램 컴포넌트 렌더링
-  const DiagramComponent = diagram ? diagramComponents[diagram] : null;
+  const hasApproach = approach && approach.length > 0;
+
   return (
     <div
       className={cn(
-        "flex flex-col justify-center",
-        "w-full p-12",
+        "flex flex-col",
+        "w-full h-full p-6 md:p-12",
         className
       )}
     >
       {heading && (
-        <h2 className="text-sm md:text-base font-medium text-accent uppercase tracking-widest mb-8">
+        <h2 className="text-sm md:text-base font-medium text-accent uppercase tracking-widest mb-4 md:mb-6 flex-shrink-0">
           {heading}
         </h2>
       )}
 
-      {DiagramComponent ? (
-        <div className="flex-1 overflow-auto">
-          <DiagramComponent />
-        </div>
-      ) : children ? (
-        <div className="flex-1">{children}</div>
-      ) : steps && steps.length > 0 ? (
-        <div
-          className={cn(
-            "flex gap-6 md:gap-8",
-            layout === "horizontal"
-              ? "flex-row flex-wrap"
-              : "flex-col"
-          )}
-        >
-          {steps.map((step, index) => (
-            <div
-              key={index}
-              className={cn(
-                "flex-1 min-w-[200px]",
-                layout === "horizontal" && "max-w-sm"
-              )}
-            >
-              {/* 단계 번호/레이블 */}
-              <div className="flex items-center gap-3 mb-3">
-                <span className="text-3xl md:text-4xl font-bold text-accent/30">
-                  {step.label || String(index + 1).padStart(2, "0")}
-                </span>
-                {layout === "horizontal" && index < steps.length - 1 && (
-                  <div className="hidden md:block flex-1 h-px bg-border" />
-                )}
-              </div>
-
-              {/* 단계 제목 */}
-              <h3 className="text-xl md:text-2xl font-semibold mb-2 text-foreground">
-                {step.title}
-              </h3>
-
-              {/* 단계 설명 */}
-              {step.description && (
-                <p className="text-base text-muted leading-relaxed">
-                  {step.description}
-                </p>
-              )}
-            </div>
+      {/* 접근 방식 설명 */}
+      {hasApproach && (
+        <ul className="mb-4 md:mb-6 space-y-1.5 max-w-2xl flex-shrink-0">
+          {approach.map((item, index) => (
+            <li key={index} className="flex items-start gap-2 text-xs md:text-sm text-foreground/70">
+              <span className="mt-1.5 w-1 h-1 rounded-full bg-accent/60 flex-shrink-0" />
+              <span>{item}</span>
+            </li>
           ))}
+        </ul>
+      )}
+
+      {/* 다이어그램 영역 - 남은 공간 전체 사용 */}
+      {children && (
+        <div className="flex-1 min-h-0 flex items-center justify-center overflow-auto">
+          {children}
         </div>
-      ) : null}
+      )}
     </div>
   );
 }
 
-export type { ProcessSlideProps, ProcessStep };
+export type { ProcessSlideProps };

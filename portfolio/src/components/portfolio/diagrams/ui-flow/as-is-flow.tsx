@@ -171,6 +171,23 @@ export function AsIsFlow({ className }: AsIsFlowProps) {
 
       {/* 플로우 다이어그램 */}
       <div className="relative min-h-[540px] min-w-[640px] mx-auto max-w-3xl">
+        {/* 깊이 레이블 - 다이어그램 내부 좌측 */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={isInView ? { opacity: 1 } : {}}
+          transition={{ delay: 1.5, duration: 0.5 }}
+          className="hidden md:flex flex-col absolute left-0 top-[30px] text-[10px] text-muted gap-[54px] pointer-events-none z-10"
+        >
+          {["진입점", "1단계", "2단계", "3단계", "4단계", "5단계"].map((label, i) => (
+            <div key={label} className={cn(
+              "py-1 px-2 rounded",
+              i >= 4 ? "bg-red-50 text-red-500 font-medium" : "bg-neutral-50"
+            )}>
+              {label}
+            </div>
+          ))}
+        </motion.div>
+
         {/* SVG 연결선 레이어 */}
         <svg
           className="absolute inset-0 w-full h-full pointer-events-none"
@@ -327,24 +344,6 @@ export function AsIsFlow({ className }: AsIsFlowProps) {
           })}
         </div>
       </div>
-
-      {/* 깊이 레이블 */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={isInView ? { opacity: 1 } : {}}
-        transition={{ delay: 1.5, duration: 0.5 }}
-        className="hidden md:flex flex-col absolute left-2 top-1/2 -translate-y-1/2 text-[10px] text-muted gap-[60px] pointer-events-none"
-        style={{ marginTop: 60 }}
-      >
-        {["진입점", "1단계", "2단계", "3단계", "4단계", "5단계"].map((label, i) => (
-          <div key={label} className={cn(
-            "py-1 px-2 rounded",
-            i >= 4 ? "bg-red-50 text-red-500 font-medium" : "bg-neutral-50"
-          )}>
-            {label}
-          </div>
-        ))}
-      </motion.div>
 
       {/* 통계 카드 */}
       <motion.div
