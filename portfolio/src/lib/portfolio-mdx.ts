@@ -5,8 +5,9 @@ import matter from "gray-matter"
 const contentDirectory = path.join(process.cwd(), "docs/content")
 
 export interface PortfolioSlide {
-  type: "cover" | "problem" | "process" | "outcome" | "reflection"
+  type: "cover" | "problem" | "process" | "outcome" | "reflection" | "profile" | "contact"
   title: string
+  content: string // 파싱된 MDX 콘텐츠
   diagram?: "AsIsFlow" | "ToBeFlow" | "FeatureConsolidation"
 }
 
@@ -56,13 +57,27 @@ export async function getPortfolioSections(): Promise<PortfolioSection[]> {
     const fileContents = fs.readFileSync(filePath, "utf8")
     const { data, content } = matter(fileContents)
 
+    // MDX 본문을 --- 구분자로 분리하여 각 슬라이드에 콘텐츠 할당
+    const contentSections = content
+      .split(/\n---\n/)
+      .map((s) => s.trim())
+      .filter((s) => s.length > 0)
+
+    const slidesFromFrontmatter = Array.isArray(data.slides) ? data.slides : []
+    const slidesWithContent = slidesFromFrontmatter.map(
+      (slide: PortfolioSlide, index: number) => ({
+        ...slide,
+        content: contentSections[index] || "",
+      })
+    )
+
     sections.push({
       slug,
       title: data.title || "",
       order: typeof data.order === "number" ? data.order : 999,
       color: data.color || "#000000",
       textColor: data.textColor || "#FFFFFF",
-      slides: Array.isArray(data.slides) ? data.slides : [],
+      slides: slidesWithContent,
       content,
     })
   }
@@ -91,13 +106,27 @@ export async function getPortfolioSection(
   const fileContents = fs.readFileSync(filePath, "utf8")
   const { data, content } = matter(fileContents)
 
+  // MDX 본문을 --- 구분자로 분리하여 각 슬라이드에 콘텐츠 할당
+  const contentSections = content
+    .split(/\n---\n/)
+    .map((s) => s.trim())
+    .filter((s) => s.length > 0)
+
+  const slidesFromFrontmatter = Array.isArray(data.slides) ? data.slides : []
+  const slidesWithContent = slidesFromFrontmatter.map(
+    (slide: PortfolioSlide, index: number) => ({
+      ...slide,
+      content: contentSections[index] || "",
+    })
+  )
+
   return {
     slug,
     title: data.title || "",
     order: typeof data.order === "number" ? data.order : 999,
     color: data.color || "#000000",
     textColor: data.textColor || "#FFFFFF",
-    slides: Array.isArray(data.slides) ? data.slides : [],
+    slides: slidesWithContent,
     content,
   }
 }

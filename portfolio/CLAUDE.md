@@ -136,6 +136,27 @@ Blog posts are pre-rendered at build time via `generateStaticParams()` in `[slug
 - Colors via `@theme inline`: `text-foreground`, `text-muted`, `bg-secondary`, `bg-accent`
 - Path alias: `@/*` maps to `./src/*`
 
+**Tailwind v4 토큰 등록 패턴**:
+```css
+@import "tailwindcss";
+
+/* @theme inline으로 CSS 변수를 Tailwind 유틸리티로 등록 */
+@theme inline {
+  /* initial = 실제 값은 :root에서 정의, Tailwind가 변수 존재만 인식 */
+  --color-background: initial;
+  --color-foreground: initial;
+  --color-accent: initial;
+}
+
+:root {
+  --color-background: #ffffff;
+  --color-foreground: #0a0a0a;
+  --color-accent: #F97316;
+}
+```
+- `initial` 키워드: 변수 이름만 등록, 실제 값은 `:root`에서
+- Tailwind 유틸리티 충돌 시 `@layer utilities`에서 `!important`로 오버라이드
+
 **Navigation Animation**:
 - Uses Framer Motion `layoutId="nav-bubble"` for smooth active indicator
 - `mix-blend-difference` creates the visual effect

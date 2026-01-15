@@ -27,7 +27,7 @@ export function Header() {
       <nav className="flex items-center justify-between">
         <Link
           href="/"
-          className="font-serif text-lg tracking-tight hover:opacity-70 transition-opacity flex items-center gap-1.5"
+          className="font-serif text-base md:text-lg tracking-tight hover:opacity-70 transition-opacity flex items-center gap-1 md:gap-1.5"
         >
           <span>hansol makes it</span>
           <LayoutGroup>
@@ -49,7 +49,7 @@ export function Header() {
         </Link>
 
         <div className="flex items-center gap-2">
-          <div className="flex space-x-1">
+          <div className="hidden md:flex space-x-1">
             {navItems.map((item) => (
               <Link
                 key={item.href}
