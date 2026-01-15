@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { FeatureConsolidation } from "@/components/portfolio/diagrams/ui-flow";
+import { CheckCircle2, AlertCircle } from "lucide-react";
 
 interface Metric {
   /** 지표 레이블 */
@@ -11,6 +12,10 @@ interface Metric {
   change?: string;
   /** 긍정적 변화 여부 */
   positive?: boolean;
+}
+
+interface ReflectionItem {
+  text: string;
 }
 
 interface OutcomeSlideProps {
@@ -24,6 +29,12 @@ interface OutcomeSlideProps {
   metrics?: Metric[];
   /** 다이어그램 컴포넌트 이름 */
   diagram?: "FeatureConsolidation";
+  /** 잘한 점 (회고) */
+  strengths?: ReflectionItem[];
+  /** 개선할 점 (회고) */
+  improvements?: ReflectionItem[];
+  /** 테마 색상 */
+  accentColor?: string;
 }
 
 /**
@@ -42,9 +53,14 @@ export function OutcomeSlide({
   summary,
   metrics,
   diagram,
+  strengths,
+  improvements,
+  accentColor = "#F97316",
 }: OutcomeSlideProps) {
   // 다이어그램 컴포넌트 렌더링
   const DiagramComponent = diagram ? diagramComponents[diagram] : null;
+  const hasReflection = (strengths && strengths.length > 0) || (improvements && improvements.length > 0);
+
   return (
     <div
       className={cn(
@@ -108,8 +124,51 @@ export function OutcomeSlide({
           ))}
         </div>
       ) : null}
+
+      {/* 회고 섹션 - 컴팩트하게 하단에 표시 */}
+      {hasReflection && (
+        <div className="mt-8 pt-6 border-t border-border/50">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* 잘한 점 */}
+            {strengths && strengths.length > 0 && (
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 mb-3">
+                  <CheckCircle2 className="w-4 h-4" style={{ color: accentColor }} />
+                  <h3 className="text-sm font-semibold text-foreground">잘한 점</h3>
+                </div>
+                <ul className="space-y-1.5">
+                  {strengths.map((item, index) => (
+                    <li key={index} className="text-xs text-muted leading-relaxed flex items-start gap-2">
+                      <span className="w-1 h-1 rounded-full mt-1.5 flex-shrink-0" style={{ backgroundColor: accentColor }} />
+                      {item.text}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* 개선할 점 */}
+            {improvements && improvements.length > 0 && (
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 mb-3">
+                  <AlertCircle className="w-4 h-4 text-muted" />
+                  <h3 className="text-sm font-semibold text-foreground">개선할 점</h3>
+                </div>
+                <ul className="space-y-1.5">
+                  {improvements.map((item, index) => (
+                    <li key={index} className="text-xs text-muted leading-relaxed flex items-start gap-2">
+                      <span className="w-1 h-1 rounded-full bg-muted/50 mt-1.5 flex-shrink-0" />
+                      {item.text}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
-export type { OutcomeSlideProps, Metric };
+export type { OutcomeSlideProps, Metric, ReflectionItem };
