@@ -1,12 +1,12 @@
 import { Header } from "@/components/header"
 import { HeroSection } from "@/components/hero-section"
-import { ProjectShowcase } from "@/components/project-showcase"
+import { SideProjectGrid } from "@/components/side-project-grid"
 import { getBlogPosts } from "@/lib/mdx"
 import { ArrowUpRight } from "lucide-react"
 import Link from "next/link"
 
 export default function Home() {
-  const recentPosts = getBlogPosts().slice(0, 3)
+  const recentPosts = getBlogPosts().slice(0, 5)
 
   return (
     <main className="min-h-screen">
@@ -50,37 +50,61 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Projects */}
-      <ProjectShowcase />
+      {/* Side Projects */}
+      <section className="w-full max-w-2xl mx-auto px-6 py-8">
+        <div className="flex items-center justify-between mb-8">
+          <h2 className="text-muted text-sm font-medium tracking-wide uppercase">
+            사이드 프로젝트
+          </h2>
+          <Link
+            href="/projects"
+            className="text-sm text-muted hover:text-foreground transition-colors flex items-center gap-1"
+          >
+            전체 보기
+            <ArrowUpRight className="w-3 h-3" />
+          </Link>
+        </div>
+
+        <SideProjectGrid />
+      </section>
+
+      {/* Career */}
+      <section className="w-full max-w-2xl mx-auto px-6 py-8">
+        <h2 className="text-muted text-sm font-medium tracking-wide uppercase mb-8">
+          경력
+        </h2>
+
+        <div className="space-y-0">
+          {[
+            { company: "지니파이", period: "2025.08 —" },
+            { company: "데이원컴퍼니", period: "2023.10 — 2024.09" },
+            { company: "셀렉트스타", period: "2020.02 — 2023.07" },
+            { company: "디싸이너", period: "2019.02 — 2019.12" },
+          ].map((career, index) => (
+            <div
+              key={career.company}
+              className={`py-4 flex items-center justify-between gap-4 ${index === 0 ? "" : "border-t border-border"}`}
+            >
+              <span className="text-foreground">{career.company}</span>
+              <span className="text-xs font-mono text-muted tabular-nums shrink-0">
+                {career.period}
+              </span>
+            </div>
+          ))}
+          <div className="border-t border-border" />
+        </div>
+      </section>
 
       {/* Footer */}
       <footer className="w-full max-w-2xl mx-auto px-6 py-16">
         <div className="border-t border-border pt-8 flex items-center justify-between text-sm text-muted">
           <span>&copy; 2026</span>
-          <div className="flex items-center gap-4">
-            <a
-              href="https://sixth-recap-55049847.figma.site"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-foreground transition-colors"
-            >
-              포트폴리오
-            </a>
-            <a
-              href="https://brunch.co.kr/@kimhansol30"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-foreground transition-colors"
-            >
-              블로그
-            </a>
-            <a
-              href="mailto:kimhansol307@gmail.com"
-              className="hover:text-foreground transition-colors"
-            >
-              이메일
-            </a>
-          </div>
+          <a
+            href="mailto:kimhansol307@gmail.com"
+            className="underline underline-offset-4 hover:text-foreground transition-colors"
+          >
+            kimhansol307@gmail.com
+          </a>
         </div>
       </footer>
     </main>

@@ -48,3 +48,61 @@ vim docs/PRD.md
 ## Korean Content
 
 모든 콘텐츠는 한국어로 작성. 블로그 글은 평서체 (~했다) 사용.
+
+## Claude Code 커맨드 작성 패턴
+
+`~/.claude/commands/` 디렉토리에 커맨드 정의 파일 작성.
+
+### 커맨드 파일 구조
+
+```markdown
+---
+description: 커맨드 설명 (한 줄)
+allowed-tools: Read, Write, Bash, Glob
+---
+
+# 커맨드 제목
+
+## 사용법
+/command-name              # 기본 실행
+/command-name --option     # 옵션 포함
+
+## 실행 프로세스
+### 1단계: ...
+### 2단계: ...
+
+## 핵심 원칙
+1. ...
+2. ...
+```
+
+### 핵심 원칙
+- frontmatter에 `description`, `allowed-tools` 명시
+- 실행 프로세스를 단계별로 명확히 정의
+- 옵션 테이블 형태로 문서화
+- 완료 메시지에 다음 단계 안내 포함
+
+## 커맨드 배포 원칙
+
+**단일 파일 원칙**: 커맨드 파일은 템플릿을 inline으로 포함해야 함
+- 별도 templates/ 폴더로 분리하면 배포가 불편해짐
+- `setup.md` 하나로 모든 템플릿과 로직 포함
+
+```
+~/.claude/
+├── commands/           # 커맨드 정의 (템플릿 inline 포함)
+│   └── setup.md        # 단일 파일로 완결
+└── settings.local.json # 권한 설정
+```
+
+- placeholder는 `{org}`, `@회사명/ui` 형태로 명확히 표시
+- 완료 메시지에 placeholder 치환 안내 포함
+
+## 자동화 원칙
+
+**"물어보기"를 줄여야 함** - 규칙이 명확하면 자동 실행
+
+적용 예시:
+- 파일 백업: 기존 파일 있으면 자동으로 `.backup` 생성
+- 패키지 설치: `--design` 옵션 시 npm install 자동 실행
+- 경로 탐색: 일반적인 경로 (`src/app/`, `src/styles/`) 순서대로 자동 탐색

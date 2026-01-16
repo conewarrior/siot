@@ -1,18 +1,16 @@
 ---
 title: "jsDelivr CDN으로 블로그 이미지 자동 업로드하기"
 description: "GitHub에 이미지를 올리고 무료 CDN으로 서빙하는 자동화 스크립트"
-date: "2026-01-07"
+date: "2025-10-15"
 category: "개발"
 published: true
 ---
 
-## 블로그 이미지 저장소 고민
+## 블로그 이미지를 저장할 장소에 대한 고민
 
 블로그 글을 쓰다 보면 이미지가 필요할 때가 있다. 스크린샷이나 다이어그램 같은 것들이다.
 
 이미지를 어디에 저장할지가 고민이었다. `public/images/`에 넣으면 간단하긴 하지만 이미지가 쌓이면 리포지토리 용량이 커진다. 특히 고해상도 스크린샷이 많아지면 문제가 된다.
-
-## 외부 서비스 검토
 
 이미지 호스팅 서비스들을 찾아봤다.
 
@@ -22,9 +20,7 @@ published: true
 | imgBB | 완전 무료 | 서비스 안정성 불확실 |
 | Supabase Storage | 이미 사용 중 | 추가 설정 필요 |
 
-다 괜찮지만 GitHub 리포에 이미지를 올리고 그냥 URL로 쓰면 되지 않을까 싶었다. 별도 서비스 없이 GitHub 하나로 관리하면 편할 것 같았다.
-
-## GitHub Raw URL은 CDN이 아니다
+각각 장단이 있지만 GitHub 리포에 이미지를 올리고 그냥 URL로 쓰면 되지 않을까 싶었다. 별도 서비스 없이 GitHub 하나로 관리하면 편할 것 같았다.
 
 처음엔 GitHub raw URL을 쓰면 되겠다 싶었다.
 
@@ -34,7 +30,7 @@ https://raw.githubusercontent.com/user/repo/branch/image.png
 
 하지만 이건 CDN이 아니다. 캐싱이 약하고 대역폭 제한도 있고 남용하면 차단될 수도 있다. 프로덕션 용도로는 적합하지 않다.
 
-## jsDelivr 발견
+## jsDelivr 사용해보기
 
 찾아보니 jsDelivr라는 서비스가 있었다. GitHub 파일을 진짜 CDN으로 서빙해주는 서비스다.
 
@@ -47,8 +43,6 @@ https://cdn.jsdelivr.net/gh/user/repo@branch/path/image.png
 ```
 
 URL 형식만 바꾸면 Cloudflare, Fastly, Bunny 백엔드를 거쳐서 전세계 CDN으로 서빙된다. 완전 무료이고 대역폭 제한도 없고 상업적 용도도 가능하다.
-
-## 자동화 스크립트 구현
 
 MDX 파일에서 로컬 이미지를 찾아서 GitHub에 업로드하고 URL을 자동으로 바꿔주는 스크립트를 만들었다.
 
@@ -102,7 +96,7 @@ const response = await fetch(
 const url = `https://cdn.jsdelivr.net/gh/${owner}/${repo}@images/${path}`;
 ```
 
-## 이미지 전용 브랜치 사용 이유
+## 이미지 전용 브랜치를 사용하는 이유
 
 `main` 브랜치에 이미지를 넣으면 결국 리포 용량이 커진다. 그래서 `images`라는 별도 브랜치를 만들어서 거기에만 이미지를 저장한다.
 

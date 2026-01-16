@@ -208,18 +208,18 @@ src/api/portfolio/
 ### Component Architecture
 ```
 src/components/portfolio/
+├── typography.tsx          # 타이포그래피 시스템 (Hero, H1, H2, Body, Caption)
+├── grid.tsx                # 12컬럼 그리드 시스템 (Grid, GridItem)
 ├── side-navigation.tsx     # 좌측 섹션 네비게이션 (flex-grow 카드 + 슬라이드 인디케이터)
 ├── portfolio-menu-bar.tsx  # 상단 메뉴바 (섹션 색상 + 슬라이드 진행률)
 └── slides/                 # 슬라이드 타입별 템플릿
-    ├── cover-slide.tsx
-    ├── problem-slide.tsx
-    ├── process-slide.tsx
-    ├── outcome-slide.tsx
-    ├── reflection-slide.tsx
-    ├── profile-slide.tsx
-    ├── contact-slide.tsx
-    ├── epilogue-slide.tsx      # Profile + Contact 통합 (About 섹션용)
-    └── screenshot-gallery.tsx  # 이미지 갤러리 + Before/After 비교
+    ├── intro-slide.tsx         # 포트폴리오 커버 (4-8 그리드, 좌측 정렬)
+    ├── cover-slide.tsx         # 프로젝트 커버 (좌측 정렬, 성과 수치)
+    ├── problem-slide.tsx       # 문제 정의 (6-6 그리드)
+    ├── process-slide.tsx       # 해결 과정 (상하 분리)
+    ├── outcome-slide.tsx       # 결과/성과 (회고 포함)
+    ├── epilogue-slide.tsx      # About + Contact 통합 (5-7 그리드)
+    └── screenshot-gallery.tsx  # 이미지 갤러리 (object-contain)
 ```
 
 ### Layout Pattern (뷰포트 제약)
@@ -294,45 +294,55 @@ slides:
 
 ### 타이포그래피 (5단계)
 
-| 계층 | 클래스 | 크기/스타일 | 용도 |
-|-----|--------|------------|------|
-| Hero | `text-5xl md:text-6xl font-bold` | 60px, Bold | 커버 메인 타이틀 |
-| H1 | `text-3xl md:text-4xl font-semibold` | 36px, Semibold | 슬라이드 제목 |
-| H2 | `text-xl md:text-2xl font-medium` | 24px, Medium | 섹션 제목, 카드 헤더 |
-| Body | `text-base md:text-lg text-muted-foreground` | 18px, Regular, 회색 | 본문, 설명 |
-| Caption | `text-sm text-muted-foreground/70` | 14px, Regular, 연한 회색 | 부가 정보, 라벨 |
+`@/components/portfolio/typography`에서 시맨틱 컴포넌트 import:
+
+| 컴포넌트 | 클래스 | 용도 |
+|---------|--------|------|
+| `<Hero>` | `text-6xl font-bold text-foreground` | 커버 메인 타이틀 |
+| `<H1>` | `text-4xl font-bold text-foreground` | 프로젝트 제목 |
+| `<H2>` | `text-2xl font-semibold text-foreground` | 슬라이드 제목, 소제목 |
+| `<Body>` | `text-base text-foreground/80` | 본문, 설명 |
+| `<Caption>` | `text-sm font-medium text-muted` | 메타 정보, 라벨 |
 
 **사용 예시:**
 ```tsx
-<h1 className="text-5xl md:text-6xl font-bold">CRO 최적화</h1>
-<p className="text-lg text-muted-foreground mt-4">전환율 개선 프로젝트</p>
+import { Hero, H1, Body, Caption } from "@/components/portfolio/typography";
+
+<Hero>김한솔</Hero>
+<H1>CRO 분석 자동화</H1>
+<Body>전환율 개선 프로젝트 설명...</Body>
+<Caption className="text-accent">UX 리서치 · 데이터 분석</Caption>
 ```
 
 ### 그리드 시스템 (12컬럼)
 
-`Grid`, `GridItem` 컴포넌트로 12컬럼 기반 레이아웃 구성.
+`@/components/portfolio/grid`에서 `Grid` 컴포넌트 import.
 
-**주요 레이아웃 조합:**
-| 패턴 | 용도 | 예시 |
-|-----|------|------|
-| 4-8 | 좌측 라벨 + 우측 콘텐츠 | Problem 슬라이드 |
-| 5-7 | 텍스트 + 이미지 균형 | Process 슬라이드 |
-| 6-6 | 동등 비중 | Before/After 비교 |
+**cols prop으로 레이아웃 지정:**
+| cols | 비율 | 용도 |
+|------|------|------|
+| `"4-8"` | 4:8 | IntroSlide (좌측 프로필 + 우측 콘텐츠) |
+| `"5-7"` | 5:7 | EpilogueSlide (About + 스킬) |
+| `"6-6"` | 6:6 | ProblemSlide (컨텍스트 + 다이어그램) |
+| `"full"` | 12 | 단일 컬럼 |
 
 **사용 예시:**
 ```tsx
+import { Grid } from "@/components/portfolio/grid";
+
+// 자식 2개가 자동으로 4:8 비율로 배치
+<Grid cols="4-8" gap="lg" align="center">
+  <div>좌측 4컬럼</div>
+  <div>우측 8컬럼</div>
+</Grid>
+
+// 커스텀 span이 필요하면 GridItem 사용
 import { Grid, GridItem } from "@/components/portfolio/grid";
 
-<Grid>
-  <GridItem span={4}>
-    <h2 className="text-2xl font-medium">문제 정의</h2>
-  </GridItem>
-  <GridItem span={8}>
-    <p className="text-lg text-muted-foreground">
-      기존 시스템의 한계점 분석...
-    </p>
-  </GridItem>
-</Grid>
+<div className="grid grid-cols-12 gap-6">
+  <GridItem span={3}>3컬럼</GridItem>
+  <GridItem span={9}>9컬럼</GridItem>
+</div>
 ```
 
 ### 카드 사용 원칙
@@ -366,47 +376,50 @@ import { Grid, GridItem } from "@/components/portfolio/grid";
 
 ### 슬라이드 컴포넌트 구조
 
+`@/components/portfolio/slides/`에 위치:
+
 | 컴포넌트 | 용도 | 주요 props |
 |---------|------|-----------|
-| `intro-slide` | 포트폴리오 전체 커버 | title, subtitle |
-| `cover-slide` | 개별 프로젝트 커버 | title, subtitle, period, role |
-| `problem-slide` | 문제 정의 | title, problems[], insights[] |
-| `process-slide` | 해결 과정 | title, steps[], children(다이어그램) |
-| `outcome-slide` | 결과/성과 | title, metrics[], insights[] |
-| `reflection-slide` | 회고/학습 | title, learnings[], timeline[] |
-| `epilogue-slide` | About + Contact 통합 | profile, contact, skills[] |
+| `IntroSlide` | 포트폴리오 전체 커버 | name, role, intro[], links[], projects[] |
+| `CoverSlide` | 개별 프로젝트 커버 | name, title, description, meta, outcomes[] |
+| `ProblemSlide` | 문제 정의 (6:6 그리드) | heading, context[], children(다이어그램) |
+| `ProcessSlide` | 해결 과정 | heading, approach[], children(다이어그램) |
+| `OutcomeSlide` | 결과/성과 | heading, strengths[], improvements[], children |
+| `EpilogueSlide` | About + Contact 통합 (5:7 그리드) | name, role, skills[], links[], philosophy[] |
 
 **슬라이드 선택 가이드:**
 ```
-프로젝트 시작     → cover-slide
-무엇이 문제였나   → problem-slide
-어떻게 해결했나   → process-slide (+ 다이어그램)
-결과는 무엇인가   → outcome-slide (정량 지표 강조)
-무엇을 배웠나     → reflection-slide
-포트폴리오 마무리 → epilogue-slide (About 섹션)
+포트폴리오 첫 화면 → IntroSlide (이름, 직함, 연락처, 프로젝트 목록)
+프로젝트 시작     → CoverSlide (프로젝트명, 기간, 역할, 성과 수치)
+무엇이 문제였나   → ProblemSlide (배경 컨텍스트 + 비즈니스 임팩트)
+어떻게 해결했나   → ProcessSlide (접근 방식 + 다이어그램/스크린샷)
+결과는 무엇인가   → OutcomeSlide (성과 수치 + 회고)
+포트폴리오 마무리 → EpilogueSlide (About + Contact 통합)
 ```
 
 ### 이미지 레이아웃 패턴
 
-**단일 이미지 (전체 폭):**
+**원칙:** 스크린샷은 절대 잘리면 안 됨 → `object-contain` 사용
+
+**단일 이미지:**
 ```tsx
-<div className="relative aspect-video w-full overflow-hidden rounded-lg">
-  <Image src={url} alt={alt} fill className="object-cover" />
+<div className="flex items-center justify-center">
+  <img
+    src={url}
+    alt={alt}
+    className="object-contain w-full h-auto max-h-[400px] rounded-lg"
+  />
 </div>
 ```
 
-**2열 이미지 비교:**
+**Before/After 비교:**
 ```tsx
-<div className="grid grid-cols-2 gap-4">
-  <div className="relative aspect-video">
-    <Image src={before} alt="Before" fill className="object-cover" />
-    <span className="absolute top-2 left-2 bg-black/50 text-white px-2 py-1 text-sm rounded">Before</span>
-  </div>
-  <div className="relative aspect-video">
-    <Image src={after} alt="After" fill className="object-cover" />
-    <span className="absolute top-2 left-2 bg-accent text-white px-2 py-1 text-sm rounded">After</span>
-  </div>
-</div>
+import { BeforeAfterComparison } from "@/components/portfolio/slides/screenshot-gallery";
+
+<BeforeAfterComparison
+  before={{ src: "/images/before.png", alt: "AS-IS", caption: "기존 UI" }}
+  after={{ src: "/images/after.png", alt: "TO-BE", caption: "개선 UI" }}
+/>
 ```
 
 ## 다이어그램 컴포넌트

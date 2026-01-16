@@ -15,10 +15,10 @@ export function ThemeToggle() {
   if (!mounted) {
     return (
       <button
-        className="p-2 rounded-lg text-muted hover:text-foreground hover:bg-secondary transition-colors"
+        className="p-2 text-muted cursor-pointer"
         aria-label="테마 전환"
       >
-        <Sun className="w-4 h-4" />
+        <Sun className="w-5 h-5" />
       </button>
     )
   }
@@ -26,13 +26,13 @@ export function ThemeToggle() {
   return (
     <button
       onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
-      className="p-2 rounded-lg text-muted hover:text-foreground hover:bg-secondary transition-colors"
+      className="p-2 text-muted cursor-pointer"
       aria-label="테마 전환"
     >
       {resolvedTheme === "dark" ? (
-        <Sun className="w-4 h-4" />
+        <Sun className="w-5 h-5" />
       ) : (
-        <Moon className="w-4 h-4" />
+        <Moon className="w-5 h-5" />
       )}
     </button>
   )
