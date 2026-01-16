@@ -33,6 +33,8 @@ interface OutcomeSlideProps {
   strengths?: ReflectionItem[];
   /** 개선할 점 (회고) */
   improvements?: ReflectionItem[];
+  /** 액센트 색상 */
+  accentColor?: string;
 }
 
 /**
@@ -53,6 +55,7 @@ export function OutcomeSlide({
   diagram,
   strengths,
   improvements,
+  accentColor,
 }: OutcomeSlideProps) {
   // 다이어그램 컴포넌트 렌더링
   const DiagramComponent = diagram ? diagramComponents[diagram] : null;

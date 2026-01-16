@@ -1,6 +1,7 @@
 import { Header } from "@/components/header"
 import { HeroSection } from "@/components/hero-section"
-import { SideProjectGrid } from "@/components/side-project-grid"
+import { SideProjectList } from "@/components/side-project-list"
+import { ToolkitGrid } from "@/components/toolkit-grid"
 import { getBlogPosts } from "@/lib/mdx"
 import { ArrowUpRight } from "lucide-react"
 import Link from "next/link"
@@ -65,7 +66,7 @@ export default function Home() {
           </Link>
         </div>
 
-        <SideProjectGrid />
+        <SideProjectList />
       </section>
 
       {/* Career */}
@@ -93,6 +94,24 @@ export default function Home() {
           ))}
           <div className="border-t border-border" />
         </div>
+      </section>
+
+      {/* Toolkit */}
+      <section className="w-full max-w-2xl mx-auto px-6 py-8">
+        <div className="flex items-center justify-between mb-8">
+          <h2 className="text-muted text-sm font-medium tracking-wide uppercase">
+            저장소
+          </h2>
+          <Link
+            href="/projects"
+            className="text-sm text-muted hover:text-foreground transition-colors flex items-center gap-1"
+          >
+            전체 보기
+            <ArrowUpRight className="w-3 h-3" />
+          </Link>
+        </div>
+
+        <ToolkitGrid />
       </section>
 
       {/* Footer */}
