@@ -41,7 +41,7 @@ export default function ProjectsPage() {
           <h2 className="text-muted text-sm font-medium tracking-wide uppercase mb-8">
             저장소
           </h2>
-          <ToolkitGrid showAll />
+          <ToolkitGrid showAll showFilter />
         </div>
       </section>
     </main>

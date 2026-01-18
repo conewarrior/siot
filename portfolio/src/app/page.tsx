@@ -69,33 +69,6 @@ export default function Home() {
         <SideProjectList />
       </section>
 
-      {/* Career */}
-      <section className="w-full max-w-2xl mx-auto px-6 py-8">
-        <h2 className="text-muted text-sm font-medium tracking-wide uppercase mb-8">
-          경력
-        </h2>
-
-        <div className="space-y-0">
-          {[
-            { company: "지니파이", period: "2025.08 —" },
-            { company: "데이원컴퍼니", period: "2023.10 — 2024.09" },
-            { company: "셀렉트스타", period: "2020.02 — 2023.07" },
-            { company: "디싸이너", period: "2019.02 — 2019.12" },
-          ].map((career, index) => (
-            <div
-              key={career.company}
-              className={`py-4 flex items-center justify-between gap-4 ${index === 0 ? "" : "border-t border-border"}`}
-            >
-              <span className="text-foreground">{career.company}</span>
-              <span className="text-xs font-mono text-muted tabular-nums shrink-0">
-                {career.period}
-              </span>
-            </div>
-          ))}
-          <div className="border-t border-border" />
-        </div>
-      </section>
-
       {/* Toolkit */}
       <section className="w-full max-w-2xl mx-auto px-6 py-8">
         <div className="flex items-center justify-between mb-8">

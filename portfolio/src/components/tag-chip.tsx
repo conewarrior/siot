@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils"
 
 // 카테고리별 색상 (블로그)
 const categoryColors: Record<string, string> = {
-  개발: "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300",
+  AX: "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300",
   디자인: "bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-300",
   커리어: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300",
 }

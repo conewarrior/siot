@@ -17,9 +17,9 @@ export const typeColors: Record<ToolkitItem["type"], string> = {
 }
 
 export const typeLabels: Record<ToolkitItem["type"], string> = {
-  command: "커맨드",
-  skill: "스킬",
-  agent: "에이전트",
+  command: "command",
+  skill: "skill",
+  agent: "agent",
 }
 
 export const toolkitItems: ToolkitItem[] = [
