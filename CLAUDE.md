@@ -106,3 +106,122 @@ allowed-tools: Read, Write, Bash, Glob
 - 파일 백업: 기존 파일 있으면 자동으로 `.backup` 생성
 - 패키지 설치: `--design` 옵션 시 npm install 자동 실행
 - 경로 탐색: 일반적인 경로 (`src/app/`, `src/styles/`) 순서대로 자동 탐색
+
+## 커맨드 vs 에이전트 분리 패턴
+
+**커맨드**: 트리거 역할, 가벼운 오케스트레이션
+- 사용자 입력 받기
+- 에이전트 순차 호출
+- 진행 상황 표시
+
+**에이전트**: 복잡한 로직 처리, 전문화된 작업
+- 분석, 변환, 생성 등 무거운 작업
+- 재사용 가능한 단위로 설계
+
+```
+/forge (커맨드)
+├── 인터뷰어 에이전트: 아이디어 → PRD
+├── 아키텍트 에이전트: PRD → 구조화 + 이슈 분리
+└── parallel-dev 커맨드: 병렬 개발 실행
+
+/wrap (커맨드)
+├── 변경 사항 분석 (내장)
+└── Linear MCP 연동 (내장)
+```
+
+### 에이전트 분리 기준
+- 재사용성: 여러 커맨드에서 호출 가능하면 분리
+- 복잡도: 로직이 50줄 이상이면 분리 고려
+- 전문성: 특정 도메인 지식 필요하면 분리
+
+## 병렬 작업 분리 기준
+
+병렬 실행 가능 여부 판단 기준:
+
+### 분리 가능 (병렬 실행)
+1. **파일 충돌 없음**: 각 태스크가 수정하는 파일이 겹치지 않음
+2. **의존성 없음**: A 결과를 B가 필요로 하지 않음
+3. **공유 상태 없음**: 전역 설정, 환경 변수 등 동시 수정 없음
+
+### 분리 불가 (순차 실행)
+1. **스키마 → API → UI**: 데이터 구조가 확정되어야 다음 단계 진행
+2. **설정 → 구현**: 환경 설정 완료 후 코드 작성
+3. **코어 → 확장**: 핵심 로직 완성 후 부가 기능 추가
+
+### 파일 범위 명시 필수
+```markdown
+## Task 1: 컴포넌트 개발
+**Files:** `src/components/Button.tsx`, `src/components/Button.test.tsx`
+
+## Task 2: 스타일 정의
+**Files:** `src/styles/button.css`
+```
+
+## MCP 도구 연동 패턴
+
+### Linear MCP 호출
+```
+mcp__linear__create_issue
+mcp__linear__update_issue
+mcp__linear__get_issue
+```
+
+### MCP 도구 사용 원칙
+1. **allowed-tools에 명시**: 커맨드 frontmatter에 필요한 MCP 도구 선언
+2. **접두사 규칙**: `mcp__서비스명__기능명` 형태
+3. **에러 핸들링**: MCP 연결 실패 시 graceful degradation
+
+```markdown
+---
+allowed-tools: Read, Write, mcp__linear__create_issue, mcp__linear__update_issue
+---
+```
+
+## 프로젝트 문서 구조 패턴
+
+Linear 프로젝트 기반 작업 시 문서 구조:
+
+```
+docs/
+└── {프로젝트-요약명}/           # 예: design-workflow
+    ├── project.md              # Linear 프로젝트 description 기반
+    └── issues/                 # Linear 이슈별 작업 기록
+        ├── EDU-5229-scaffolding.md
+        ├── EDU-5230-tokens.md
+        └── ...
+```
+
+### project.md 작성 원칙
+- **Linear 프로젝트에서 내용 가져오기**: `mcp__linear__get_project` 사용
+- Linear description을 그대로 반영 (0.이슈 → 1.목표 → 2.리스크 → 3.검증계획 → 4.Done Definition)
+- 임의로 내용 추가하지 말 것
+
+### issues/ 파일 구조
+```markdown
+# {이슈ID}: {이슈명}
+
+- **Linear**: {링크}
+- **Due Date**: YYYY-MM-DD
+- **Estimate**: Xh
+- **Status**: 🔲 Todo | 🔄 In Progress | ✅ Done
+
+## 목표
+[이슈 목표]
+
+## To-do
+- [ ] 체크리스트
+
+## 작업 대상 파일
+[수정할 파일 목록]
+
+## 작업 로그
+<!-- 작업하면서 기록 -->
+```
+
+## 세션 재시작 시 컨텍스트 복구
+
+세션이 끊겼다가 다시 시작하면 이전 대화 내용이 사라짐.
+사용자가 "이전에 하던 작업" 언급 시:
+1. `docs/` 폴더의 최근 수정 파일 확인
+2. Linear 프로젝트 조회로 현재 진행 상황 파악
+3. issues/ 폴더의 이슈 파일 확인

@@ -48,13 +48,16 @@ src/
 │   ├── mdx-content.tsx    # MDX renderer with styled components
 │   ├── text-rotate.tsx    # Rotating text with staggered character animation
 │   ├── project-showcase.tsx # Project list with mouse-following image preview (홈페이지용)
-│   ├── side-project-grid.tsx # Side project grid with floating image hover (/projects)
+│   ├── side-project-list.tsx # Side project list with floating image hover
 │   ├── header.tsx         # Navigation with TextRotate logo
 │   ├── typewriter.tsx     # Typing/deleting text animation
-│   └── theme-toggle.tsx   # Dark/light mode toggle
+│   ├── theme-toggle.tsx   # Dark/light mode toggle
+│   ├── blog-list.tsx      # Blog list with filter chips
+│   └── toolkit-grid.tsx   # Toolkit grid with type filter (command/skill/agent)
 └── lib/
     ├── utils.ts           # cn() helper (clsx + tailwind-merge)
-    └── mdx.ts             # MDX utilities (getBlogPosts, getProjects, etc.)
+    ├── mdx.ts             # MDX utilities (getBlogPosts, getProjects, etc.)
+    └── toolkit-data.ts    # Toolkit items data (commands, skills, agents)
 
 docs/
 ├── content/               # All site content (MDX files)
@@ -82,16 +85,9 @@ category: "디자인" | "개발"
 published: true
 ```
 
-Frontmatter for projects:
-```yaml
-title: "프로젝트명"
-description: "설명"
-year: "2025"
-link: "https://..."
-image: "/images/..."
-tech: ["React", "TypeScript"]
-featured: true
-```
+**Side Projects & Toolkit**: 하드코딩으로 관리
+- Side projects: `src/components/side-project-list.tsx`의 `projects` 배열
+- Toolkit items: `src/lib/toolkit-data.ts`의 `toolkitItems` 배열
 
 Blog posts are pre-rendered at build time via `generateStaticParams()` in `[slug]/page.tsx`.
 
@@ -123,6 +119,25 @@ Blog posts are pre-rendered at build time via `generateStaticParams()` in `[slug
   relative after:absolute after:bg-accent after:bottom-0 after:left-0 after:h-0.5 after:w-full after:origin-bottom-right after:scale-x-0 group-hover:after:origin-bottom-left group-hover:after:scale-x-100 after:transition-transform after:ease-in-out after:duration-300
   ```
 
+### UI Patterns
+
+**Filter Chips** (Blog, Toolkit):
+- 각 필터에 `activeClass`와 `inactiveClass` 정의
+- 색상별 테마: 전체(neutral), 카테고리별(blue, violet, emerald 등)
+- 참고 파일: `blog-list.tsx`, `toolkit-grid.tsx`
+
+```tsx
+const filters = [
+  {
+    label: "전체",
+    value: "all",
+    activeClass: "bg-neutral-900 text-white border-neutral-900 dark:bg-neutral-100 dark:text-neutral-900",
+    inactiveClass: "border-neutral-300 text-neutral-500 hover:border-neutral-400"
+  },
+  // ...카테고리별 필터
+]
+```
+
 ### Theming & Styling
 
 **Dark Mode**:
@@ -135,6 +150,17 @@ Blog posts are pre-rendered at build time via `generateStaticParams()` in `[slug
 - Accent: orange (#F97316 light, #FB923C dark)
 - Colors via `@theme inline`: `text-foreground`, `text-muted`, `bg-secondary`, `bg-accent`
 - Path alias: `@/*` maps to `./src/*`
+
+**Tailwind v4 주의사항**:
+- CSS 변수 색상(`bg-foreground`, `text-background`)이 **동적 클래스 문자열에서 작동 안 함**
+- 해결: 명시적 Tailwind 색상 사용 (`bg-neutral-900`, `text-white` 등)
+```tsx
+// ❌ 작동 안 함
+activeClass: "bg-foreground text-background"
+
+// ✅ 작동함
+activeClass: "bg-neutral-900 text-white dark:bg-neutral-100 dark:text-neutral-900"
+```
 
 **Tailwind v4 토큰 등록 패턴**:
 ```css
