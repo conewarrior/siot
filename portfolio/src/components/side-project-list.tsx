@@ -34,6 +34,13 @@ const projects: SideProject[] = [
     link: "https://6to6-seven.vercel.app",
     image: "/images/side-projects/6to6.png",
   },
+  {
+    title: "Parkingon",
+    description: "아파트 단지 주차 시설 통합 관리 플랫폼 대시보드 퍼블리싱",
+    year: "2025",
+    link: "https://parkingon-client.vercel.app/dashboard",
+    image: "/images/side-projects/parkingon.png",
+  },
 ]
 
 export function SideProjectList() {
