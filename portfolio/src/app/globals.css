@@ -44,6 +44,32 @@
   --accent-ripple: rgba(249, 115, 22, 0.3);
   --accent-hover: rgba(249, 115, 22, 0.4);
   --accent-glow: rgba(249, 115, 22, 0.15);
+
+  /* ========================
+     Portfolio Green Palette
+     See: docs/design-guide.md
+     ======================== */
+  /* Primary */
+  --portfolio-primary: #327039;        /* Forest Fern */
+  --portfolio-primary-dark: #133020;   /* Tilled Earth */
+
+  /* Background */
+  --portfolio-bg: #F8EDD9;             /* Alabaster Hay */
+  --portfolio-bg-card: #FFFFFF;
+
+  /* Accent */
+  --portfolio-accent: #F0BE49;         /* Wheat Field Sunrise */
+  --portfolio-accent-warm: #DD5C36;    /* Cherry Grove */
+
+  /* Green Scale */
+  --green-100: #E8F5E9;
+  --green-200: #C8E6C9;
+  --green-300: #A5D6A7;
+  --green-400: #66BB6A;
+  --green-500: #327039;
+  --green-600: #2E7D32;
+  --green-700: #1B5E20;
+  --green-800: #133020;
 }
 
 /* ========================

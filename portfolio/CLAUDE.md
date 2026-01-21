@@ -35,7 +35,7 @@ src/
 ├── app/                    # App Router pages
 │   ├── page.tsx           # Home (Hero + Recent Posts + Projects)
 │   ├── layout.tsx         # Root layout with BackgroundBeamsWithCollision
-│   ├── globals.css        # Theme variables (accent = orange #F97316)
+│   ├── globals.css        # Theme variables + Portfolio green palette
 │   ├── blog/
 │   │   ├── page.tsx       # Blog list (reads from docs/content/blog/)
 │   │   └── [slug]/page.tsx # Blog post (MDX rendered)
@@ -138,6 +138,24 @@ const filters = [
 ]
 ```
 
+### Design Guide (Portfolio)
+
+**필독**: 포트폴리오 페이지 작업 시 반드시 `docs/design-guide.md` 참조
+
+**녹색 팔레트 (Portfolio Green Palette)**:
+| Token | HEX | Name | Usage |
+|-------|-----|------|-------|
+| `--portfolio-primary` | #327039 | Forest Fern | 메인 브랜드, 활성 탭, CTA |
+| `--portfolio-primary-dark` | #133020 | Tilled Earth | 텍스트, 다크 영역 |
+| `--portfolio-bg` | #F8EDD9 | Alabaster Hay | 배경 |
+| `--portfolio-accent` | #F0BE49 | Wheat Field Sunrise | 하이라이트 |
+| `--portfolio-accent-warm` | #DD5C36 | Cherry Grove | 포인트 (제한적) |
+
+**색상 원칙**:
+- 프로젝트별 다른 색상 사용 금지 → 녹색 베리에이션으로 통일
+- 액센트(골드, 코랄)는 매우 제한적으로
+- `--green-100` ~ `--green-800` 스케일 활용
+
 ### Theming & Styling
 
 **Dark Mode**:
@@ -146,7 +164,7 @@ const filters = [
 - `ThemeToggle` component toggles between light/dark
 - CSS variables defined in `globals.css` for `:root` (light) and `.dark`
 
-**Colors**:
+**Colors (Site-wide)**:
 - Accent: orange (#F97316 light, #FB923C dark)
 - Colors via `@theme inline`: `text-foreground`, `text-muted`, `bg-secondary`, `bg-accent`
 - Path alias: `@/*` maps to `./src/*`
