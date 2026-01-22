@@ -2,6 +2,20 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Commands
+
+```bash
+# 포트폴리오 개발 (portfolio/ 디렉토리에서 실행)
+cd portfolio && npm install    # 의존성 설치
+npm run dev                    # 개발 서버 (localhost:3000)
+npm run build                  # 프로덕션 빌드
+npm run lint                   # ESLint 실행
+
+# 이미지 CDN 업로드
+npm run upload-images          # MDX 이미지 → jsDelivr CDN
+npm run upload-images:dry      # 드라이런 (미리보기)
+```
+
 ## Repository Structure
 
 ```
@@ -225,3 +239,17 @@ docs/
 1. `docs/` 폴더의 최근 수정 파일 확인
 2. Linear 프로젝트 조회로 현재 진행 상황 파악
 3. issues/ 폴더의 이슈 파일 확인
+
+## 현재 진행 중인 프로젝트
+
+### design-workflow (AX 조직을 위한 디자인 워크플로우 구축)
+
+- **문서**: `docs/design-workflow/project.md`
+- **Linear**: https://linear.app/geniefy/project/ax-조직을-위한-디자인-워크플로우-구축-7911e033ac99
+- **작업 저장소**: `/Users/hskim/dev/design-system/`
+
+**주요 결과물**:
+- `/setup-design` 커맨드: 프로젝트에 디자인 시스템 자동 세팅
+- `@geniefy/ui` npm 패키지: 공용 컴포넌트
+- `tokens.css` CDN: 디자인 토큰
+- `design-rules.md`: LLM 제약 규칙 + Generation Protocol

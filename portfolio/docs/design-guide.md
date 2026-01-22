@@ -4,7 +4,7 @@
 
 ## Color Palette
 
-녹색 기반의 통일된 팔레트. 색상 남발 금지.
+프로젝트별 메인 컬러를 중심으로 한 통일된 팔레트. 색상 남발 금지.
 
 ### Primary Colors
 
@@ -27,9 +27,11 @@
 | `--color-accent` | Wheat Field Sunrise | #F0BE49 | 240, 190, 73 | 하이라이트, 호버 효과, 배지 |
 | `--color-accent-warm` | Cherry Grove | #DD5C36 | 221, 92, 54 | 경고, 중요 포인트 (매우 제한적) |
 
-### Color Variations (녹색 베리에이션)
+### Color Variations
 
-탭, 섹션 구분 등에 사용할 녹색 변형:
+각 프로젝트별 메인 컬러에 대한 베리에이션 스케일:
+
+#### Forest Fern Scale (디자인 시스템 프로젝트)
 
 | Level | HEX | Usage |
 |-------|-----|-------|
@@ -41,6 +43,19 @@
 | `--green-600` | #2E7D32 | 호버 상태 |
 | `--green-700` | #1B5E20 | 액티브 상태 |
 | `--green-800` | #133020 | Dark (Tilled Earth) |
+
+#### Cherry Grove Scale (CRO 프로젝트)
+
+| Level | HEX | Usage |
+|-------|-----|-------|
+| `--coral-100` | #FBE9E4 | 배경 틴트, 호버 |
+| `--coral-200` | #F5C5B8 | 비활성 요소 배경 |
+| `--coral-300` | #EF9C89 | 보조 요소 |
+| `--coral-400` | #E67C5F | 중간 강조 |
+| `--coral-500` | #DD5C36 | Primary (Cherry Grove) |
+| `--coral-600` | #C24D2D | 호버 상태 |
+| `--coral-700` | #A03F24 | 액티브 상태 |
+| `--coral-800` | #7A2F1B | Dark (텍스트, 강조) |
 
 ## Typography
 
@@ -138,9 +153,11 @@
 ## Design Principles
 
 ### 1. 색상 절제
-- 녹색 팔레트 내에서만 사용
-- 프로젝트별로 다른 색상 사용 금지
-- 액센트(골드, 코랄)는 매우 제한적으로
+- 각 프로젝트는 정해진 메인 컬러 스케일 내에서만 사용
+  - 디자인 시스템 → Forest Fern (Green Scale)
+  - CRO 프로젝트 → Cherry Grove (Coral Scale)
+- 프로젝트 내에서 다른 색상 혼용 금지
+- 액센트(골드)는 매우 제한적으로
 
 ### 2. 여백 활용
 - 충분한 여백으로 콘텐츠 호흡
@@ -171,7 +188,7 @@
   --color-accent: #F0BE49;
   --color-accent-warm: #DD5C36;
 
-  /* Green Scale */
+  /* Green Scale (Design System) */
   --green-100: #E8F5E9;
   --green-200: #C8E6C9;
   --green-300: #A5D6A7;
@@ -180,6 +197,16 @@
   --green-600: #2E7D32;
   --green-700: #1B5E20;
   --green-800: #133020;
+
+  /* Coral Scale (CRO) */
+  --coral-100: #FBE9E4;
+  --coral-200: #F5C5B8;
+  --coral-300: #EF9C89;
+  --coral-400: #E67C5F;
+  --coral-500: #DD5C36;
+  --coral-600: #C24D2D;
+  --coral-700: #A03F24;
+  --coral-800: #7A2F1B;
 }
 ```
 

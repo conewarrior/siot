@@ -142,19 +142,21 @@ const filters = [
 
 **필독**: 포트폴리오 페이지 작업 시 반드시 `docs/design-guide.md` 참조
 
-**녹색 팔레트 (Portfolio Green Palette)**:
+**포트폴리오 컬러 팔레트**:
 | Token | HEX | Name | Usage |
 |-------|-----|------|-------|
-| `--portfolio-primary` | #327039 | Forest Fern | 메인 브랜드, 활성 탭, CTA |
+| `--portfolio-primary` | #327039 | Forest Fern | 디자인 시스템 프로젝트 메인 |
 | `--portfolio-primary-dark` | #133020 | Tilled Earth | 텍스트, 다크 영역 |
 | `--portfolio-bg` | #F8EDD9 | Alabaster Hay | 배경 |
 | `--portfolio-accent` | #F0BE49 | Wheat Field Sunrise | 하이라이트 |
-| `--portfolio-accent-warm` | #DD5C36 | Cherry Grove | 포인트 (제한적) |
+| `--portfolio-accent-warm` | #DD5C36 | Cherry Grove | CRO 프로젝트 메인 |
 
 **색상 원칙**:
-- 프로젝트별 다른 색상 사용 금지 → 녹색 베리에이션으로 통일
-- 액센트(골드, 코랄)는 매우 제한적으로
-- `--green-100` ~ `--green-800` 스케일 활용
+- 각 프로젝트는 정해진 컬러 스케일만 사용
+  - 디자인 시스템 → `--green-100` ~ `--green-800` (Forest Fern 기반)
+  - CRO 프로젝트 → `--coral-100` ~ `--coral-800` (Cherry Grove 기반)
+- 프로젝트 내에서 다른 색상 혼용 금지
+- 액센트(골드)는 매우 제한적으로
 
 ### Theming & Styling
 
