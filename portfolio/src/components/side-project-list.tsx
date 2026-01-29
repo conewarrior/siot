@@ -14,6 +14,13 @@ interface SideProject {
 
 const projects: SideProject[] = [
   {
+    title: "Design System",
+    description: "사내 AX 조직을 위한 양방향 동기 자동화 디자인 시스템",
+    year: "2026",
+    link: "https://docs-ashy-five.vercel.app/",
+    image: "/images/side-projects/design-system.png",
+  },
+  {
     title: "Claude Toolkit",
     description: "Claude Code용 스킬, 커맨드, 에이전트 마켓플레이스",
     year: "2026",

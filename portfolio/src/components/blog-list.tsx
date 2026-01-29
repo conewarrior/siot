@@ -25,16 +25,22 @@ const filters = [
     inactiveClass: "border-neutral-300 text-neutral-500 hover:border-neutral-400 dark:border-neutral-600 dark:text-neutral-400 dark:hover:border-neutral-500"
   },
   {
-    label: "디자인 시스템",
-    value: "디자인",
-    activeClass: "bg-violet-100 text-violet-700 border-violet-200 dark:bg-violet-900/40 dark:text-violet-300 dark:border-violet-700",
-    inactiveClass: "border-violet-300 text-violet-600 hover:bg-violet-50 dark:border-violet-700 dark:text-violet-400 dark:hover:bg-violet-900/20"
+    label: "디자인시스템",
+    value: "디자인시스템",
+    activeClass: "bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-900/40 dark:text-amber-300 dark:border-amber-700",
+    inactiveClass: "border-amber-300 text-amber-600 hover:bg-amber-50 dark:border-amber-700 dark:text-amber-400 dark:hover:bg-amber-900/20"
   },
   {
     label: "AX",
     value: "개발",
     activeClass: "bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900/40 dark:text-blue-300 dark:border-blue-700",
     inactiveClass: "border-blue-300 text-blue-600 hover:bg-blue-50 dark:border-blue-700 dark:text-blue-400 dark:hover:bg-blue-900/20"
+  },
+  {
+    label: "UX",
+    value: "UX",
+    activeClass: "bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-300 dark:border-emerald-700",
+    inactiveClass: "border-emerald-300 text-emerald-600 hover:bg-emerald-50 dark:border-emerald-700 dark:text-emerald-400 dark:hover:bg-emerald-900/20"
   },
 ] as const
 
@@ -86,7 +92,7 @@ export function BlogList({ posts }: BlogListProps) {
               <p className="text-muted text-sm leading-relaxed mb-2">
                 {post.description}
               </p>
-              <TagChip label={post.category === "개발" ? "AX" : post.category} variant="category" />
+              <TagChip label={post.category === "개발" ? "AX" : post.category === "디자인시스템" ? "디자인시스템" : post.category} variant="category" />
             </article>
           </Link>
         ))}
