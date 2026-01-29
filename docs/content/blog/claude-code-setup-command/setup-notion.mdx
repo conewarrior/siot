@@ -1,0 +1,225 @@
+---
+title: "/setup 커맨드 기획서"
+description: "팀 내부 공유용 - /setup 커맨드로 디자인 시스템 연동 + CLAUDE.md 자동 세팅"
+date: "2025-01-15"
+category: "기획"
+published: false
+---
+
+## 한 줄 요약
+
+`/setup` 한 번 실행하면 디자인 시스템 연동 + CLAUDE.md 세팅이 완료됨.
+
+---
+
+## 배경
+
+### 현재 문제
+- 새 프로젝트마다 CLAUDE.md 수동 작성
+- 팀원마다 다른 형식, 빠뜨리는 규칙
+- 디자인 시스템 연동 방법 모름
+- 컴포넌트 일관성 없음
+
+### 해결
+단일 커맨드(`/setup`)로 일관된 개발 환경 자동 구성
+
+---
+
+## 전체 구조
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    GitHub (단일 소스)                        │
+│                   design-system 저장소                       │
+│  ┌─────────────────┐         ┌─────────────────────────┐    │
+│  │   tokens.css    │         │      components/        │    │
+│  │   (디자인 토큰)  │         │  Button, Card, Input... │    │
+│  └────────┬────────┘         └────────────┬────────────┘    │
+└───────────┼────────────────────────────────┼────────────────┘
+            │                                │
+            ▼                                ▼
+     jsDelivr CDN                    GitHub Actions
+     (실시간 참조)                    (자동 npm 배포)
+            │                                │
+            ▼                                ▼
+┌─────────────────────────────────────────────────────────────┐
+│                      각 프로젝트                             │
+│  ┌─────────────────┐         ┌─────────────────────────┐    │
+│  │   globals.css   │         │   npm install @회사/ui   │    │
+│  │  @import CDN    │         │   컴포넌트 import        │    │
+│  └─────────────────┘         └─────────────────────────┘    │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## /setup 실행 시 동작
+
+### 1단계: CLAUDE.md 생성
+- setup.md에 inline된 기본 템플릿 적용
+- 문서 관리 규칙, 코드 원칙, 작업 규칙 포함
+
+### 2단계: 디자인 시스템 연동 (--design 옵션)
+- setup.md에 inline된 디자인 시스템 규칙 추가
+- globals.css에 토큰 CDN import 설정
+- `npm install @회사/ui` 실행
+
+### 3단계: 완료 메시지
+- 생성된 파일 안내
+- 다음 단계 가이드
+
+---
+
+## 토큰 vs 컴포넌트 분리 이유
+
+| 구분 | 배포 방식 | 이유 |
+|------|----------|------|
+| **토큰** | CDN | 색상/간격 변경 시 **즉시 반영** 필요 |
+| **컴포넌트** | npm | API 변경 가능성 있어 **버전 관리** 필요 |
+
+### 토큰 (CDN)
+```css
+/* globals.css */
+@import url("https://cdn.jsdelivr.net/gh/회사/design-system/tokens.css");
+```
+- GitHub에 push → 자동 반영
+- 프로젝트에서 업데이트 작업 불필요
+
+### 컴포넌트 (npm)
+```bash
+npm install @회사/ui
+```
+- 버전 고정으로 안정성 확보
+- 필요할 때 `npm update`로 업데이트
+
+---
+
+## 컴포넌트 자동 등록 워크플로우
+
+```
+개발자가 새 컴포넌트 생성
+         ↓
+Claude가 자동으로 design-system 저장소에 push
+         ↓
+GitHub Actions가 npm 자동 배포
+         ↓
+다른 프로젝트에서 npm update로 사용
+```
+
+### CLAUDE.md 규칙
+```markdown
+## 컴포넌트 자동 등록
+
+새 컴포넌트(src/components/ui/) 생성 완료 시:
+1. design-system 저장소 pull
+2. components/{컴포넌트명}/ 에 복사
+3. git commit & push 자동 실행
+```
+
+- 물어보지 않고 자동 등록
+- 중복 컴포넌트는 Claude가 판단하여 병합
+- 안 쓰고 싶으면 import 안 하면 됨
+
+---
+
+## 필요한 파일들
+
+### ~/.claude/commands/
+| 파일 | 용도 |
+|------|------|
+| `setup.md` | /setup 커맨드 정의 (모든 템플릿 inline 포함) |
+
+**설계 결정:** 템플릿을 별도 파일로 분리하지 않고 setup.md에 inline 포함. 단일 파일로 배포/공유 가능.
+
+### GitHub 저장소 (design-system)
+| 파일/폴더 | 용도 |
+|----------|------|
+| `tokens.css` | 디자인 토큰 정의 |
+| `components/` | 공용 컴포넌트 |
+| `.github/workflows/` | npm 자동 배포 |
+
+---
+
+## 선행 작업
+
+### 1. design-system 저장소 생성
+```
+design-system/
+├── tokens.css
+├── components/
+│   └── (초기 컴포넌트들)
+├── package.json
+└── .github/workflows/publish.yml
+```
+
+### 2. GitHub Actions 설정
+- push 시 자동 npm 배포
+- 무료 (public 저장소 무제한, private도 월 2,000분)
+
+### 3. 팀원 권한 설정
+- design-system 저장소 write 권한
+- npm 배포 토큰 (GitHub Secrets에 등록)
+
+---
+
+## 사용법
+
+```bash
+# 기본 세팅
+/setup
+
+# 디자인 시스템 포함
+/setup --design
+
+# 기존 파일 백업 후 새로 생성
+/setup --force
+```
+
+---
+
+## 기대 효과
+
+1. **일관성**: 모든 프로젝트가 동일한 규칙과 토큰 사용
+2. **자동화**: 컴포넌트 만들면 자동으로 공유됨
+3. **진입장벽 낮춤**: `/setup` 한 번이면 끝
+4. **단일 소스**: GitHub 저장소 하나만 관리
+
+---
+
+## 현재 구현 상태
+
+### 완료
+
+| 항목 | 상태 | 비고 |
+|------|------|------|
+| design-system 저장소 | ✅ | https://github.com/conewarrior/design-system |
+| GitHub Actions 워크플로우 | ✅ | `.github/workflows/publish.yml` |
+| /setup 커맨드 | ✅ | `~/.claude/commands/setup.md` (템플릿 inline 포함) |
+
+### 미완료 (뼈대만 있음)
+
+| 항목 | 상태 | 필요한 작업 |
+|------|------|-------------|
+| tokens.css | 🔲 | 실제 토큰값 정의 필요 |
+| npm 패키지 설정 | 🔲 | package.json에서 `@{org}/ui` → 실제 패키지명 변경 |
+| npm 배포 연결 | 🔲 | NPM_TOKEN을 GitHub Secrets에 등록 |
+| 컴포넌트 | 🔲 | components/ 폴더에 실제 컴포넌트 추가 |
+
+### CDN/npm URL (예정)
+
+```
+CDN: https://cdn.jsdelivr.net/gh/conewarrior/design-system/tokens.css
+npm: @conewarrior/ui (패키지명 미정)
+```
+
+---
+
+## 다음 단계
+
+- [x] design-system 저장소 생성
+- [x] GitHub Actions 배포 워크플로우 작성
+- [x] /setup 커맨드 구현
+- [ ] npm 패키지명 결정 (`@conewarrior/ui` 등)
+- [ ] tokens.css 초기 토큰값 정의
+- [ ] npm 배포 설정 (NPM_TOKEN 등록)
+- [ ] 팀원 권한 설정

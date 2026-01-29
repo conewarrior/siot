@@ -1,0 +1,168 @@
+---
+title: "Claude Code 커맨드를 체계적으로 만드는 법"
+description: "PRD 작성부터 병렬 개발, 코드 리뷰, 학습 명문화까지 - /setup 커맨드 개발 과정 기록"
+date: "2025-01-14"
+category: "개발"
+published: true
+---
+
+## 문제: 매번 수동으로 CLAUDE.md 설정하기
+
+새 프로젝트를 시작할 때마다 CLAUDE.md를 수동으로 작성해야 했다. 팀원마다 다른 형식, 빠뜨리는 규칙, 디자인 시스템 연동 방법을 모르는 문제가 반복됐다.
+
+"한 번 실행하면 일관된 CLAUDE.md가 생성되는 커맨드가 있으면 좋겠다"고 생각했다.
+
+## 1단계: PRD 작성
+
+먼저 `/setup` 커맨드가 해야 할 일을 정리했다.
+
+```markdown
+# PRD: /setup - Claude Code 초기 세팅 커맨드
+
+## 핵심 목표
+1. `/setup` 한 번으로 Claude Code 개발 환경 완성
+2. 팀 전체가 동일한 디자인 시스템과 개발 규칙 사용
+3. 비개발자도 쉽게 시작할 수 있는 진입장벽 낮추기
+```
+
+PRD에서 결정해야 할 기술적 선택지들을 미리 정리했다:
+
+| 결정 사항 | 선택 | 이유 |
+|----------|------|------|
+| 토큰 관리 | Tailwind + CSS Variables | 두 장점 모두 취함, shadcn이 검증 |
+| 컴포넌트 공유 | 토큰 CDN + npm 패키지 | 토큰은 실시간, 컴포넌트는 버전 관리 |
+| 폴더 구조 | Next.js App Router 기본 | 공식 문서와 일치, 진입장벽 낮음 |
+
+{/* 📸 PRD 문서 구조 - 기술 결정 사항 섹션 */}
+
+## 2단계: /dev-cycle로 Development Guide 생성
+
+PRD를 작성한 후 `/dev-cycle` 커맨드를 실행했다.
+
+```bash
+/dev-cycle docs/PRD-claude-setup-guide.md
+```
+
+이 커맨드는 PRD를 읽고 병렬 작업이 가능한 Development Guide를 자동 생성한다.
+
+```markdown
+# Development Guide: /setup 커맨드
+
+## Phase 1: 커맨드 기본 구조
+<!-- PARALLEL_START -->
+
+#### Task 1-A: /setup 커맨드 파일 생성
+**담당 파일**: `~/.claude/commands/setup.md`
+
+#### Task 1-B: CLAUDE.md 기본 템플릿 정의
+**담당 파일**: `~/.claude/templates/claude-md-base.md`
+
+<!-- PARALLEL_END -->
+```
+
+`<!-- PARALLEL_START/END -->` 태그 안의 태스크들은 서로 다른 파일을 담당하므로 동시에 실행할 수 있다.
+
+{/* 📸 생성된 DEVELOPMENT-setup.md - Phase별 태스크 구조 */}
+
+## 3단계: 병렬 개발 실행
+
+Development Guide가 생성되면 각 Phase의 태스크들을 병렬로 실행한다.
+
+**Phase 1 (2개 태스크 동시 실행):**
+- Task 1-A: `/setup` 커맨드 파일 생성
+- Task 1-B: CLAUDE.md 기본 템플릿 정의
+
+**Phase 2 (3개 태스크 동시 실행):**
+- Task 2-A: 디자인 시스템 규칙 템플릿
+- Task 2-B: CDN 토큰 참조 설정 가이드
+- Task 2-C: npm 패키지 설치 안내 템플릿
+
+각 태스크는 독립적인 서브에이전트로 실행되어 서로 간섭 없이 작업한다. 핵심은 **파일 범위가 겹치지 않아야 한다**는 것이다.
+
+```
+~/.claude/
+├── commands/
+│   └── setup.md           ← Task 1-A
+└── templates/
+    ├── claude-md-base.md  ← Task 1-B
+    ├── claude-md-ds.md    ← Task 2-A
+    ├── globals-css-template.md ← Task 2-B
+    └── npm-install-guide.md    ← Task 2-C
+```
+
+{/* 📸 병렬 태스크 실행 로그 - 동시에 진행되는 모습 */}
+
+## 4단계: 코드 리뷰
+
+모든 태스크가 완료되면 `reviewer` 에이전트가 생성된 파일들을 검토한다.
+
+```markdown
+# Review Report: /setup 커맨드
+
+## 전체 상태: PASS with suggestions
+
+## 수동 검토 필요 항목
+
+| 우선순위 | 항목 | 설명 |
+|---------|------|------|
+| Critical | Tailwind 버전 불일치 | globals-css-template.md(v4)와 npm-install-guide.md(v3) |
+| Warning | 템플릿 동기화 | setup.md와 claude-md-base.md의 기본 템플릿 미세한 차이 |
+```
+
+리뷰어가 발견한 문제 중 자동 수정 가능한 것은 바로 수정하고, 수동 검토가 필요한 항목은 리포트에 남긴다.
+
+## 5단계: 학습 명문화
+
+마지막으로 `codify` 에이전트가 이번 개발 과정에서 배운 패턴을 CLAUDE.md에 추가한다.
+
+```markdown
+## Claude Code 커맨드 작성 패턴
+
+`~/.claude/commands/` 디렉토리에 커맨드 정의 파일 작성.
+
+### 커맨드 파일 구조
+
+---
+description: 커맨드 설명 (한 줄)
+allowed-tools: Read, Write, Bash, Glob
+---
+
+# 커맨드 제목
+
+## 사용법
+## 실행 프로세스
+## 핵심 원칙
+```
+
+실제로 작업하며 발견한 패턴만 기록한다. 추상적인 원칙이 아니라 구체적인 구조와 예시를 남긴다.
+
+## 결과: 생성된 파일들
+
+| 파일 | 용도 |
+|------|------|
+| `setup.md` | /setup 커맨드 정의 |
+| `claude-md-base.md` | CLAUDE.md 기본 템플릿 |
+| `claude-md-ds.md` | 디자인 시스템 규칙 |
+| `globals-css-template.md` | CSS 토큰 참조 가이드 |
+| `npm-install-guide.md` | 패키지 설치 안내 |
+
+이제 새 프로젝트에서 `/setup`을 실행하면 일관된 CLAUDE.md가 생성된다.
+
+```bash
+/setup              # 기본 CLAUDE.md 생성
+/setup --design     # 디자인 시스템 규칙 포함
+```
+
+## 배운 것
+
+**1. PRD에서 기술 결정을 미리 정리하면 개발이 빨라진다**
+
+"토큰 관리 방식은?" "컴포넌트 공유 방식은?" 같은 질문을 PRD 단계에서 결정해두면, 개발 중 멈추는 일이 줄어든다.
+
+**2. 파일 범위를 명확히 나누면 병렬 작업이 가능하다**
+
+각 태스크가 다른 파일을 담당하도록 설계하면, 여러 에이전트가 동시에 작업할 수 있다. Development Guide 작성 시 `<!-- PARALLEL_START/END -->` 태그와 "담당 파일" 명시가 핵심이다.
+
+**3. 템플릿은 복사 가능한 형태로 만든다**
+
+템플릿 내용을 코드블록으로 감싸면 바로 복사해서 쓸 수 있다. placeholder는 `{org}`, `@회사명/ui` 형태로 명확히 표시한다.

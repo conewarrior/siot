@@ -1,0 +1,17 @@
+# OS files
+.DS_Store
+*.DS_Store
+
+# Claude Code local settings
+.claude/
+
+# IDE
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.temp
+
+# Playwright MCP screenshots
+.playwright-mcp/
