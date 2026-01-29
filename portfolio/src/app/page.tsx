@@ -1,5 +1,5 @@
 import { Header } from "@/components/header"
-import { HeroSection } from "@/components/hero-section"
+import { IntroSection } from "@/components/intro-section"
 import { SideProjectList } from "@/components/side-project-list"
 import { ToolkitGrid } from "@/components/toolkit-grid"
 import { getBlogPosts } from "@/lib/mdx"
@@ -13,7 +13,7 @@ export default function Home() {
     <main className="min-h-screen">
       <Header />
 
-      <HeroSection />
+      <IntroSection />
 
       {/* Recent Posts */}
       <section className="w-full max-w-2xl mx-auto px-6 py-8">

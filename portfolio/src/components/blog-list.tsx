@@ -15,6 +15,7 @@ interface BlogPost {
 
 interface BlogListProps {
   posts: BlogPost[]
+  initialFilter?: string
 }
 
 const filters = [
@@ -44,8 +45,8 @@ const filters = [
   },
 ] as const
 
-export function BlogList({ posts }: BlogListProps) {
-  const [activeFilter, setActiveFilter] = useState<string>("all")
+export function BlogList({ posts, initialFilter }: BlogListProps) {
+  const [activeFilter, setActiveFilter] = useState<string>(initialFilter || "all")
 
   const filteredPosts =
     activeFilter === "all"

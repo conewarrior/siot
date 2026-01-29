@@ -13,8 +13,13 @@ export const metadata: Metadata = {
   },
 }
 
-export default function BlogPage() {
+interface BlogPageProps {
+  searchParams: Promise<{ filter?: string }>
+}
+
+export default async function BlogPage({ searchParams }: BlogPageProps) {
   const posts = getBlogPosts()
+  const { filter } = await searchParams
 
   return (
     <main className="min-h-screen">
@@ -30,7 +35,7 @@ export default function BlogPage() {
           디자인, 개발, 디지털 제품 구축에 대한 생각들.
         </p>
 
-        <BlogList posts={posts} />
+        <BlogList posts={posts} initialFilter={filter} />
       </section>
     </main>
   )
