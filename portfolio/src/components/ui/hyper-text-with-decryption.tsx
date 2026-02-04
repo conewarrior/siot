@@ -100,9 +100,10 @@ const Word = ({
     <motion.span
       onClick={handleClick}
       className={`
-        relative inline-block font-mono font-medium whitespace-nowrap
+        relative inline-block font-mono font-medium whitespace-nowrap isolate
         ${isHighlightable ? "cursor-pointer" : "cursor-default"}
       `}
+      style={{ position: "relative" }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       animate={{
@@ -117,14 +118,13 @@ const Word = ({
       <AnimatePresence>
         {isHovered && (
           <motion.span
-            className="absolute -inset-2 rounded-lg bg-foreground z-[-1]"
+            className="absolute -inset-2 rounded-lg bg-black z-[-1]"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
-            layoutId="hover-bg"
             style={{
               boxShadow:
-                "0px 10px 25px -5px rgba(249, 115, 22, 0.4), 0px 8px 10px -6px rgba(0, 0, 0, 0.1)",
+                "0px 10px 25px -5px rgba(0, 0, 0, 0.3), 0px 8px 10px -6px rgba(0, 0, 0, 0.1)",
             }}
           />
         )}
@@ -133,7 +133,7 @@ const Word = ({
       <span
         className={`relative z-10 px-1 transition-colors duration-200 ${
           isHovered
-            ? "text-background"
+            ? "text-white"
             : isHighlightable
               ? "text-accent"
               : "text-foreground"
@@ -191,7 +191,7 @@ export function HyperTextParagraph({
   };
 
   return (
-    <div className={`leading-relaxed tracking-wide ${className}`}>
+    <div className={`leading-relaxed tracking-wide overflow-visible ${className}`}>
       {words.map((word, i) => {
         const config = getHighlightConfig(word);
 
