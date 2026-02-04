@@ -13,6 +13,7 @@
  */
 
 import fs from 'fs/promises';
+import { existsSync } from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
 
@@ -233,12 +234,10 @@ class ImageUploader {
       absolutePath = path.resolve(fileDir, imagePath);
     }
 
-    try {
-      require('fs').accessSync(absolutePath);
+    if (existsSync(absolutePath)) {
       return absolutePath;
-    } catch {
-      return null;
     }
+    return null;
   }
 
   async uploadImage(imagePath) {
