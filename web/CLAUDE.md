@@ -13,7 +13,7 @@ npm run upload-images    # Upload local images to GitHub + jsDelivr CDN
 npm run upload-images:dry  # Preview image uploads without executing
 ```
 
-Working directory is `portfolio/`. Run `npm install` before first use.
+Working directory is `web/`. Run `npm install` before first use.
 
 ## Architecture
 
@@ -37,7 +37,7 @@ src/
 │   ├── layout.tsx         # Root layout with BackgroundBeamsWithCollision
 │   ├── globals.css        # Theme variables + Portfolio green palette
 │   ├── blog/
-│   │   ├── page.tsx       # Blog list (reads from docs/content/blog/)
+│   │   ├── page.tsx       # Blog list (reads from content/blog/)
 │   │   └── [slug]/page.tsx # Blog post (MDX rendered)
 │   ├── projects/page.tsx  # Projects gallery
 │   └── about/page.tsx     # About page
@@ -70,11 +70,11 @@ docs/
 
 ### Content Management
 
-Content is managed via MDX files in `docs/content/`. To add/edit content:
+Content is managed via MDX files in `content/`. To add/edit content:
 
-1. **Blog posts**: Create/edit `docs/content/blog/[slug].mdx`
-2. **Projects**: Create/edit `docs/content/projects/[slug].mdx`
-3. **About**: Edit `docs/content/about.mdx`
+1. **Blog posts**: Create/edit `content/blog/[slug].mdx`
+2. **Projects**: Create/edit `content/projects/[slug].mdx`
+3. **About**: Edit `content/about.mdx`
 
 Frontmatter for blog posts:
 ```yaml
@@ -214,7 +214,7 @@ Site content is in Korean. See `docs/planning/roadmap.md` for development status
 ## Blog Writing
 
 Use the `/blog-writer` skill for writing blog posts. Key rules:
-- **Location**: `docs/content/blog/[slug].mdx`
+- **Location**: `content/blog/[slug].mdx`
 - **Tone**: 평서체 (plain form, no honorifics: "~했다" O, "~했습니다" X)
 - **Structure**: Problem → Before → Journey → After → Takeaway
 - **Slug**: English kebab-case (e.g., `github-api-claude-commands.mdx`)
@@ -309,7 +309,7 @@ const goToSection = (index: number) => {
 };
 ```
 
-### MDX Content (`docs/content/portfolio/`)
+### MDX Content (`content/portfolio/`)
 
 ```typescript
 import { getPortfolioSections } from "@/lib/portfolio-mdx";

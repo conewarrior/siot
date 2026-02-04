@@ -5,8 +5,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-# 포트폴리오 개발 (portfolio/ 디렉토리에서 실행)
-cd portfolio && npm install    # 의존성 설치
+# 웹 앱 개발 (web/ 디렉토리에서 실행)
+cd web && npm install          # 의존성 설치
 npm run dev                    # 개발 서버 (localhost:3000)
 npm run build                  # 프로덕션 빌드
 npm run lint                   # ESLint 실행
@@ -20,15 +20,21 @@ npm run upload-images:dry      # 드라이런 (미리보기)
 
 ```
 siot/
-├── portfolio/           # Next.js 포트폴리오 사이트 (주요 작업 영역)
-│   ├── CLAUDE.md       # 포트폴리오 전용 가이드
+├── web/                 # Next.js 포트폴리오 사이트
+│   ├── CLAUDE.md       # 앱 전용 가이드 (아키텍처, 스타일링 등)
 │   ├── src/            # 소스 코드
-│   └── docs/           # MDX 콘텐츠 + 기획 문서
-├── vercel.json         # Vercel 배포 설정 (portfolio 디렉토리 지정)
-└── CLAUDE.md           # 이 파일
+│   └── docs/           # 기획 문서 (planning, references)
+├── content/             # MDX 콘텐츠
+│   ├── blog/           # 블로그 글 (_drafts/는 미노출)
+│   ├── projects/       # 프로젝트 설명
+│   ├── portfolio/      # 포트폴리오 슬라이드
+│   └── about.mdx       # 소개 페이지
+├── _archive/            # 과거 PRD, 워크플로우 기록
+├── vercel.json          # Vercel 배포 설정 (web 디렉토리 지정)
+└── CLAUDE.md            # 이 파일
 ```
 
-**포트폴리오 사이트 작업**: `portfolio/CLAUDE.md` 참조 (명령어, 아키텍처, 스타일링 등)
+**웹 앱 작업**: `web/CLAUDE.md` 참조 (명령어, 아키텍처, 스타일링 등)
 
 ## Development Workflow
 

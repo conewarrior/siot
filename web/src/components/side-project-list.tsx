@@ -29,7 +29,7 @@ const projects: SideProject[] = [
   {
     title: "땅콩쨈",
     description: "취향 기반 영화 토론 모임 매칭 서비스",
-    year: "2026",
+    year: "2025",
     link: "https://ddangkongjam.com",
     image: "/images/side-projects/ddangkongjam.png",
   },
