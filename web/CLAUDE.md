@@ -37,10 +37,12 @@ src/
 │   ├── layout.tsx         # Root layout with BackgroundBeamsWithCollision
 │   ├── globals.css        # Theme variables + Portfolio green palette
 │   ├── blog/
-│   │   ├── page.tsx       # Blog list (reads from content/blog/)
+│   │   ├── page.tsx       # Blog list (reads from ../content/)
 │   │   └── [slug]/page.tsx # Blog post (MDX rendered)
-│   ├── projects/page.tsx  # Projects gallery
-│   └── about/page.tsx     # About page
+│   ├── projects/page.tsx  # Projects gallery (hardcoded data)
+│   └── portfolio/         # Portfolio slide viewer
+│       ├── layout.tsx     # Light theme forced
+│       └── page.tsx       # Viewport-constrained presentation
 ├── components/
 │   ├── animated-text.tsx  # Letter-by-letter animation + underline
 │   ├── background-beams.tsx # Rain/beam collision effect (wraps entire site)
@@ -56,25 +58,20 @@ src/
 │   └── toolkit-grid.tsx   # Toolkit grid with type filter (command/skill/agent)
 └── lib/
     ├── utils.ts           # cn() helper (clsx + tailwind-merge)
-    ├── mdx.ts             # MDX utilities (getBlogPosts, getProjects, etc.)
+    ├── mdx.ts             # MDX utilities (getBlogPosts only - reads from ../content/)
     └── toolkit-data.ts    # Toolkit items data (commands, skills, agents)
 
 docs/
-├── content/               # All site content (MDX files)
-│   ├── blog/             # Blog posts
-│   ├── projects/         # Project descriptions
-│   └── about.mdx         # About page content
-└── planning/
-    └── roadmap.md        # Development roadmap
+├── design-guide.md        # Portfolio design guide
+└── references/            # PDF references (gitignored)
 ```
 
 ### Content Management
 
-Content is managed via MDX files in `content/`. To add/edit content:
+Blog content is managed via MDX files in `../content/` (root content folder).
 
-1. **Blog posts**: Create/edit `content/blog/[slug].mdx`
-2. **Projects**: Create/edit `content/projects/[slug].mdx`
-3. **About**: Edit `content/about.mdx`
+1. **Blog posts**: Create/edit `content/[slug].mdx` or `content/[slug]/index.mdx`
+2. **Drafts**: Place in `content/_drafts/` (excluded from listing)
 
 Frontmatter for blog posts:
 ```yaml
@@ -85,9 +82,10 @@ category: "디자인" | "개발"
 published: true
 ```
 
-**Side Projects & Toolkit**: 하드코딩으로 관리
+**Hardcoded Data**:
 - Side projects: `src/components/side-project-list.tsx`의 `projects` 배열
 - Toolkit items: `src/lib/toolkit-data.ts`의 `toolkitItems` 배열
+- Portfolio sections: `src/app/portfolio/page.tsx`의 `SECTIONS` 배열
 
 Blog posts are pre-rendered at build time via `generateStaticParams()` in `[slug]/page.tsx`.
 
@@ -214,7 +212,7 @@ Site content is in Korean. See `docs/planning/roadmap.md` for development status
 ## Blog Writing
 
 Use the `/blog-writer` skill for writing blog posts. Key rules:
-- **Location**: `content/blog/[slug].mdx`
+- **Location**: `../content/[slug].mdx` (root content folder)
 - **Tone**: 평서체 (plain form, no honorifics: "~했다" O, "~했습니다" X)
 - **Structure**: Problem → Before → Journey → After → Takeaway
 - **Slug**: English kebab-case (e.g., `github-api-claude-commands.mdx`)
@@ -307,24 +305,6 @@ const goToSection = (index: number) => {
     canvas.style.scrollSnapType = 'y mandatory';  // 복원
   }, 500);
 };
-```
-
-### MDX Content (`content/portfolio/`)
-
-```typescript
-import { getPortfolioSections } from "@/lib/portfolio-mdx";
-const sections = await getPortfolioSections();
-```
-
-**Frontmatter 형식:**
-```yaml
-title: "프로젝트명"
-order: 1                    # 섹션 순서 (낮을수록 먼저)
-color: "#F97316"           # 섹션 테마 색상
-textColor: "#FFFFFF"       # 텍스트 색상
-slides:
-  - type: "cover"          # cover | problem | process | outcome | reflection | profile | contact | epilogue
-    title: "슬라이드 제목"
 ```
 
 ### Design Decisions

@@ -23,14 +23,12 @@ siot/
 ├── web/                 # Next.js 포트폴리오 사이트
 │   ├── CLAUDE.md       # 앱 전용 가이드 (아키텍처, 스타일링 등)
 │   ├── src/            # 소스 코드
-│   └── docs/           # 기획 문서 (planning, references)
-├── content/             # MDX 콘텐츠
-│   ├── blog/           # 블로그 글 (_drafts/는 미노출)
-│   ├── projects/       # 프로젝트 설명
-│   ├── portfolio/      # 포트폴리오 슬라이드
-│   └── about.mdx       # 소개 페이지
+│   └── docs/           # 디자인 가이드, 레퍼런스
+├── content/             # 블로그 MDX (flat 구조)
+│   ├── _drafts/        # 초안 (미노출)
+│   └── *.mdx           # 블로그 글
 ├── _archive/            # 과거 PRD, 워크플로우 기록
-├── vercel.json          # Vercel 배포 설정 (web 디렉토리 지정)
+├── vercel.json          # Vercel 배포 설정 (rootDirectory: web)
 └── CLAUDE.md            # 이 파일
 ```
 
