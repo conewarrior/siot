@@ -22,7 +22,7 @@ const CONFIG = {
   repo: 'siot',
   branch: 'images',  // 이미지 전용 브랜치
   uploadPath: 'uploads',  // GitHub 리포 내 이미지 저장 경로
-  contentDir: path.resolve(process.cwd(), 'docs/content'),
+  contentDir: path.resolve(process.cwd(), '../content'),
   supportedExtensions: ['.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg'],
 };
 
