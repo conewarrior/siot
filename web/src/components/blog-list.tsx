@@ -39,7 +39,7 @@ const filters = [
   },
   {
     label: "UX",
-    value: "UX",
+    value: "ux",
     activeClass: "bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-300 dark:border-emerald-700",
     inactiveClass: "border-emerald-300 text-emerald-600 hover:bg-emerald-50 dark:border-emerald-700 dark:text-emerald-400 dark:hover:bg-emerald-900/20"
   },
@@ -51,7 +51,7 @@ export function BlogList({ posts, initialFilter }: BlogListProps) {
   const filteredPosts =
     activeFilter === "all"
       ? posts
-      : posts.filter((post) => post.category === activeFilter)
+      : posts.filter((post) => post.category.toLowerCase() === activeFilter.toLowerCase())
 
   return (
     <>
@@ -93,7 +93,7 @@ export function BlogList({ posts, initialFilter }: BlogListProps) {
               <p className="text-muted text-sm leading-relaxed mb-2">
                 {post.description}
               </p>
-              <TagChip label={post.category === "개발" ? "AX" : post.category === "디자인시스템" ? "디자인시스템" : post.category} variant="category" />
+              <TagChip label={post.category === "개발" ? "AX" : post.category === "디자인시스템" ? "디자인시스템" : post.category.toLowerCase() === "ux" ? "UX" : post.category} variant="category" />
             </article>
           </Link>
         ))}

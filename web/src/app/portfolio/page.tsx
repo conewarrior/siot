@@ -3,16 +3,28 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
-import { Monitor, ChevronLeft, ChevronRight, Download, ArrowRight, Mail, Globe, Github } from "lucide-react";
+import { Monitor, ChevronLeft, ChevronRight, Download, ArrowRight, Mail, Globe, Github, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { TextRotate } from "@/components/text-rotate";
+
+// PDF 뷰어 (클라이언트에서만 로드)
+const PDFPageViewer = dynamic(() => import("@/components/portfolio/pdf-page-viewer"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex h-full items-center justify-center">
+      <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+    </div>
+  ),
+});
 
 // ============================================================================
 // 타입 정의
 // ============================================================================
 
 type SlideLayout =
+  | "pdf"             // PDF 페이지 렌더링
   | "cover"           // 커버: 중앙 정렬, 마일스톤
   | "problem"         // 문제정의: 6:6 그리드
   | "process"         // 과정: 4:8 그리드
@@ -81,6 +93,7 @@ interface SlideData {
   id: string;
   layout: SlideLayout;
   title: string;
+  pdfPage?: number;           // PDF 페이지 번호 (layout: "pdf"일 때 사용)
   subtitle?: string;
   tagline?: string;           // 짧은 한 줄 문구
   description?: string;       // 설명 텍스트
@@ -114,6 +127,7 @@ interface SlideData {
 interface SectionData {
   id: string;
   title: string;
+  color?: string;  // 섹션별 테마 색상
   slides: SlideData[];
 }
 
@@ -131,501 +145,50 @@ const COLORS = {
 };
 
 // ============================================================================
-// 섹션 & 슬라이드 데이터
+// 섹션 & 슬라이드 데이터 (PDF 기반)
 // ============================================================================
 
 const SECTIONS: SectionData[] = [
-  // ============================================================================
-  // Intro (1장)
-  // ============================================================================
+  // Intro (1장) - PDF 1페이지
   {
     id: "intro",
     title: "Intro",
+    color: "#91011B",  // Dark red
     slides: [
-      {
-        id: "intro-1",
-        layout: "intro",
-        title: "김한솔",
-        tagline: "문제를 시스템으로 바꾸는 PM",
-        description: "반복되는 문제를 발견하면, 해결책을 만들고, 그것을 누구나 쓸 수 있는 시스템으로 확장합니다.",
-        bullets: [
-          "Design System: AI가 일관된 UI를 만들도록 규칙을 자동화한 이야기",
-          "CRO Experiments: 개발 없이 랜딩페이지를 분석하고 개선한 이야기",
-        ],
-      },
+      { id: "intro-1", layout: "pdf", title: "김한솔", pdfPage: 1 },
     ],
   },
-  // ============================================================================
-  // Design System (9장) - 포트폴리오 가이드 기반 새 레이아웃
-  // ============================================================================
-  {
-    id: "design-system",
-    title: "Design System",
-    slides: [
-      // Page 1: 커버 (ds-cover 레이아웃)
-      {
-        id: "ds-1",
-        layout: "ds-cover",
-        title: "조직 공용 디자인 시스템 구축",
-        subtitle: "2026 · Design System",
-        description: "프로젝트마다 다른 UI와 반복되는 설정 문제를 해결하기 위해, 디자인 토큰과 컴포넌트를 중앙에서 관리하고 명령어 하나로 자동 배포하는 시스템을 구축했다.",
-        heroImage: "/images/portfolio/design-system/ds-000.png",
-        timeline: [
-          { title: "문제 정의", desc: "프로젝트마다 다른 컬러, 간격 사용. 신규 프로젝트 설정에 30분 이상." },
-          { title: "설정 자동화", desc: "npm 설치, CDN 연결, 규칙 복사, Hook 설정을 명령어 하나로." },
-          { title: "솔루션 설계", desc: "토큰과 컴포넌트를 중앙에서 관리, 자동 동기화 구조." },
-          { title: "업데이트 자동화", desc: "Dependabot이 새 버전 감지 후 PR 생성, CI 통과 시 자동 머지." },
-          { title: "/setup-design", desc: "Claude Code Command로 설정 자동화. 실행 단계와 구성요소." },
-          { title: "품질 체계", desc: "Generation Protocol로 토큰 미사용, 중복, 접근성 위반 차단." },
-          { title: "배포 체계", desc: "토큰은 CDN으로 즉시 반영, 컴포넌트는 npm으로 버전 관리." },
-          { title: "문서 사이트", desc: "설치 가이드, 토큰 시각화, 규칙 문서, 버전 대시보드까지 9페이지 구성." },
-        ],
-        achievementGrid: [
-          { title: "토큰 시스템", items: ["3-tier 계층", "CDN 즉시반영"] },
-          { title: "자동화 체계", items: ["/setup-design", "원클릭 설정"] },
-          { title: "품질 관리", items: ["Generation", "Protocol"] },
-          { title: "문서화", items: ["9페이지 문서", "사이트 구축"] },
-        ],
-      },
-      // Page 2: 문제 정의 (ratio-1-1 레이아웃)
-      {
-        id: "ds-2",
-        layout: "ratio-1-1",
-        title: "프로젝트마다 다른 UI, 반복되는 설정",
-        subtitle: "Problem",
-        leftContent: {
-          type: "table",
-          headers: ["문제", "현상", "영향"],
-          rows: [
-            ["UI 불일치", "#3B82F6, #2563EB 등 하드코딩", "브랜드 일관성 붕괴"],
-            ["설정 복잡", "토큰 복사, 패키지 설치 7단계", "온보딩 30분+"],
-            ["업데이트 누락", "중앙 변경해도 수동 반영", "버전 파편화"],
-            ["컴포넌트 중복", "같은 Button 매번 새로 구현", "개발 리소스 낭비"],
-          ],
-        },
-        rightContent: {
-          type: "before-after",
-          before: { label: "Before", image: "/images/portfolio/design-system/ds-002.png" },
-          after: { label: "After", image: "/images/portfolio/design-system/ds-004.png" },
-        },
-      },
-      // Page 3: 솔루션 개요 (ratio-1-2 레이아웃)
-      {
-        id: "ds-3",
-        layout: "ratio-1-2",
-        title: "중앙 집중형 토큰 + 컴포넌트 + 자동 동기화",
-        subtitle: "Solution",
-        leftContent: {
-          type: "principles",
-          items: [
-            { title: "Single Source of Truth", desc: "모든 토큰/컴포넌트는 중앙에서 관리" },
-            { title: "Zero Config", desc: "설정 없이 명령어 하나로 완료" },
-            { title: "Auto Sync", desc: "업데이트는 자동으로 전파" },
-          ],
-        },
-        rightContent: {
-          type: "flowchart",
-          direction: "vertical",
-          steps: [
-            { title: "design-system", desc: "중앙 저장소" },
-            { title: "CDN / npm / Skill", desc: "배포 채널" },
-            { title: "/setup-design", desc: "설정 자동화" },
-            { title: "Projects A, B, C, D", desc: "적용" },
-          ],
-        },
-      },
-      // Page 4: /setup-design (ratio-1-3 레이아웃)
-      {
-        id: "ds-4",
-        layout: "ratio-1-3",
-        title: "/setup-design 명령어 하나로 전체 설정 완료",
-        subtitle: "Setup Command",
-        description: "npm 패키지 설치, CDN 링크 추가, 규칙 복사, Hook 설정을 자동 실행",
-        steps: [
-          { number: "01", title: "Install Package", description: "@geniefy/ui 설치, node_modules에 추가" },
-          { number: "02", title: "Add CDN Link", description: "index.html에 tokens.css CDN 추가, 즉시 반영 가능" },
-          { number: "03", title: "Copy Rules", description: "design-rules.md를 .claude/skills/에 복사" },
-          { number: "04", title: "Register Hook", description: "PostToolUse Hook 등록, AI 코드 생성 시 검증" },
-          { number: "05", title: "Verify Setup", description: "토큰 로드 확인, 컴포넌트 import 테스트" },
-          { number: "06", title: "Complete", description: "설정 완료 메시지, 사용 가이드 안내" },
-        ],
-      },
-      // Page 5: 토큰 배포 (ratio-1-2 레이아웃)
-      {
-        id: "ds-5",
-        layout: "ratio-1-2",
-        title: "토큰은 왜 CDN으로 배포하는가",
-        subtitle: "Token Distribution",
-        leftContent: {
-          type: "principles",
-          items: [
-            { title: "버전 없이 항상 최신", desc: "즉시 반영이 필요한 디자인 토큰에 적합" },
-            { title: "CDN vs npm", desc: "CDN: 즉시반영, 토큰용 / npm: 버전관리, 컴포넌트용" },
-          ],
-        },
-        rightContent: {
-          type: "flowchart",
-          direction: "vertical",
-          steps: [
-            { title: "tokens.css 수정", desc: "" },
-            { title: "git push", desc: "" },
-            { title: "jsDelivr 캐시 무효화", desc: "" },
-            { title: "모든 프로젝트 즉시 반영", desc: "" },
-          ],
-        },
-        bullets: [
-          "● CODEOWNERS: tokens.css 변경 시 리뷰 필수",
-          "● CI Script: 토큰명 변경 감지 및 알림",
-          "● Generation Protocol: 토큰 미사용 차단",
-        ],
-      },
-      // Page 6: 컴포넌트 배포 (split 레이아웃)
-      {
-        id: "ds-6",
-        layout: "split",
-        title: "컴포넌트는 왜 npm으로 배포하는가",
-        subtitle: "Component Distribution",
-        topLeft: {
-          title: "Why npm",
-          items: [
-            "● 버전 고정 가능",
-            "  Breaking Change 방지",
-            "",
-            "● 의존성 해결",
-            "  npm이 자동으로 관리",
-            "",
-            "● 표준 생태계",
-            "  모든 개발자가 익숙한 도구",
-          ],
-        },
-        topRight: {
-          title: "Risk without versioning",
-          items: [
-            "Button v1 사용 중",
-            "     ↓",
-            "중앙에서 Button v2 배포 (API 변경)",
-            "     ↓",
-            "버전 관리 없으면",
-            "     ↓",
-            "모든 프로젝트 동시 장애",
-          ],
-        },
-        bottomFlow: {
-          nodes: ["main push", "GitHub Actions", "npm publish", "v1.0.x 자동 배포"],
-        },
-      },
-      // Page 7: 자동 업데이트 (split 레이아웃)
-      {
-        id: "ds-7",
-        layout: "split",
-        title: "업데이트는 왜 자동화해야 하는가",
-        subtitle: "Auto Update",
-        topLeft: {
-          title: "Problem",
-          items: [
-            "중앙에서 v1.2.0 배포했는데",
-            "어느 프로젝트가 아직 v1.0.0인지",
-            "모름",
-          ],
-        },
-        topRight: {
-          title: "Without Automation",
-          items: [
-            "● 각 프로젝트가 수동으로 확인",
-            "● 업데이트 시점이 제각각",
-            "● 버전 파편화 심화",
-            "● 관리자가 일일이 독촉",
-          ],
-        },
-        bottomFlow: {
-          nodes: ["중앙 배포", "Dependabot PR", "CI 통과", "Auto-merge", "프로젝트 업데이트"],
-        },
-      },
-      // Page 8: 품질 체계 (split 레이아웃)
-      {
-        id: "ds-8",
-        layout: "split",
-        title: "코드 품질은 왜 생성 단계에서 통제하는가",
-        subtitle: "Quality Control",
-        topLeft: {
-          title: "Problem",
-          items: [
-            "양방향 동기화에서 각 프로젝트가",
-            "자유롭게 컴포넌트를 생성하면",
-            "전체 디자인 일관성 붕괴",
-          ],
-        },
-        topRight: {
-          title: "Generation Protocol 4단계",
-          items: [
-            "1. 토큰 검사",
-            "   CSS 변수만 사용했는가?",
-            "",
-            "2. 중복 검사",
-            "   기존 컴포넌트로 해결 가능한가?",
-            "",
-            "3. 접근성",
-            "   aria-label, 키보드 지원",
-            "",
-            "4. 반응형",
-            "   모바일 대응 여부",
-          ],
-        },
-        bottomFlow: {
-          nodes: ["요청: 빨간 버튼", "Protocol 검증", "❌ color: red 거부", "✅ var(--color-error) 권장"],
-        },
-      },
-      // Page 9: 문서 사이트 (ratio-1-2 레이아웃)
-      {
-        id: "ds-9",
-        layout: "ratio-1-2",
-        title: "이 모든 것을 담은 문서 사이트",
-        subtitle: "Documentation",
-        leftContent: {
-          type: "principles",
-          items: [
-            { title: "\"이게 뭔가요?\" 질문 제거", desc: "필요한 모든 정보를 한 곳에" },
-            { title: "설정 방법 표준화", desc: "기술 선택 근거 문서화" },
-            { title: "버전 채택 현황 파악", desc: "대시보드로 실시간 모니터링" },
-          ],
-        },
-        visualPlaceholder: {
-          type: "screenshot",
-          description: "Site\n├─ Docs\n│   ├─ Introduction\n│   ├─ Install (Guide, How it works)\n│   ├─ Tokens (Colors, Spacing, Typography)\n│   ├─ Rules (Constraints, Protocol)\n│   └─ Components (Button, Input)\n└─ Updates (Version Dashboard, Adoption Status)",
-          aspectRatio: "16:9",
-        },
-      },
-    ],
-  },
-  // ============================================================================
-  // CRO Experiments (9장)
-  // ============================================================================
+  // CRO Experiments (7장) - PDF 2-8페이지
   {
     id: "cro-experiments",
     title: "CRO Experiments",
+    // color 미지정 → 기본 그린 사용
     slides: [
-      // Page 1: 커버
-      {
-        id: "cro-1",
-        layout: "cover",
-        title: "개발 리소스 없이\n랜딩페이지 운영하기",
-        tagline: "분석 2시간 → 명령어 한 줄, 수정 2주 대기 → 즉시 반영",
-        steps: [
-          { number: "01", title: "직접 제작", description: "Claude Code로 랜딩페이지 직접 만들기" },
-          { number: "02", title: "분석 자동화", description: "Beusable 데이터 → 리포트 자동 생성" },
-          { number: "03", title: "정성 데이터", description: "Exit Intent로 이탈 이유 수집" },
-          { number: "04", title: "시스템화", description: "개인 도구 → 팀 리포트 시스템으로 확장" },
-        ],
-        achievements: [
-          {
-            category: "제작/배포",
-            items: [
-              "**Claude Code**로 랜딩페이지 직접 제작",
-              "**Vercel** 배포로 수정 → **1분 내 반영**",
-              "개발팀 대기 **2주 → 0일**",
-            ],
-          },
-          {
-            category: "분석 자동화",
-            items: [
-              "Beusable **히트맵 리포트** 자동 생성",
-              "분석 시간 **2시간 → 10분** (92% 절감)",
-              "**/cro-report** 명령어로 즉시 실행",
-            ],
-          },
-          {
-            category: "전환 개선",
-            items: [
-              "**Exit Intent** 팝업으로 이탈 이유 수집",
-              "스크롤 도달률 **+12%**, CTA 클릭률 **+8%**",
-              "팀 전체가 쓰는 **일일 리포트** 시스템",
-            ],
-          },
-        ],
-      },
-      // Page 2: 시작
-      {
-        id: "cro-2",
-        layout: "problem",
-        title: "개발자 없이 랜딩페이지 직접 만들기",
-        subtitle: "시작: Claude Code로 직접 제작/배포",
-        description: "마케팅팀이 랜딩페이지를 수정하려면 개발팀에 요청해야 했다. 간단한 텍스트 수정도 2주 대기. 실험은 꿈도 못 꿨다.",
-        beforeAfter: {
-          before: [
-            "텍스트 하나 바꾸려면 개발팀 요청",
-            "평균 대기 시간: 2주",
-            "A/B 테스트? \"리소스 없어서 다음에...\"",
-            "아이디어가 있어도 실행 불가",
-          ],
-          after: [
-            "Claude Code로 랜딩페이지 직접 제작",
-            "Vercel로 즉시 배포",
-            "수정 → 커밋 → 1분 내 반영",
-            "아이디어 → 실험 → 결과, 당일 완료",
-          ],
-        },
-      },
-      // Page 3: 문제 발견 #1
-      {
-        id: "cro-3",
-        layout: "text-heavy",
-        title: "매번 Beusable 들어가서 분석하는 게 번거롭다",
-        subtitle: "문제 발견 #1: 분석에 2시간 소요",
-        description: "랜딩페이지를 만들 수 있게 됐지만, 뭘 고쳐야 하는지 알려면 Beusable에서 히트맵 분석을 해야 했다. 매번 같은 작업의 반복.",
-        bullets: [
-          "Beusable 대시보드 접속",
-          "히트맵 스크린샷 캡처 (스크롤, 클릭, 마우스무브)",
-          "수치 정리 (PV, UV, 스크롤 깊이, 클릭률)",
-          "섹션별 인사이트 도출",
-          "슬랙/노션에 문서화",
-        ],
-        quote: "매주 2시간씩 똑같은 작업. 이걸 왜 수동으로 하고 있지?",
-        metrics: [
-          { value: "2시간", label: "분석 소요 시간", change: "매주 반복" },
-        ],
-      },
-      // Page 4: 해결 #1
-      {
-        id: "cro-4",
-        layout: "process",
-        title: "Beusable 데이터 → 보고서 자동 생성",
-        subtitle: "해결 #1: 뷰저블 리포트 자동화",
-        description: "분석 템플릿을 만들고, Beusable 데이터를 Claude에게 전달하면 같은 형식의 리포트가 자동으로 생성되게 했다.",
-        steps: [
-          { number: "1", title: "템플릿 설계", description: "섹션별 분석 항목 + 인사이트 형식 정의" },
-          { number: "2", title: "데이터 추출", description: "Beusable API → JSON 형태로 정리" },
-          { number: "3", title: "리포트 생성", description: "Claude에게 전달 → 마크다운 보고서 출력" },
-        ],
-        metrics: [
-          { value: "2시간", label: "Before", change: "수동 분석" },
-          { value: "10분", label: "After", change: "자동 생성" },
-          { value: "92%", label: "시간 절약", change: "110분 → 10분" },
-        ],
-      },
-      // Page 5: 적용 - 실제 분석 결과
-      {
-        id: "cro-5",
-        layout: "metric",
-        title: "자동화된 리포트로 문제 구간 발견",
-        subtitle: "적용: 20기 스터디 랜딩페이지 분석",
-        description: "실제 운영 중인 랜딩페이지에 자동화 리포트를 적용했다. 데이터가 말해주는 문제 구간이 명확히 보였다.",
-        metrics: [
-          { value: "3,805", label: "Page Views", change: "분석 기간 내" },
-          { value: "1,566", label: "Unique Visitors", change: "순 방문자" },
-          { value: "77.2%", label: "클릭 이탈률", change: "클릭 없이 이탈" },
-          { value: "25%", label: "스크롤 도달률", change: "100% → 25% 급락" },
-        ],
-        bullets: [
-          "스크롤 절벽: Hero → Problem 섹션 전환 구간에서 75% 이탈",
-          "CTA 클릭률: 메인 버튼 Hover 67건 → Click 14건 (20.9%)",
-          "관심 구간: Transformation 섹션에서 체류 시간 가장 높음",
-        ],
-      },
-      // Page 6: 개선
-      {
-        id: "cro-6",
-        layout: "comparison",
-        title: "데이터가 말해주는 곳을 고치다",
-        subtitle: "개선: 시각적 UI 개선",
-        description: "추측이 아닌 데이터 기반으로 개선 포인트를 잡았다. 스크롤 절벽 구간과 CTA 클릭률에 집중했다.",
-        beforeAfter: {
-          before: [
-            "Hero → Problem 전환이 급격함",
-            "CTA 버튼이 스크롤 하단에 위치",
-            "Problem 섹션 텍스트 과다",
-            "시각적 흐름이 끊김",
-          ],
-          after: [
-            "Hero-Problem 사이 브릿지 섹션 추가",
-            "Sticky CTA로 항상 노출",
-            "핵심 메시지만 남기고 압축",
-            "스크롤 유도 애니메이션 추가",
-          ],
-        },
-        metrics: [
-          { value: "+12%", label: "스크롤 도달률", change: "25% → 37%" },
-          { value: "+8%", label: "CTA 클릭률", change: "20.9% → 28.9%" },
-        ],
-      },
-      // Page 7: 문제 발견 #2
-      {
-        id: "cro-7",
-        layout: "text-heavy",
-        title: "숫자는 있는데, 왜 이탈하는지 모르겠다",
-        subtitle: "문제 발견 #2: 정성적 데이터 부족",
-        description: "히트맵은 '어디서' 이탈하는지 알려주지만, '왜' 이탈하는지는 말해주지 않는다. CTA를 눌렀는데 결제를 안 한 이유가 뭘까?",
-        quote: "클릭률은 올랐는데 전환율은 그대로... 뭐가 문제지?",
-        bullets: [
-          "정량 데이터: 어디서 이탈하는지 (위치)",
-          "정성 데이터: 왜 이탈하는지 (이유)",
-          "히트맵만으로는 원인 파악 불가",
-          "이탈 직전 사용자의 목소리가 필요",
-        ],
-      },
-      // Page 8: 해결 #2 - Exit Intent
-      {
-        id: "cro-8",
-        layout: "metric",
-        title: "떠나려는 순간, 이유를 묻다",
-        subtitle: "해결 #2: Exit Intent 팝업 도입",
-        description: "마우스가 브라우저 상단(닫기 버튼 방향)으로 이동하면 팝업을 띄워 이탈 이유를 물었다. Voiceform으로 음성 피드백도 수집.",
-        metrics: [
-          { value: "39%", label: "가격 부담", change: "\"가격이 부담돼요\"" },
-          { value: "24.4%", label: "일정 불일치", change: "\"시간이 안 맞아요\"" },
-          { value: "12.2%", label: "팀원 상의 필요", change: "\"같이 결정해야 해요\"" },
-          { value: "24.4%", label: "기타", change: "추가 정보 필요 등" },
-        ],
-        bullets: [
-          "Exit Intent: 마우스가 창 상단으로 이동 시 감지",
-          "Voiceform: 타이핑 대신 음성으로 간편하게 피드백",
-          "Beusable 연동: 이탈 이벤트 트래킹 코드 삽입",
-        ],
-        quote: "가격 부담 39% → 할부 옵션 강조, 일정 불일치 → 다음 기수 사전 등록 유도",
-      },
-      // Page 9: 시스템 확장 & 회고
-      {
-        id: "cro-9",
-        layout: "metric",
-        title: "개인 생산성 → 팀 전체가 쓰는 시스템",
-        subtitle: "시스템 확장 & 회고",
-        description: "나만 쓰던 도구가 팀 전체가 쓰는 시스템이 됐다. 매일 아침 리포트가 메일로 오고, 누구나 명령어 한 줄로 분석을 볼 수 있다.",
-        metrics: [
-          { value: "매일", label: "자동 리포트", change: "아침 9시 메일 발송" },
-          { value: "1줄", label: "분석 명령어", change: "/cro-report" },
-          { value: "3명", label: "사용자", change: "PM, 마케터, 대표" },
-        ],
-        bullets: [
-          "문제 발견 → 해결 → 시스템화 패턴의 반복",
-          "핵심: 결과물이 아닌 문제 해결 '과정'의 가치",
-          "학습: 개인 도구를 팀 시스템으로 확장하는 방법",
-        ],
-        quote: "좋은 시스템은 사용자가 늘어나면서 더 좋아진다",
-      },
+      { id: "cro-1", layout: "pdf", title: "CRO 개요", pdfPage: 2 },
+      { id: "cro-2", layout: "pdf", title: "랜딩페이지 제작", pdfPage: 3 },
+      { id: "cro-3", layout: "pdf", title: "데이터 수집 자동화", pdfPage: 4 },
+      { id: "cro-4", layout: "pdf", title: "리포트 구조", pdfPage: 5 },
+      { id: "cro-5", layout: "pdf", title: "분석 적용", pdfPage: 6 },
+      { id: "cro-6", layout: "pdf", title: "개선 결과", pdfPage: 7 },
+      { id: "cro-7", layout: "pdf", title: "정성 데이터", pdfPage: 8 },
     ],
   },
-  // ============================================================================
-  // Outro (1장)
-  // ============================================================================
+  // Design System (7장) - PDF 9-15페이지
   {
-    id: "outro",
-    title: "Outro",
+    id: "design-system",
+    title: "Design System",
+    color: "#DD5C36",  // Cherry Grove (Coral)
     slides: [
-      {
-        id: "outro-1",
-        layout: "outro",
-        title: "김한솔",
-        tagline: "문제를 시스템으로 바꾸는 PM",
-        description: "반복되는 불편함을 발견하면, 해결책을 만들고, 누구나 쓸 수 있게 확장합니다.",
-        bullets: [
-          "kimhansol307@gmail.com",
-          "siot.vercel.app",
-          "github.com/conewarrior",
-        ],
-      },
+      { id: "ds-1", layout: "pdf", title: "디자인 시스템 개요", pdfPage: 9 },
+      { id: "ds-2", layout: "pdf", title: "문제 정의", pdfPage: 10 },
+      { id: "ds-3", layout: "pdf", title: "솔루션 개요", pdfPage: 11 },
+      { id: "ds-4", layout: "pdf", title: "설치 방법", pdfPage: 12 },
+      { id: "ds-5", layout: "pdf", title: "강제성 부여", pdfPage: 13 },
+      { id: "ds-6", layout: "pdf", title: "자동 업데이트", pdfPage: 14 },
+      { id: "ds-7", layout: "pdf", title: "문서 사이트", pdfPage: 15 },
     ],
   },
 ];
-
 // ============================================================================
 // 상단 네비게이션 컴포넌트
 // ============================================================================
@@ -672,6 +235,7 @@ function TopNav({ sections, currentSectionIndex, currentSlideIndex, flatIndex, t
         {sections.map((section, index) => {
           const isActive = currentSectionIndex === index;
           const hasMultipleSlides = section.slides.length > 1;
+          const sectionColor = section.color || COLORS.primary;  // 섹션별 색상 또는 기본 그린
           return (
             <motion.button
               key={section.id}
@@ -681,12 +245,12 @@ function TopNav({ sections, currentSectionIndex, currentSlideIndex, flatIndex, t
                 "focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
               )}
               style={{
-                backgroundColor: isActive ? COLORS.primary : "transparent",
+                backgroundColor: isActive ? sectionColor : "transparent",
                 color: isActive ? COLORS.white : COLORS.primaryDark,
               }}
               whileHover={{
                 scale: isActive ? 1 : 1.02,
-                backgroundColor: isActive ? COLORS.primary : COLORS.green100,
+                backgroundColor: isActive ? sectionColor : COLORS.green100,
               }}
               whileTap={{ scale: 0.98 }}
               aria-current={isActive ? "page" : undefined}
@@ -1980,6 +1544,13 @@ function SplitSlide({ slide, sectionTitle }: SlideProps) {
 // ============================================================================
 function Slide({ slide, sectionTitle }: SlideProps) {
   switch (slide.layout) {
+    // PDF 레이아웃
+    case "pdf":
+      return (
+        <div className="h-full w-full flex items-center justify-center p-8">
+          <PDFPageViewer pdfUrl="/portfolio.pdf" pageNumber={slide.pdfPage || 1} />
+        </div>
+      );
     // 기존 레이아웃
     case "intro":
       return <IntroSlide slide={slide} sectionTitle={sectionTitle} />;
