@@ -57,13 +57,13 @@ export default function PDFPageViewer({ pdfUrl, pageNumber }: PDFPageViewerProps
       )}
       <Document
         file={pdfUrl}
-        onLoadSuccess={handleLoadSuccess}
         loading={null}
         className="flex items-center justify-center"
       >
         <Page
           pageNumber={pageNumber}
           width={pdfWidth}
+          onRenderSuccess={handleLoadSuccess}
           renderTextLayer={true}
           renderAnnotationLayer={true}
           className="shadow-lg rounded-lg overflow-hidden"
