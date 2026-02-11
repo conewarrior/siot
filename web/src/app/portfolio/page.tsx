@@ -192,7 +192,7 @@ const SECTIONS: SectionData[] = [
   {
     id: "lead-in-paywall",
     title: "Lead-in Paywall",
-    color: "#E2A71C",  // Gold 500 (Wheat Field Sunrise)
+    color: "#334eac",  // Blue (디자인 프로젝트)
     slides: [
       { id: "paywall-1", layout: "pdf", title: "Paywall 개요", pdfPage: 16 },
       { id: "paywall-2", layout: "pdf", title: "가설 세우기", pdfPage: 17 },
