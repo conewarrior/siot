@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 900" width="800" height="900">
+  <!-- 배경 -->
+  <rect width="800" height="900" fill="#ffffff"/>
+
+  <!-- 스타일 정의 -->
+  <defs>
+    <style>
+      .box { fill: #ffffff; stroke: #327039; stroke-width: 2; }
+      .box-accent { fill: #FEF7E6; stroke: #F0BE49; stroke-width: 2; }
+      .box-decision { fill: #E8F5E9; stroke: #327039; stroke-width: 2; }
+      .text { font-family: 'Pretendard', -apple-system, sans-serif; font-size: 16px; fill: #1a1a1a; }
+      .text-small { font-family: 'Pretendard', -apple-system, sans-serif; font-size: 14px; fill: #666; }
+      .text-bold { font-family: 'Pretendard', -apple-system, sans-serif; font-size: 16px; font-weight: 600; fill: #1a1a1a; }
+      .arrow { stroke: #327039; stroke-width: 2; fill: none; marker-end: url(#arrowhead); }
+      .arrow-branch { stroke: #666; stroke-width: 1.5; fill: none; marker-end: url(#arrowhead-gray); }
+    </style>
+
+    <!-- 화살표 마커 -->
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#327039" />
+    </marker>
+    <marker id="arrowhead-gray" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#666" />
+    </marker>
+  </defs>
+
+  <!-- 1. 사용자 페이지 접속 -->
+  <rect x="250" y="30" width="300" height="60" rx="8" class="box"/>
+  <text x="400" y="65" text-anchor="middle" class="text-bold">사용자 페이지 접속</text>
+
+  <!-- 화살표 -->
+  <path d="M 400 90 L 400 130" class="arrow"/>
+
+  <!-- 2. Growth Experiment Feature 실행 -->
+  <rect x="200" y="130" width="400" height="60" rx="8" class="box"/>
+  <text x="400" y="165" text-anchor="middle" class="text-bold">Growth Experiment Feature 실행</text>
+
+  <!-- 화살표 -->
+  <path d="M 400 190 L 400 230" class="arrow"/>
+
+  <!-- 3. localStorage 확인 (결정 박스) -->
+  <rect x="250" y="230" width="300" height="80" rx="8" class="box-decision"/>
+  <text x="400" y="260" text-anchor="middle" class="text-bold">localStorage 확인</text>
+  <text x="400" y="285" text-anchor="middle" class="text-small">변형 할당 이력이 있는가?</text>
+
+  <!-- 분기 화살표 - 기존 할당 있음 (좌측) -->
+  <path d="M 250 270 L 150 270 L 150 420" class="arrow-branch"/>
+  <text x="110" y="265" class="text-small">있음</text>
+
+  <!-- 분기 화살표 - 기존 할당 없음 (우측) -->
+  <path d="M 550 270 L 650 270 L 650 370" class="arrow-branch"/>
+  <text x="610" y="265" class="text-small">없음</text>
+
+  <!-- 4-1. 저장된 변형 반환 (좌측) -->
+  <rect x="50" y="420" width="200" height="60" rx="8" class="box-accent"/>
+  <text x="150" y="455" text-anchor="middle" class="text">저장된 변형 반환</text>
+
+  <!-- 4-2. 랜덤 할당 + 저장 (우측) -->
+  <rect x="550" y="370" width="200" height="80" rx="8" class="box-accent"/>
+  <text x="650" y="400" text-anchor="middle" class="text">랜덤 할당</text>
+  <text x="650" y="425" text-anchor="middle" class="text-small">+ localStorage 저장</text>
+
+  <!-- 합류 화살표 -->
+  <path d="M 150 480 L 150 540 L 400 540" class="arrow-branch"/>
+  <path d="M 650 450 L 650 540 L 400 540" class="arrow-branch"/>
+
+  <!-- 5. 변형에 따라 실행 -->
+  <rect x="250" y="520" width="300" height="60" rx="8" class="box"/>
+  <text x="400" y="555" text-anchor="middle" class="text-bold">변형에 따라 실행</text>
+
+  <!-- 분기 화살표 - Variant A (좌측) -->
+  <path d="M 300 580 L 150 580 L 150 670" class="arrow-branch"/>
+  <text x="200" y="575" class="text-small">Variant A</text>
+
+  <!-- 분기 화살표 - Variant B (우측) -->
+  <path d="M 500 580 L 650 580 L 650 670" class="arrow-branch"/>
+  <text x="560" y="575" class="text-small">Variant B</text>
+
+  <!-- 6-1. Newsletter Banner (좌측) -->
+  <rect x="50" y="670" width="200" height="60" rx="8" class="box-accent"/>
+  <text x="150" y="705" text-anchor="middle" class="text-bold">Newsletter Banner</text>
+
+  <!-- 6-2. Lead-in Paywall (우측) -->
+  <rect x="550" y="670" width="200" height="60" rx="8" class="box-accent"/>
+  <text x="650" y="705" text-anchor="middle" class="text-bold">Lead-in Paywall</text>
+
+  <!-- 합류 화살표 -->
+  <path d="M 150 730 L 150 790 L 400 790" class="arrow-branch"/>
+  <path d="M 650 730 L 650 790 L 400 790" class="arrow-branch"/>
+
+  <!-- 7. Statsig 이벤트 추적 -->
+  <rect x="200" y="770" width="400" height="80" rx="8" class="box"/>
+  <text x="400" y="800" text-anchor="middle" class="text-bold">Statsig 이벤트 추적</text>
+  <text x="400" y="825" text-anchor="middle" class="text-small">회원가입 / 뉴스레터 구독 / 광고성 수신 동의</text>
+
+</svg>

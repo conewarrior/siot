@@ -188,6 +188,19 @@ const SECTIONS: SectionData[] = [
       { id: "ds-7", layout: "pdf", title: "문서 사이트", pdfPage: 15 },
     ],
   },
+  // Lead-in Paywall (5장) - PDF 16-20페이지
+  {
+    id: "lead-in-paywall",
+    title: "Lead-in Paywall",
+    color: "#E2A71C",  // Gold 500 (Wheat Field Sunrise)
+    slides: [
+      { id: "paywall-1", layout: "pdf", title: "Paywall 개요", pdfPage: 16 },
+      { id: "paywall-2", layout: "pdf", title: "가설 세우기", pdfPage: 17 },
+      { id: "paywall-3", layout: "pdf", title: "테스트 설계", pdfPage: 18 },
+      { id: "paywall-4", layout: "pdf", title: "테스트 적용", pdfPage: 19 },
+      { id: "paywall-5", layout: "pdf", title: "결과 및 회고", pdfPage: 20 },
+    ],
+  },
 ];
 // ============================================================================
 // 상단 네비게이션 컴포넌트
