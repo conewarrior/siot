@@ -201,6 +201,15 @@ const SECTIONS: SectionData[] = [
       { id: "paywall-5", layout: "pdf", title: "결과 및 회고", pdfPage: 20 },
     ],
   },
+  // Outro (1장) - PDF 21페이지
+  {
+    id: "outro",
+    title: "Outro",
+    color: "#91011B",  // Dark red (Intro와 동일)
+    slides: [
+      { id: "outro-1", layout: "pdf", title: "Thank You", pdfPage: 21 },
+    ],
+  },
 ];
 // ============================================================================
 // 상단 네비게이션 컴포넌트
