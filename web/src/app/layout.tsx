@@ -7,7 +7,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const siteConfig = {
   name: "siot",
-  description: "개발자 & 디자이너 포트폴리오. 심미성과 기능성의 균형을 갖춘 디지털 제품을 만듭니다.",
+  description: "심미성과 기능성의 균형을 갖춘 디지털 제품을 만듭니다.",
   url: "https://portfolio-six-azure-69.vercel.app",
   author: "siot",
 };
