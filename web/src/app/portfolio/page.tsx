@@ -158,47 +158,47 @@ const SECTIONS: SectionData[] = [
       { id: "intro-1", layout: "pdf", title: "김한솔", pdfPage: 1 },
     ],
   },
-  // CRO Experiments (7장) - PDF 2-8페이지
-  {
-    id: "cro-experiments",
-    title: "CRO Experiments",
-    // color 미지정 → 기본 그린 사용
-    slides: [
-      { id: "cro-1", layout: "pdf", title: "CRO 개요", pdfPage: 2 },
-      { id: "cro-2", layout: "pdf", title: "랜딩페이지 제작", pdfPage: 3 },
-      { id: "cro-3", layout: "pdf", title: "데이터 수집 자동화", pdfPage: 4 },
-      { id: "cro-4", layout: "pdf", title: "리포트 구조", pdfPage: 5 },
-      { id: "cro-5", layout: "pdf", title: "분석 적용", pdfPage: 6 },
-      { id: "cro-6", layout: "pdf", title: "개선 결과", pdfPage: 7 },
-      { id: "cro-7", layout: "pdf", title: "정성 데이터", pdfPage: 8 },
-    ],
-  },
-  // Design System (7장) - PDF 9-15페이지
-  {
-    id: "design-system",
-    title: "Design System",
-    color: "#DD5C36",  // Cherry Grove (Coral)
-    slides: [
-      { id: "ds-1", layout: "pdf", title: "디자인 시스템 개요", pdfPage: 9 },
-      { id: "ds-2", layout: "pdf", title: "문제 정의", pdfPage: 10 },
-      { id: "ds-3", layout: "pdf", title: "솔루션 개요", pdfPage: 11 },
-      { id: "ds-4", layout: "pdf", title: "설치 방법", pdfPage: 12 },
-      { id: "ds-5", layout: "pdf", title: "강제성 부여", pdfPage: 13 },
-      { id: "ds-6", layout: "pdf", title: "자동 업데이트", pdfPage: 14 },
-      { id: "ds-7", layout: "pdf", title: "문서 사이트", pdfPage: 15 },
-    ],
-  },
-  // Lead-in Paywall (5장) - PDF 16-20페이지
+  // Lead-in Paywall (5장) - PDF 2-6페이지
   {
     id: "lead-in-paywall",
     title: "Lead-in Paywall",
     color: "#334eac",  // Blue (디자인 프로젝트)
     slides: [
-      { id: "paywall-1", layout: "pdf", title: "Paywall 개요", pdfPage: 16 },
-      { id: "paywall-2", layout: "pdf", title: "가설 세우기", pdfPage: 17 },
-      { id: "paywall-3", layout: "pdf", title: "테스트 설계", pdfPage: 18 },
-      { id: "paywall-4", layout: "pdf", title: "테스트 적용", pdfPage: 19 },
-      { id: "paywall-5", layout: "pdf", title: "결과 및 회고", pdfPage: 20 },
+      { id: "paywall-1", layout: "pdf", title: "Paywall 개요", pdfPage: 2 },
+      { id: "paywall-2", layout: "pdf", title: "가설 세우기", pdfPage: 3 },
+      { id: "paywall-3", layout: "pdf", title: "테스트 설계", pdfPage: 4 },
+      { id: "paywall-4", layout: "pdf", title: "테스트 적용", pdfPage: 5 },
+      { id: "paywall-5", layout: "pdf", title: "결과 및 회고", pdfPage: 6 },
+    ],
+  },
+  // CRO Experiments (7장) - PDF 7-13페이지
+  {
+    id: "cro-experiments",
+    title: "CRO Experiments",
+    // color 미지정 → 기본 그린 사용
+    slides: [
+      { id: "cro-1", layout: "pdf", title: "CRO 개요", pdfPage: 7 },
+      { id: "cro-2", layout: "pdf", title: "랜딩페이지 제작", pdfPage: 8 },
+      { id: "cro-3", layout: "pdf", title: "데이터 수집 자동화", pdfPage: 9 },
+      { id: "cro-4", layout: "pdf", title: "리포트 구조", pdfPage: 10 },
+      { id: "cro-5", layout: "pdf", title: "분석 적용", pdfPage: 11 },
+      { id: "cro-6", layout: "pdf", title: "개선 결과", pdfPage: 12 },
+      { id: "cro-7", layout: "pdf", title: "정성 데이터", pdfPage: 13 },
+    ],
+  },
+  // Design System (7장) - PDF 14-20페이지
+  {
+    id: "design-system",
+    title: "Design System",
+    color: "#DD5C36",  // Cherry Grove (Coral)
+    slides: [
+      { id: "ds-1", layout: "pdf", title: "디자인 시스템 개요", pdfPage: 14 },
+      { id: "ds-2", layout: "pdf", title: "문제 정의", pdfPage: 15 },
+      { id: "ds-3", layout: "pdf", title: "솔루션 개요", pdfPage: 16 },
+      { id: "ds-4", layout: "pdf", title: "설치 방법", pdfPage: 17 },
+      { id: "ds-5", layout: "pdf", title: "강제성 부여", pdfPage: 18 },
+      { id: "ds-6", layout: "pdf", title: "자동 업데이트", pdfPage: 19 },
+      { id: "ds-7", layout: "pdf", title: "문서 사이트", pdfPage: 20 },
     ],
   },
   // Outro (1장) - PDF 21페이지
