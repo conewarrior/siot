@@ -201,13 +201,28 @@ const SECTIONS: SectionData[] = [
       { id: "ds-7", layout: "pdf", title: "문서 사이트", pdfPage: 20 },
     ],
   },
-  // Outro (1장) - PDF 21페이지
+  // Shortkey (7장) - PDF 21-27페이지
+  {
+    id: "shortkey",
+    title: "Shortkey",
+    color: "#E4AA22",
+    slides: [
+      { id: "sk-1", layout: "pdf", title: "Shortkey 개요", pdfPage: 21 },
+      { id: "sk-2", layout: "pdf", title: "Project Goals", pdfPage: 22 },
+      { id: "sk-3", layout: "pdf", title: "Research & List Up", pdfPage: 23 },
+      { id: "sk-4", layout: "pdf", title: "Hypothesis", pdfPage: 24 },
+      { id: "sk-5", layout: "pdf", title: "Validation Test", pdfPage: 25 },
+      { id: "sk-6", layout: "pdf", title: "Solutions", pdfPage: 26 },
+      { id: "sk-7", layout: "pdf", title: "AB Test & Result", pdfPage: 27 },
+    ],
+  },
+  // Outro (1장) - PDF 28페이지
   {
     id: "outro",
     title: "Outro",
     color: "#91011B",  // Dark red (Intro와 동일)
     slides: [
-      { id: "outro-1", layout: "pdf", title: "Thank You", pdfPage: 21 },
+      { id: "outro-1", layout: "pdf", title: "Thank You", pdfPage: 28 },
     ],
   },
 ];
