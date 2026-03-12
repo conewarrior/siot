@@ -189,7 +189,7 @@ const SECTIONS: SectionData[] = [
   // Design System (7장) - PDF 14-20페이지
   {
     id: "design-system",
-    title: "Design System",
+    title: "AX Design System",
     color: "#DD5C36",  // Cherry Grove (Coral)
     slides: [
       { id: "ds-1", layout: "pdf", title: "디자인 시스템 개요", pdfPage: 14 },
@@ -216,13 +216,29 @@ const SECTIONS: SectionData[] = [
       { id: "sk-7", layout: "pdf", title: "AB Test & Result", pdfPage: 27 },
     ],
   },
-  // Outro (1장) - PDF 28페이지
+  // Design System (8장) - PDF 28-35페이지 (패스트 캠퍼스)
+  {
+    id: "fc-design-system",
+    title: "Design System",
+    color: "#77499C",
+    slides: [
+      { id: "fc-1", layout: "pdf", title: "디자인 시스템 리뉴얼 개요", pdfPage: 28 },
+      { id: "fc-2", layout: "pdf", title: "Project Goals", pdfPage: 29 },
+      { id: "fc-3", layout: "pdf", title: "명도값", pdfPage: 30 },
+      { id: "fc-4", layout: "pdf", title: "명도대비율과 Mode 구현", pdfPage: 31 },
+      { id: "fc-5", layout: "pdf", title: "체계적인 이름짓기 1", pdfPage: 32 },
+      { id: "fc-6", layout: "pdf", title: "체계적인 이름짓기 2", pdfPage: 33 },
+      { id: "fc-7", layout: "pdf", title: "명세규칙 재정의", pdfPage: 34 },
+      { id: "fc-8", layout: "pdf", title: "마스터 컴포넌트 규격화", pdfPage: 35 },
+    ],
+  },
+  // Outro (1장) - PDF 36페이지
   {
     id: "outro",
     title: "Outro",
     color: "#91011B",  // Dark red (Intro와 동일)
     slides: [
-      { id: "outro-1", layout: "pdf", title: "Thank You", pdfPage: 28 },
+      { id: "outro-1", layout: "pdf", title: "Thank You", pdfPage: 36 },
     ],
   },
 ];
